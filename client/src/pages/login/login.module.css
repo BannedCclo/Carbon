@@ -1,57 +1,74 @@
-body {
-  background-image: url("../../assets/img/wallpaper2.png");
-  background-size: cover;
-  background-position: center bottom;
-}
-
 .bgWrapper {
   height: 100vh;
   max-height: 100vh;
   width: 100vw;
   max-width: 100vw;
-  backdrop-filter: blur(5px) brightness(0.8);
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
+}
+
+.bgWrapper > img {
+  filter: blur(5px) brightness(0.8);
+  width: 100%;
+  min-height: 100vh;
+  scale: 1.01;
+  object-fit: cover;
 }
 
 #container {
+  position: absolute;
   display: flex;
   flex-flow: column;
   justify-content: center;
   align-items: center;
   gap: 2rem;
   height: 60%;
+  width: 30%;
 }
 
-form {
+#container > img {
+  width: 100%;
+}
+
+#loginForm {
+  box-sizing: border-box;
+  padding: 0 10px;
   display: flex;
   flex-flow: column;
   justify-content: center;
   align-items: center;
   gap: 1.5rem;
-  background-color: #eee;
+  background-color: #ddd;
   border: 0;
   width: 80%;
   flex: 1;
 }
 
-form input {
-  width: 60%;
+#loginForm > * {
+  width: 70%;
+}
+
+#loginForm h1,
+#loginForm p {
+  text-align: center;
+}
+
+#loginForm input {
   height: 3rem;
   border: none;
   padding-left: 1rem;
   box-sizing: border-box;
 }
 
-form h1 {
+#loginForm h1 {
   color: #000;
   font-size: 2rem;
   font-weight: 300;
 }
 
-form button {
-  width: 60%;
+#loginForm button {
   height: 3rem;
   border: 0;
   color: white;
@@ -59,11 +76,23 @@ form button {
   transition: 0.5s;
 }
 
-form button:hover {
+#loginForm button:hover {
   background-color: rgb(39, 41, 61);
   cursor: pointer;
 }
 
-form a {
+#loginForm a {
   color: #002d80;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.password input {
+  width: 100%;
+}
+
+.password i {
+  position: absolute;
+  color: #0e0b25;
+  transform: translate(-150%, 100%);
+  cursor: pointer;
 }

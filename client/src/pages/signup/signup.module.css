@@ -1,0 +1,122 @@
+.bgWrapper {
+  background-color: #0e0b25;
+  position: relative;
+  height: 100vh;
+  max-height: 100vh;
+  width: 100vw;
+  max-width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#container {
+  position: absolute;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  height: 100vh;
+  width: 70%;
+}
+
+#signupForm {
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  background-color: #ddd;
+  border: 0;
+  padding: 0 100px;
+  flex: 1;
+}
+
+#inputGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+#signupForm input {
+  width: 100%;
+  height: 3rem;
+  border: none;
+  padding-left: 1rem;
+  box-sizing: border-box;
+}
+
+#signupForm h1 {
+  color: #000;
+  font-size: 2rem;
+  font-weight: 300;
+}
+
+#signupForm h1,
+#signupForm p {
+  text-align: center;
+}
+
+#signupForm button {
+  width: 100%;
+  height: 3rem;
+  border: 0;
+  color: white;
+  background-color: #0e0b25;
+  transition: 0.5s;
+}
+
+#signupForm button:hover {
+  background-color: rgb(39, 41, 61);
+  cursor: pointer;
+}
+
+#signupForm button:active {
+  scale: 0.95;
+}
+
+#signupForm a {
+  color: #002d80;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+#endereco {
+  grid-column: 1 / span 2;
+  text-align: center;
+}
+
+.invalido {
+  position: relative;
+  animation: shake 0.3s linear;
+  outline: 2px solid red !important;
+}
+.password {
+  position: relative;
+}
+
+.password i {
+  position: absolute;
+  color: #0e0b25;
+  transform: translate(-150%, 100%);
+  cursor: pointer;
+}
+
+@keyframes shake {
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  50% {
+    transform: translateX(5px);
+  }
+  75% {
+    transform: translateX(-5px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}

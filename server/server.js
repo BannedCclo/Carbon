@@ -6,8 +6,6 @@ require("./models/User");
 require("./models/Carro");
 
 const sequelize = require("./config/db");
-const carrosRoutes = require("./routes/carros");
-const usersRoutes = require("./routes/users");
 
 const app = express();
 const port = 3000;
@@ -15,12 +13,14 @@ const port = 3000;
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
+
+const carrosRoutes = require("./routes/carros");
+const usersRoutes = require("./routes/users");
+const cepRoutes = require("./routes/cep");
+
 app.use("/api/carros", carrosRoutes);
 app.use("/api/users", usersRoutes);
-
-app.get("/api/teste", (req, res) => {
-  res.json({ mensagem: "API teste com PostgreSQL!" });
-});
+app.use("/api/cep", cepRoutes);
 
 sequelize
   .authenticate()
@@ -37,8 +37,6 @@ sequelize
     console.error("❌ Erro ao conectar no banco:", err);
   });
 
-app.get("/teste-index", (req, res) => {
-  const indexPath = path.resolve(__dirname, "public", "index.html");
-  console.log("🧪 Enviando:", indexPath);
-  res.sendFile(indexPath);
+app.get("/teste", (req, res) => {
+  console.log(res);
 });

@@ -1,0 +1,71 @@
+#bgWrapper {
+  width: 100vw;
+  height: 100vh;
+  background-color: #0e0b25;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#verifyForm {
+  background-color: #ddd;
+  padding: 50px;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  gap: 20px;
+}
+
+#verifyForm h1 {
+  font-weight: 300;
+}
+
+#verifyForm input {
+  width: 80%;
+  height: 3rem;
+  border: none;
+  padding-left: 1rem;
+  box-sizing: border-box;
+}
+
+#verifyForm button {
+  width: 80%;
+  height: 3rem;
+  border: 0;
+  color: white;
+  background-color: #0e0b25;
+  transition: 0.5s;
+}
+
+#verifyForm button:hover {
+  background-color: rgb(39, 41, 61);
+  cursor: pointer;
+}
+
+#verifyForm button:active {
+  scale: 0.95;
+}
+
+.invalido {
+  position: relative;
+  animation: shake 0.3s linear;
+  outline: 2px solid red !important;
+}
+
+@keyframes shake {
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  50% {
+    transform: translateX(5px);
+  }
+  75% {
+    transform: translateX(-5px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
