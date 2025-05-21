@@ -91,7 +91,7 @@
 
 #newTitle button > div > div {
   flex: 1;
-  background-color: white;
+  background-color: gold;
 }
 
 #newTitle button > div > div:nth-child(1) {
