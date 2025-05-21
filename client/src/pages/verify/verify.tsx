@@ -1,4 +1,4 @@
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import styles from "./verify.module.css";
 import { useState, useEffect } from "react";
@@ -6,6 +6,7 @@ import textLogoSmallBlack from "../../assets/img/textLogoSmallBlack.png";
 import api from "../../services/api";
 
 const Verify = () => {
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const email = searchParams.get("email");
   const [code, setCode] = useState("");
@@ -20,9 +21,37 @@ const Verify = () => {
     event.preventDefault();
 
     try {
-      console.log(email, code);
-      const response = await api.post("/users/verify", { email, code });
-      console.log(response.data);
+      if (email) {
+        const user = await api.get(`/users/${encodeURIComponent(email)}`, {});
+        console.log(user.data);
+        if (user.data.verificado == true) {
+          toast.error((t) => (
+            <span>
+              Essa conta já está verificada
+              <button onClick={() => navigate("/")} id="alertButton">
+                Fazer login
+              </button>
+            </span>
+          ));
+          return;
+        }
+        console.log(email, code);
+        const response = await api.post("/users/verify", { email, code });
+        console.log(response.data);
+        toast.success(
+          (t) => (
+            <span>
+              Email verificado com sucesso
+              <button onClick={() => navigate("/")} id="alertButton">
+                Fazer login
+              </button>
+            </span>
+          ),
+          { duration: Infinity }
+        );
+      } else {
+        toast.error("Erro ao carregar email");
+      }
     } catch (error) {
       toast.error("Código inválido");
       setInvalid(true);

@@ -154,7 +154,9 @@ const Signup = () => {
     }
   };
 
-  const teste = async () => {};
+  const teste = async () => {
+    api.get("/teste");
+  };
 
   return (
     <>

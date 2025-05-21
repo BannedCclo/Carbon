@@ -1,8 +1,8 @@
-const { Sequelize } = require('sequelize');
+const { Sequelize } = require("sequelize");
 
-const sequelize = new Sequelize('carbon', 'postgres', '2113', {
-  host: 'localhost',
-  dialect: 'postgres',
+const sequelize = new Sequelize("carbon", "postgres", "1809", {
+  host: "localhost",
+  dialect: "postgres",
   logging: false,
 });
 
