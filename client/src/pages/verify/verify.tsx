@@ -28,7 +28,12 @@ const Verify = () => {
           toast.error((t) => (
             <span>
               Essa conta já está verificada
-              <button onClick={() => navigate("/login")} id="alertButton">
+              <button
+                onClick={() => {
+                  navigate("/login");
+                }}
+                id="alertButton"
+              >
                 Fazer login
               </button>
             </span>
@@ -42,7 +47,13 @@ const Verify = () => {
           (t) => (
             <span>
               Email verificado com sucesso
-              <button onClick={() => navigate("/login")} id="alertButton">
+              <button
+                onClick={() => {
+                  toast.dismiss(t.id);
+                  navigate("/login");
+                }}
+                id="alertButton"
+              >
                 Fazer login
               </button>
             </span>

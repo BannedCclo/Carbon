@@ -1,10 +1,21 @@
 import styles from "./home.module.css";
+import { useState, useEffect } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import Ferrari812Superfast from "../../assets/video/Ferrari 812 Superfast.mp4";
 import textLogoBigWhite from "../../assets/img/textLogoBigWhite.png";
 import FerrariLogo from "../../assets/svg/ferrarilogo.svg";
 
 const Home = () => {
+  const [counter, setCounter] = useState(0);
+
+  useEffect(() => {
+    toast(counter.toString(), { duration: 2000 });
+  }, [counter]);
+
+  function clicker() {
+    setCounter(counter + 1);
+  }
+
   return (
     <>
       <div className={styles.bgWrapper}>
@@ -17,7 +28,7 @@ const Home = () => {
           </header>
           <div id={styles.newTitle}>
             <h1>Ferrari 812 Superfast</h1>
-            <button>
+            <button onClick={clicker}>
               Conheça
               <div>
                 <div>
@@ -33,7 +44,7 @@ const Home = () => {
           </div>
         </section>
       </div>
-      <Toaster />
+      <Toaster toastOptions={{ style: { borderRadius: 0 } }} />
     </>
   );
 };
