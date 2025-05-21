@@ -1,7 +1,7 @@
 import { useSearchParams, useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import styles from "./verify.module.css";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import textLogoSmallBlack from "../../assets/img/textLogoSmallBlack.png";
 import api from "../../services/api";
 
@@ -28,7 +28,7 @@ const Verify = () => {
           toast.error((t) => (
             <span>
               Essa conta já está verificada
-              <button onClick={() => navigate("/")} id="alertButton">
+              <button onClick={() => navigate("/login")} id="alertButton">
                 Fazer login
               </button>
             </span>
@@ -42,7 +42,7 @@ const Verify = () => {
           (t) => (
             <span>
               Email verificado com sucesso
-              <button onClick={() => navigate("/")} id="alertButton">
+              <button onClick={() => navigate("/login")} id="alertButton">
                 Fazer login
               </button>
             </span>

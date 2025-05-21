@@ -48,6 +48,10 @@ const Carro = sequelize.define(
     descricao: {
       type: DataTypes.TEXT,
     },
+    categoria: {
+      type: DataTypes.ENUM("sport", "suv", "sedan"),
+      defaultValue: "user",
+    },
   },
   {
     tableName: "carros",

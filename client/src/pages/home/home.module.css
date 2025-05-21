@@ -1,0 +1,126 @@
+.bgWrapper {
+  background-color: #0e0b25;
+  position: relative;
+  min-height: 100vh;
+  width: 100vw;
+  max-width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#new {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  width: 100vw;
+}
+
+#new video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  min-width: 100%;
+  filter: brightness(0.8);
+}
+
+#new header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 7vh;
+  padding: 3vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#new header img {
+  height: 100%;
+}
+
+#newTitle {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  bottom: 7vh;
+  left: 7vh;
+  gap: 50px;
+}
+
+#newTitle h1 {
+  color: #fff;
+  font-size: 4rem;
+  font-weight: 300;
+}
+
+#newTitle button {
+  position: relative;
+  color: #fff;
+  background-color: transparent;
+  border: 3px solid #fff;
+  font-size: 3em;
+  padding: 1rem;
+  font-weight: 300;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  z-index: 2;
+  overflow: hidden;
+}
+
+#newTitle button:active {
+  scale: 0.95;
+}
+
+#newTitle button > div {
+  display: flex;
+  flex-direction: row;
+  position: absolute;
+  left: -200%;
+  top: 0;
+  content: "Conheça";
+  width: 200%;
+  height: 100%;
+  transition: all 1s ease-in-out;
+}
+
+#newTitle button:hover > div {
+  left: 0;
+}
+
+#newTitle button > div > div {
+  flex: 1;
+  background-color: white;
+}
+
+#newTitle button > div > div:nth-child(1) {
+  & img {
+    width: 90%;
+  }
+  color: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#flag {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+}
+
+#flag > div:nth-child(1) {
+  flex: 1;
+  background-color: green;
+}
+
+#flag > div:nth-child(2) {
+  flex: 1;
+  background-color: white;
+}
+
+#flag > div:nth-child(3) {
+  flex: 1;
+  background-color: red;
+}

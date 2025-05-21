@@ -14,10 +14,12 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
+const authRoutes = require("./routes/auth");
 const carrosRoutes = require("./routes/carros");
 const usersRoutes = require("./routes/users");
 const cepRoutes = require("./routes/cep");
 
+app.use("/api/auth", authRoutes);
 app.use("/api/carros", carrosRoutes);
 app.use("/api/users", usersRoutes);
 app.use("/api/cep", cepRoutes);

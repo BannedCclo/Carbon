@@ -102,7 +102,7 @@ const Signup = () => {
           toast((t) => (
             <span>
               Esse email já está cadastrado.
-              <button onClick={() => navigate("/")} id="alertButton">
+              <button onClick={() => navigate("/login")} id="alertButton">
                 Fazer login
               </button>
             </span>
@@ -354,7 +354,7 @@ const Signup = () => {
               Já tem uma conta?{" "}
               <a
                 onClick={() => {
-                  navigate("/");
+                  navigate("/login");
                 }}
               >
                 {" "}
@@ -362,7 +362,14 @@ const Signup = () => {
               </a>
             </p>
             <p>
-              Ou <a onClick={teste}>explore como visitante</a>
+              Ou{" "}
+              <a
+                onClick={() => {
+                  navigate("/");
+                }}
+              >
+                explore como visitante
+              </a>
             </p>
           </form>
         </div>

@@ -1,8 +1,43 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
+const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const enviarEmailVerificacao = require("../utils/enviarEmail");
+require("dotenv").config();
+
+const jwtPass = process.env.JWT_SECRET;
+
+router.post("/login", async (req, res) => {
+  const { email, senha } = req.body;
+
+  try {
+    const user = await User.findOne({ where: { email } });
+
+    if (!user || user.senha !== senha) {
+      return res.status(401).json({ erro: "Credenciais inválidas" });
+    }
+
+    const token = jwt.sign(
+      { id: user.id, tipo: user.tipo || "user" },
+      jwtPass,
+      { expiresIn: "168h" }
+    );
+
+    res.json({
+      token,
+      user: {
+        id: user.id,
+        nome: user.nome,
+        email: user.email,
+        tipo: user.tipo,
+      },
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ erro: "Erro no login" });
+  }
+});
 
 router.get("/", async (req, res) => {
   const users = await User.findAll();
