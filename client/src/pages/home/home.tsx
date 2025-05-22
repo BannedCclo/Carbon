@@ -4,47 +4,76 @@ import toast, { Toaster } from "react-hot-toast";
 import Ferrari812Superfast from "../../assets/video/Ferrari 812 Superfast.mp4";
 import textLogoBigWhite from "../../assets/img/textLogoBigWhite.png";
 import FerrariLogo from "../../assets/svg/ferrarilogo.svg";
+import Loading from "../../components/loading/loading";
 
 const Home = () => {
-  const [counter, setCounter] = useState(0);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    toast(counter.toString(), { duration: 2000 });
-  }, [counter]);
+    const imagens = Array.from(document.images);
+    const videos = Array.from(document.querySelectorAll("video"));
 
-  function clicker() {
-    setCounter(counter + 1);
-  }
+    const promessasImagem = imagens.map(
+      (img) =>
+        new Promise((resolve) => {
+          if (img.complete) resolve(true);
+          else img.onload = img.onerror = () => resolve(true);
+        })
+    );
+
+    const promessasVideo = videos.map(
+      (video) =>
+        new Promise((resolve) => {
+          if (video.readyState >= 4) resolve(true); // HAVE_ENOUGH_DATA
+          else {
+            const limpar = () => {
+              video.removeEventListener("canplaythrough", limpar);
+              video.removeEventListener("error", limpar);
+              resolve(true);
+            };
+            video.addEventListener("canplaythrough", limpar);
+            video.addEventListener("error", limpar);
+          }
+        })
+    );
+
+    Promise.all([...promessasImagem, ...promessasVideo]).then(() => {
+      setTimeout(() => setLoading(false), 300); // ou direto: setLoading(false)
+    });
+  }, []);
 
   return (
     <>
-      <div className={styles.bgWrapper}>
-        <section id={styles.new}>
-          <video muted loop autoPlay>
-            <source src={Ferrari812Superfast} />
-          </video>
-          <header>
-            <img src={textLogoBigWhite} alt="" />
-          </header>
-          <div id={styles.newTitle}>
-            <h1>Ferrari 812 Superfast</h1>
-            <button onClick={clicker}>
-              Conheça
-              <div>
+      {loading && <Loading />}
+      {!loading && (
+        <div className={styles.bgWrapper}>
+          <section id={styles.new}>
+            <video muted loop autoPlay>
+              <source src={Ferrari812Superfast} />
+            </video>
+            <header>
+              <img src={textLogoBigWhite} alt="" />
+            </header>
+            <div id={styles.newTitle}>
+              <h1>Ferrari 812 Superfast</h1>
+              <button>
+                Conheça
                 <div>
-                  <img src={FerrariLogo} alt="" />
+                  <div>
+                    <img src={FerrariLogo} alt="" />
+                  </div>
+                  <div id={styles.flag}>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                  </div>
                 </div>
-                <div id={styles.flag}>
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                </div>
-              </div>
-            </button>
-          </div>
-        </section>
-      </div>
-      <Toaster toastOptions={{ style: { borderRadius: 0 } }} />
+              </button>
+            </div>
+          </section>
+          <Toaster toastOptions={{ style: { borderRadius: 0 } }} />
+        </div>
+      )}
     </>
   );
 };

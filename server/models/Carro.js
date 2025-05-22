@@ -50,7 +50,7 @@ const Carro = sequelize.define(
     },
     categoria: {
       type: DataTypes.ENUM("sport", "suv", "sedan"),
-      defaultValue: "user",
+      allowNull: false,
     },
   },
   {
