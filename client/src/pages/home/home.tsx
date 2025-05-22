@@ -4,6 +4,9 @@ import toast, { Toaster } from "react-hot-toast";
 import Ferrari812Superfast from "../../assets/video/Ferrari 812 Superfast.mp4";
 import textLogoBigWhite from "../../assets/img/textLogoBigWhite.png";
 import FerrariLogo from "../../assets/svg/ferrarilogo.svg";
+import Suv from "../../assets/svg/suv.svg";
+import Sport from "../../assets/svg/sport.svg";
+import Sedan from "../../assets/svg/sedan.svg";
 import Loading from "../../components/loading/loading";
 
 const Home = () => {
@@ -68,6 +71,23 @@ const Home = () => {
                     <div></div>
                   </div>
                 </div>
+              </button>
+            </div>
+          </section>
+          <section id={styles.seeTypes}>
+            <h1>Conheça as nossas categorias:</h1>
+            <div id={styles.buttons}>
+              <button>
+                <img src={Sedan} alt="" />
+                <h2>Sedan</h2>
+              </button>
+              <button>
+                <img src={Sport} alt="" />
+                <h2>Sport</h2>
+              </button>
+              <button>
+                <img src={Suv} alt="" />
+                <h2>SUV</h2>
               </button>
             </div>
           </section>

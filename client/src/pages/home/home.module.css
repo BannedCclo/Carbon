@@ -5,12 +5,14 @@
   width: 100vw;
   max-width: 100vw;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 
 #new {
   position: relative;
+  min-height: 100vh;
   height: 100vh;
   overflow: hidden;
   width: 100vw;
@@ -123,4 +125,48 @@
 #flag > div:nth-child(3) {
   flex: 1;
   background-color: red;
+}
+
+#seeTypes {
+  display: flex;
+  width: 100vw;
+  flex-direction: column;
+  position: relative;
+  background-color: white;
+}
+
+#buttons {
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10vh 10vw;
+  gap: 5vh;
+  width: 100vw;
+}
+
+#buttons > button {
+  border: none;
+  width: 400px;
+  cursor: pointer;
+  background-color: transparent;
+}
+
+#buttons > button > img {
+  width: 100%;
+}
+
+#buttons > button > h2 {
+  margin-top: 20px;
+  color: #0e0b25;
+  font-weight: 400;
+  font-size: 2em;
+}
+
+#seeTypes h1 {
+  padding-top: 5vh;
+  color: #0e0b25;
+  font-size: 3rem;
+  font-weight: 300;
+  text-align: center;
 }
