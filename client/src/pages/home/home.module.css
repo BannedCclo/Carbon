@@ -10,6 +10,37 @@
   align-items: center;
 }
 
+.bgWrapper aside {
+  position: absolute;
+  width: 500px;
+  height: 100vh;
+  background-color: #fff;
+  z-index: 3;
+  top: 0;
+  left: -100%;
+  transition: 0.3s;
+}
+
+.bgWrapper aside.active {
+  left: 0;
+}
+
+#new header i.active {
+  color: black;
+}
+
+.bgWrapper aside header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 7vh;
+  padding: 3vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 #new {
   position: relative;
   min-height: 100vh;
@@ -36,6 +67,16 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+#new header i {
+  color: #fff;
+  position: absolute;
+  left: 50px;
+  font-size: 3.5em;
+  cursor: pointer;
+  z-index: 4;
+  transition: .3s;
 }
 
 #new header img {

@@ -19,7 +19,7 @@ router.post("/login", async (req, res) => {
     }
 
     const token = jwt.sign(
-      { id: user.id, tipo: user.tipo || "user" },
+      { id: user.id, tipo: user.tipo, nome: user.nome || "user" },
       jwtPass,
       { expiresIn: "168h" }
     );

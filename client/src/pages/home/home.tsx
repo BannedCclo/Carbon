@@ -8,9 +8,12 @@ import Suv from "../../assets/svg/suv.svg";
 import Sport from "../../assets/svg/sport.svg";
 import Sedan from "../../assets/svg/sedan.svg";
 import Loading from "../../components/loading/loading";
+import { jwtDecode } from "jwt-decode";
 
 const Home = () => {
   const [loading, setLoading] = useState(true);
+  const [active, setActive] = useState(false);
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     const imagens = Array.from(document.images);
@@ -45,21 +48,39 @@ const Home = () => {
     });
   }, []);
 
+  function test() {
+    if (token) {
+      const data = jwtDecode(token);
+      console.log(data);
+    }
+  }
+
+  function toggleAside() {
+    setActive(!active);
+  }
+
   return (
     <>
       {loading && <Loading />}
       {!loading && (
         <div className={styles.bgWrapper}>
+          <aside className={active ? styles.active : ""}>
+            <header></header>
+          </aside>
           <section id={styles.new}>
             <video muted loop autoPlay>
               <source src={Ferrari812Superfast} />
             </video>
             <header>
+              <i
+                className={`fa-solid fa-bars ${active ? styles.active : ""}`}
+                onClick={toggleAside}
+              ></i>
               <img src={textLogoBigWhite} alt="" />
             </header>
             <div id={styles.newTitle}>
               <h1>Ferrari 812 Superfast</h1>
-              <button>
+              <button onClick={test}>
                 Conheça
                 <div>
                   <div>
