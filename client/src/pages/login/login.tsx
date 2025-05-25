@@ -5,7 +5,6 @@ import onlyTextWhite from "../../assets/img/onlyTextWhite.png";
 import wallpaper from "../../assets/img/wallpaper2.png";
 import api from "../../services/api";
 import toast, { Toaster } from "react-hot-toast";
-import Loading from "../../components/loading/loading";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -13,23 +12,6 @@ const Login = () => {
   const [seePassword, setSeePassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const imagens = Array.from(document.images);
-    const promessas = imagens.map(
-      (img) =>
-        new Promise((resolve) => {
-          if (img.complete) resolve(true);
-          else img.onload = img.onerror = () => resolve(true);
-        })
-    );
-
-    Promise.all(promessas).then(() => {
-      setTimeout(() => setLoading(false), 300); // atraso opcional
-    });
-  }, []);
 
   function handleSubmit() {
     if (email && password) {
@@ -55,85 +37,79 @@ const Login = () => {
       toast.error("Preencha todos os campos");
     }
   }
-
-  function teste() {}
   return (
     <>
-      {loading && <Loading />}
-      {!loading && (
-        <div className={styles.bgWrapper}>
-          <img src={wallpaper} alt="" />
-          <div id={styles.container}>
-            <img src={onlyTextWhite} alt="" />
-            <form
-              action=""
-              id={styles.loginForm}
-              onSubmit={(e) => {
-                e.preventDefault();
+      <div className={styles.bgWrapper}>
+        <img src={wallpaper} alt="" />
+        <div id={styles.container}>
+          <img src={onlyTextWhite} alt="" />
+          <form
+            action=""
+            id={styles.loginForm}
+            onSubmit={(e) => {
+              e.preventDefault();
+            }}
+          >
+            <h1>Faça login:</h1>
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
               }}
-            >
-              <h1>Faça login:</h1>
+            />
+            <div className={styles.password}>
               <input
-                type="email"
-                placeholder="Email"
-                value={email}
+                type={seePassword ? "text" : "password"}
+                placeholder="Senha"
+                value={password}
                 onChange={(e) => {
-                  setEmail(e.target.value);
+                  setPassword(e.target.value);
                 }}
               />
-              <div className={styles.password}>
-                <input
-                  type={seePassword ? "text" : "password"}
-                  placeholder="Senha"
-                  value={password}
-                  onChange={(e) => {
-                    setPassword(e.target.value);
-                  }}
-                />
-                <i
-                  className={
-                    seePassword
-                      ? "fa-regular fa-eye"
-                      : "fa-regular fa-eye-slash"
-                  }
-                  onClick={() => {
-                    setSeePassword(!seePassword);
-                  }}
-                ></i>
-              </div>
-              <button
-                onClick={(e) => {
-                  handleSubmit();
+              <i
+                className={
+                  seePassword ? "fa-regular fa-eye" : "fa-regular fa-eye-slash"
+                }
+                onClick={() => {
+                  setSeePassword(!seePassword);
+                }}
+              ></i>
+            </div>
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                handleSubmit();
+              }}
+            >
+              Enviar
+            </button>
+            <p>
+              Não tem uma conta?{" "}
+              <a
+                onClick={() => {
+                  navigate("/signup");
                 }}
               >
-                Enviar
-              </button>
-              <p>
-                Não tem uma conta?{" "}
-                <a
-                  onClick={() => {
-                    navigate("/signup");
-                  }}
-                >
-                  {" "}
-                  Cadastre-se
-                </a>
-              </p>
-              <p>
-                Ou{" "}
-                <a
-                  onClick={() => {
-                    navigate("/");
-                  }}
-                >
-                  explore como visitante
-                </a>
-              </p>
-            </form>
-          </div>
-          <Toaster toastOptions={{ style: { borderRadius: 0 } }} />
+                {" "}
+                Cadastre-se
+              </a>
+            </p>
+            <p>
+              Ou{" "}
+              <a
+                onClick={() => {
+                  navigate("/");
+                }}
+              >
+                explore como visitante
+              </a>
+            </p>
+          </form>
         </div>
-      )}
+        <Toaster toastOptions={{ style: { borderRadius: 0 } }} />
+      </div>
     </>
   );
 };

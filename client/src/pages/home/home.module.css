@@ -1,3 +1,11 @@
+html,
+body {
+  scroll-snap-type: y proximity;
+  scroll-behavior: smooth;
+  overflow-y: scroll;
+  height: 100%;
+}
+
 .bgWrapper {
   background-color: #0e0b25;
   position: relative;
@@ -10,23 +18,49 @@
   align-items: center;
 }
 
-.bgWrapper aside {
-  position: absolute;
-  width: 500px;
+.placeholder {
+  width: 100%;
+  background-color: #0e0b25;
+  height: 100vh;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background-color: #0e0b25;
+  z-index: 5;
+}
+
+.aside {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 300px;
   height: 100vh;
   background-color: #fff;
-  z-index: 3;
-  top: 0;
-  left: -100%;
-  transition: 0.3s;
+  z-index: 49;
+  padding: 20px;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.4);
 }
 
-.bgWrapper aside.active {
-  left: 0;
+.toggleAsideBtn {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
+  font-size: 24px;
+  padding: 8px;
+  background-color: transparent;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  font-size: 2em;
 }
 
-#new header i.active {
-  color: black;
+.toggleAsideBtn.active {
+  color: #0e0b25;
 }
 
 .bgWrapper aside header {
@@ -42,14 +76,17 @@
 }
 
 #new {
+  background-color: #0e0b25;
   position: relative;
   min-height: 100vh;
-  height: 100vh;
-  overflow: hidden;
+  scroll-snap-align: end;
+  overflow: clip;
   width: 100vw;
 }
 
 #new video {
+  animation: blackout;
+  animation-timeline: view(0% 100%);
   position: absolute;
   top: 0;
   left: 0;
@@ -67,16 +104,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-#new header i {
-  color: #fff;
-  position: absolute;
-  left: 50px;
-  font-size: 3.5em;
-  cursor: pointer;
-  z-index: 4;
-  transition: .3s;
 }
 
 #new header img {
@@ -109,7 +136,7 @@
   cursor: pointer;
   transition: all 0.3s ease-in-out;
   z-index: 2;
-  overflow: hidden;
+  overflow: clip;
 }
 
 #newTitle button:active {
@@ -184,24 +211,74 @@
   padding: 10vh 10vw;
   gap: 5vh;
   width: 100vw;
+  z-index: 2;
 }
 
 #buttons > button {
-  border: none;
-  width: 400px;
-  cursor: pointer;
-  background-color: transparent;
-}
-
-#buttons > button > img {
-  width: 100%;
-}
-
-#buttons > button > h2 {
-  margin-top: 20px;
+  width: 300px;
+  height: 100px;
   color: #0e0b25;
   font-weight: 400;
   font-size: 2em;
+  border: 1px solid #0e0b25;
+  cursor: pointer;
+  background-color: white;
+  position: relative;
+}
+
+#buttons > button::after {
+  content: "";
+  width: 310px;
+  height: 110px;
+  top: -5px;
+  left: -5px;
+  background: conic-gradient(
+    from 0deg,
+    #0e0b25 0%,
+    #0e0b25 var(--percentage),
+    transparent var(--percentage)
+  );
+  position: absolute;
+  z-index: -1;
+}
+
+#buttons > button:hover::after {
+  animation: borderAnimation 0.5s linear forwards;
+}
+
+#buttons > img {
+  width: 100%;
+}
+
+#animatedCar {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 100px;
+  overflow: clip;
+}
+
+#animatedCar img {
+  animation: carMove 1s linear infinite;
+  width: 500px;
+}
+
+#roadsContainer {
+  display: flex;
+  gap: 200px;
+  width: 500px;
+  overflow: clip;
+}
+
+.road {
+  animation: roadMove 2s linear infinite;
+  left: 0;
+  position: relative;
+  min-width: 350px;
+  height: 10px;
+  background-color: #0e0b25;
 }
 
 #seeTypes h1 {
@@ -210,4 +287,270 @@
   font-size: 3rem;
   font-weight: 300;
   text-align: center;
+}
+
+#details {
+  width: 100vw;
+  height: 100vh;
+  overflow: clip;
+  position: relative;
+  scroll-snap-align: start;
+}
+
+#details > img {
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  min-width: 100%;
+  max-width: 100%;
+  min-height: 100vh;
+  filter: blur(5px) brightness(0.7);
+  opacity: 0;
+  transition: 0.4s;
+}
+
+#details > img:nth-child(1) {
+  opacity: 1;
+}
+
+#details.next > img:nth-child(2) {
+  animation: bgFadeIn 0.5s linear forwards;
+}
+
+#details.prev > img:nth-last-child(3) {
+  animation: bgFadeIn 0.5s linear forwards;
+}
+
+@keyframes bgFadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+#slider {
+  position: absolute;
+  display: flex;
+  gap: 20px;
+  bottom: 100px;
+  left: calc(100vw - 750px);
+}
+
+#sliderBtns {
+  position: absolute;
+  bottom: 100px;
+  left: 100px;
+  display: flex;
+  gap: 100px;
+}
+
+#sliderBtns button {
+  background-color: transparent;
+  color: rgba(255, 255, 255, 0.6);
+  border: none;
+  font-size: 3em;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+#sliderBtns button:hover {
+  color: white;
+}
+
+#sliderBtns button:active {
+  scale: 0.95;
+}
+
+.item {
+  width: 200px;
+  height: 300px;
+  overflow: hidden;
+  border: 5px solid #0e0b25;
+  filter: brightness(0.8);
+  box-sizing: border-box;
+}
+
+.next .item:nth-child(1) {
+  animation: vanishCard 0.45s ease forwards;
+}
+
+.prev .item:nth-child(2) {
+  animation: unactiveCard 0.45s ease forwards;
+}
+
+.item:nth-child(1) {
+  filter: brightness(1);
+  transform: scale(1.2);
+  transform-origin: right center;
+}
+
+.next .item:nth-child(2) {
+  animation: activeCard 0.45s ease forwards;
+}
+
+.next .item,
+.prev .item {
+  animation: nextCard 0.45s ease forwards;
+}
+
+.next .item {
+  animation: nextCard 0.45s ease forwards;
+}
+
+.prev .item {
+  animation: prevCard 0.45s ease forwards;
+}
+
+.prev .item:nth-child(1) {
+  animation: prevToActive 0.45s ease forwards;
+}
+
+.item img {
+  object-fit: cover;
+  min-width: 100%;
+  height: 100%;
+}
+
+.fadeInner {
+  animation: fadeIn;
+  animation-timeline: view(70% 0);
+}
+
+.fadeOuter {
+  animation: fadeOut forwards;
+  animation-timeline: view(20% 30%);
+}
+
+@property --percentage {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+
+@keyframes vanishCard {
+  from {
+    transform: translateX(0);
+    scale: 1.2;
+    opacity: 1;
+  }
+  to {
+    transform: translateX(-220px);
+    scale: 1;
+    opacity: 0;
+  }
+}
+
+@keyframes unactiveCard {
+  from {
+    transform: translateX(-200px);
+    scale: 1.2;
+    filter: brightness(1);
+  }
+  to {
+    transform: translateX(0);
+    scale: 1;
+    filter: brightness(0.8);
+  }
+}
+
+@keyframes activeCard {
+  from {
+    transform: translateX(0);
+    scale: 1;
+    filter: brightness(0.8);
+  }
+  to {
+    transform: translateX(-200px);
+    scale: 1.2;
+    filter: brightness(1);
+  }
+}
+
+@keyframes prevToActive {
+  from {
+    transform: translateX(-220px);
+    scale: 1;
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    scale: 1.2;
+    opacity: 1;
+  }
+}
+
+@keyframes prevCard {
+  from {
+    transform: translateX(-220px);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes nextCard {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-220px);
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-100px);
+  }
+}
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(100px);
+    scale: 0.5;
+  }
+  100% {
+    opacity: 1;
+    scale: 1;
+  }
+}
+@keyframes borderAnimation {
+  0% {
+    --percentage: 0%;
+  }
+  100% {
+    --percentage: 100%;
+  }
+}
+@keyframes roadMove {
+  from {
+    left: 100%;
+  }
+  to {
+    left: -200%;
+  }
+}
+
+@keyframes carMove {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(3px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes blackout {
+  from {
+    filter: brightness(0.8);
+  }
+  to {
+    filter: brightness(0.3);
+  }
 }

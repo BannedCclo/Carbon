@@ -1,9 +1,9 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Home from "../pages/home/home";
+import Search from "../pages/search/search";
 import Login from "../pages/login/login";
 import Signup from "../pages/signup/signup";
 import Verify from "../pages/verify/verify";
-import Search from "../pages/search/search";
+import Home from "../pages/home/home";
 
 const AppRouter = () => {
   return (

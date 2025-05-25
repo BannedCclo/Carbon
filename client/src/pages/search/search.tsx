@@ -1,9 +1,11 @@
+import styles from "./search.module.css";
 
-
-const Search = () => {
+const Home = () => {
   return (
-    <div>Search</div>
-  )
-}
+    <>
+      <div className={styles.bgWrapper}></div>
+    </>
+  );
+};
 
-export default Search
+export default Home;
