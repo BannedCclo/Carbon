@@ -25,6 +25,15 @@ const Home = () => {
   const timeout = 7000;
   let autoRun = useRef<NodeJS.Timeout | null>(null);
 
+  useEffect(() => {
+    if (autoRun) {
+      clearTimeout(autoRun.current);
+      autoRun.current = setTimeout(() => {
+        click("next");
+      }, timeout);
+    }
+  }, [cards]);
+
   const click = (type: "next" | "prev") => {
     if (animating) return;
 
@@ -52,12 +61,6 @@ const Home = () => {
         setBanner((prev) => [prev[prev.length - 1], ...prev.slice(0, -1)]);
       }
     }, 700);
-    if (autoRun) {
-      clearTimeout(autoRun.current);
-      autoRun.current = setTimeout(() => {
-        click("next");
-      }, timeout);
-    }
   };
 
   useEffect(() => {
@@ -110,7 +113,7 @@ const Home = () => {
             </>
           )}
         </AnimatePresence>
-        <section id={styles.new}>
+        {/* <section id={styles.new}>
           <video muted loop autoPlay>
             <source src={Ferrari812Superfast} />
           </video>
@@ -157,13 +160,20 @@ const Home = () => {
             <button>Sport</button>
             <button>SUV</button>
           </div>
-        </section>
+        </section> */}
         <section
           id={styles.details}
           className={animating ? styles[animating] : ""}
         >
+          <div id={styles.info}>
+            <h1>MARCA</h1>
+            <h2>MODELO</h2>
+            <p>
+              Descrição muito top sobre o carro em destaque aparecendo na tela
+            </p>
+          </div>
           {banner.map((src, index) => (
-            <img src={src} alt={`Carro ${index}`} />
+            <img src={src} alt={`Carro ${index}`} id={styles.bgImg} />
           ))}
           <div id={styles.sliderBtns}>
             <button

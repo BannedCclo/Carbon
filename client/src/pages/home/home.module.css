@@ -297,7 +297,7 @@ body {
   scroll-snap-align: start;
 }
 
-#details > img {
+#bgImg {
   object-fit: cover;
   position: absolute;
   top: 0;
@@ -310,15 +310,15 @@ body {
   transition: 0.4s;
 }
 
-#details > img:nth-child(1) {
+#bgImg:nth-of-type(1) {
   opacity: 1;
 }
 
-#details.next > img:nth-child(2) {
+.next #bgImg:nth-of-type(2) {
   animation: bgFadeIn 0.5s linear forwards;
 }
 
-#details.prev > img:nth-last-child(3) {
+.prev #bgImg:nth-last-child(1) {
   animation: bgFadeIn 0.5s linear forwards;
 }
 
@@ -326,6 +326,26 @@ body {
   to {
     opacity: 1;
   }
+}
+
+#info {
+  position: absolute;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+}
+
+#info h1 {
+  font-size: 4em;
+  color: white;
+  line-height: 100%;
+}
+
+#info h2 {
+  font-size: 6em;
+  color: #0e0b25;
+  text-shadow: 0 0 2px white;
+  line-height: 100%;
 }
 
 #slider {
