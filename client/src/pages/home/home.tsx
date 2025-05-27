@@ -8,6 +8,10 @@ import sennaCard from "../../assets/img/sennaCard.png";
 import gt3Card from "../../assets/img/gt3Card.png";
 import huayraCard from "../../assets/img/huayraCard.png";
 import svjCard from "../../assets/img/svjCard.png";
+import gt3Float from "../../assets/img/gt3Float.png";
+import sennaFloat from "../../assets/img/sennaFloat.png";
+import huayraFloat from "../../assets/img/huayraFloat.png";
+import svjFloat from "../../assets/img/svjFloat.png";
 import sennaBg from "../../assets/img/sennaBg.jpg";
 import gt3Bg from "../../assets/img/gt3Bg.jpg";
 import huayraBg from "../../assets/img/huayraBg.jpg";
@@ -17,17 +21,64 @@ import { jwtDecode } from "jwt-decode";
 import { AnimatePresence, motion } from "framer-motion";
 
 const Home = () => {
+  const destaques = [
+    {
+      id: 1,
+      marca: "Porsche",
+      modelo: "911 GT3-RS",
+      desc: "Um 911 feito para as pistas. Leve, afiado e com alma de corrida. É a Porsche em sua forma mais pura.",
+      bg: gt3Bg,
+      card: gt3Card,
+    },
+    {
+      id: 2,
+      marca: "McLaren",
+      modelo: "Senna",
+      desc: "Criado para honrar uma lenda, o Senna é pista pura. Brutal, leve, sem frescura. Como o próprio Ayrton.",
+      bg: sennaBg,
+      card: sennaCard,
+    },
+    {
+      id: 3,
+      marca: "Pagani",
+      modelo: "Huayra BC",
+      desc: "Uma obra de arte sobre rodas, feita à mão em carbono e emoção. Mais raro que veloz, e ele é muito veloz.",
+      bg: huayraBg,
+      card: huayraCard,
+    },
+    {
+      id: 4,
+      marca: "Lamborghini",
+      modelo: "Aventador Svj ",
+      desc: "O V12 em sua forma mais selvagem. Aberto ao céu, barulhento por natureza e sem nenhum filtro.",
+      bg: svjBg,
+      card: svjCard,
+    },
+  ];
   const [active, setActive] = useState(false);
   const token = localStorage.getItem("token");
-  const [cards, setCards] = useState([gt3Card, sennaCard, huayraCard, svjCard]);
-  const [banner, setBanner] = useState([gt3Bg, sennaBg, huayraBg, svjBg]);
+  const [cards, setCards] = useState(
+    destaques.map((item) => {
+      return {
+        card: item.card,
+        id: item.id,
+      };
+    })
+  );
+  const [banner, setBanner] = useState(destaques.map((item) => item.bg));
   const [animating, setAnimating] = useState<"next" | "prev" | null>(null);
   const timeout = 7000;
   let autoRun = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
+    console.log(cards);
+  }, [cards]);
+
+  useEffect(() => {
     if (autoRun) {
-      clearTimeout(autoRun.current);
+      if (autoRun.current !== null) {
+        clearTimeout(autoRun.current);
+      }
       autoRun.current = setTimeout(() => {
         click("next");
       }, timeout);
@@ -113,7 +164,7 @@ const Home = () => {
             </>
           )}
         </AnimatePresence>
-        {/* <section id={styles.new}>
+        <section id={styles.new}>
           <video muted loop autoPlay>
             <source src={Ferrari812Superfast} />
           </video>
@@ -160,16 +211,28 @@ const Home = () => {
             <button>Sport</button>
             <button>SUV</button>
           </div>
-        </section> */}
+        </section>
         <section
           id={styles.details}
           className={animating ? styles[animating] : ""}
         >
           <div id={styles.info}>
-            <h1>MARCA</h1>
-            <h2>MODELO</h2>
+            <h1>
+              {animating != "prev"
+                ? `${destaques.find((item) => item.id === cards[0].id)?.marca}`
+                : `${destaques.find((item) => item.id === cards[1].id)?.marca}`}
+            </h1>
+            <h2>
+              {animating != "prev"
+                ? `${destaques.find((item) => item.id === cards[0].id)?.modelo}`
+                : `${
+                    destaques.find((item) => item.id === cards[1].id)?.modelo
+                  }`}
+            </h2>
             <p>
-              Descrição muito top sobre o carro em destaque aparecendo na tela
+              {animating != "prev"
+                ? `${destaques.find((item) => item.id === cards[0].id)?.desc}`
+                : `${destaques.find((item) => item.id === cards[1].id)?.desc}`}
             </p>
           </div>
           {banner.map((src, index) => (
@@ -192,9 +255,9 @@ const Home = () => {
             </button>
           </div>
           <div id={styles.slider}>
-            {cards.map((src, index) => (
+            {cards.map((item, index) => (
               <div key={index} className={styles.item}>
-                <img src={src} alt={`Carro ${index}`} />
+                <img src={item.card} alt={`Carro ${index}`} />
               </div>
             ))}
           </div>
