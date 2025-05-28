@@ -29,6 +29,7 @@ const Home = () => {
       desc: "Um 911 feito para as pistas. Leve, afiado e com alma de corrida. É a Porsche em sua forma mais pura.",
       bg: gt3Bg,
       card: gt3Card,
+      float: gt3Float,
     },
     {
       id: 2,
@@ -37,6 +38,7 @@ const Home = () => {
       desc: "Criado para honrar uma lenda, o Senna é pista pura. Brutal, leve, sem frescura. Como o próprio Ayrton.",
       bg: sennaBg,
       card: sennaCard,
+      float: sennaFloat,
     },
     {
       id: 3,
@@ -45,6 +47,7 @@ const Home = () => {
       desc: "Uma obra de arte sobre rodas, feita à mão em carbono e emoção. Mais raro que veloz, e ele é muito veloz.",
       bg: huayraBg,
       card: huayraCard,
+      float: huayraFloat,
     },
     {
       id: 4,
@@ -53,6 +56,7 @@ const Home = () => {
       desc: "O V12 em sua forma mais selvagem. Aberto ao céu, barulhento por natureza e sem nenhum filtro.",
       bg: svjBg,
       card: svjCard,
+      float: svjFloat,
     },
   ];
   const [active, setActive] = useState(false);
@@ -62,6 +66,7 @@ const Home = () => {
       return {
         card: item.card,
         id: item.id,
+        float: item.float,
       };
     })
   );
@@ -179,7 +184,7 @@ const Home = () => {
             </button>
             <img src={textLogoBigWhite} alt="" />
           </header>
-          <div id={styles.newTitle} className={styles.fadeOuter}>
+          <div id={styles.newTitle} className={styles.scrollOuter}>
             <h1>Ferrari 812 Superfast</h1>
             <button onClick={test}>
               Conheça
@@ -197,8 +202,8 @@ const Home = () => {
           </div>
         </section>
         <section id={styles.seeTypes}>
-          <h1 className={styles.fadeInner}>Conheça as nossas categorias:</h1>
-          <div id={styles.animatedCar} className={styles.fadeInner}>
+          <h1 className={styles.scrollInner}>Conheça as nossas categorias:</h1>
+          <div id={styles.animatedCar} className={styles.scrollInner}>
             <img src={carSvg} alt="" />
             <div id={styles.roadsContainer}>
               <div className={styles.road}></div>
@@ -206,16 +211,17 @@ const Home = () => {
             </div>
           </div>
 
-          <div id={styles.buttons} className={styles.fadeInner}>
+          <div id={styles.buttons} className={styles.scrollInner}>
             <button>Sedan</button>
             <button>Sport</button>
             <button>SUV</button>
           </div>
         </section>
         <section
-          id={styles.details}
+          id={styles.highlights}
           className={animating ? styles[animating] : ""}
         >
+          <h1>Destaques</h1>
           <div id={styles.info}>
             <h1>
               {animating != "prev"
@@ -234,6 +240,20 @@ const Home = () => {
                 ? `${destaques.find((item) => item.id === cards[0].id)?.desc}`
                 : `${destaques.find((item) => item.id === cards[1].id)?.desc}`}
             </p>
+          </div>
+          <div id={styles.floatCar}>
+            <img
+              src={
+                animating != "prev"
+                  ? `${
+                      destaques.find((item) => item.id === cards[0].id)?.float
+                    }`
+                  : `${
+                      destaques.find((item) => item.id === cards[1].id)?.float
+                    }`
+              }
+              alt=""
+            />
           </div>
           {banner.map((src, index) => (
             <img src={src} alt={`Carro ${index}`} id={styles.bgImg} />
