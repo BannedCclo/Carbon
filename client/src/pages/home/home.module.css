@@ -17,13 +17,6 @@ body {
   justify-content: center;
   align-items: center;
 }
-
-.placeholder {
-  width: 100%;
-  background-color: #0e0b25;
-  height: 100vh;
-}
-
 .overlay {
   position: fixed;
   inset: 0;
@@ -57,6 +50,11 @@ body {
   cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease;
   font-size: 2em;
+  transition: color 0.3s;
+}
+
+.toggleAsideBtn.dark {
+  color: #0e0b25;
 }
 
 .toggleAsideBtn.active {
@@ -661,4 +659,8 @@ body {
   to {
     filter: brightness(0.3);
   }
+}
+
+Footer {
+  scroll-snap-align: end;
 }

@@ -19,6 +19,7 @@ import svjBg from "../../assets/img/svjBg.jpg";
 import carSvg from "../../assets/svg/car.svg";
 import { jwtDecode } from "jwt-decode";
 import { AnimatePresence, motion } from "framer-motion";
+import Footer from "../../components/footer/footer";
 
 const Home = () => {
   const destaques = [
@@ -72,8 +73,34 @@ const Home = () => {
   );
   const [banner, setBanner] = useState(destaques.map((item) => item.bg));
   const [animating, setAnimating] = useState<"next" | "prev" | null>(null);
+  const [buttonDark, setBtnDark] = useState(false);
   const timeout = 7000;
   let autoRun = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    const whiteSection = document.querySelector(`#${styles.seeTypes}`);
+    if (!whiteSection) {
+      console.log("erro");
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setBtnDark(
+          entry.boundingClientRect.top < window.innerHeight &&
+            entry.intersectionRatio > 0
+        );
+      },
+      {
+        threshold: [0],
+        rootMargin: "20px 0px 0px 0px",
+      }
+    );
+
+    observer.observe(whiteSection);
+
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     console.log(cards);
@@ -177,7 +204,7 @@ const Home = () => {
             <button
               className={`${styles.toggleAsideBtn} ${
                 active ? styles.active : ""
-              }`}
+              } ${buttonDark ? styles.dark : ""}`}
               onClick={toggleAside}
             >
               <i className="fa-solid fa-bars" />
@@ -282,7 +309,7 @@ const Home = () => {
             ))}
           </div>
         </section>
-        <section className={styles.placeholder}></section>
+        <Footer />
         <Toaster toastOptions={{ style: { borderRadius: 0 } }} />
       </div>
     </>

@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import textLogoSmallBlack from "../../assets/img/textLogoSmallBlack.png";
 import styles from "./signup.module.css";
 import api from "../../services/api";
-import Loading from "../../components/loading/loading";
 
 const Signup = () => {
   const navigate = useNavigate();
