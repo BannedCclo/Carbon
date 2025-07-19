@@ -74,37 +74,33 @@ const Home = () => {
   const [banner, setBanner] = useState(destaques.map((item) => item.bg));
   const [animating, setAnimating] = useState<"next" | "prev" | null>(null);
   const [buttonDark, setBtnDark] = useState(false);
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
+  const sectionBrancaRef = useRef<HTMLElement | null>(null);
+
   const timeout = 7000;
   let autoRun = useRef<NodeJS.Timeout | null>(null);
 
-  useEffect(() => {
-    const whiteSection = document.querySelector(`#${styles.seeTypes}`);
-    if (!whiteSection) {
-      console.log("erro");
-      return;
+  function useHeaderContrastObserver() {
+    if (sectionBrancaRef.current != null) {
+      const observer = new IntersectionObserver((items) => {
+        console.log(items[0].boundingClientRect.y);
+        if (
+          items[0].boundingClientRect.y < 50 &&
+          items[0].boundingClientRect.y > -600
+        ) {
+          setBtnDark(true);
+        } else {
+          setBtnDark(false);
+        }
+      });
+
+      observer.observe(sectionBrancaRef.current);
+    } else {
+      console.log("n deu :(", sectionBrancaRef.current);
     }
+  }
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setBtnDark(
-          entry.boundingClientRect.top < window.innerHeight &&
-            entry.intersectionRatio > 0
-        );
-      },
-      {
-        threshold: [0],
-        rootMargin: "20px 0px 0px 0px",
-      }
-    );
-
-    observer.observe(whiteSection);
-
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    console.log(cards);
-  }, [cards]);
+  useHeaderContrastObserver();
 
   useEffect(() => {
     if (autoRun) {
@@ -202,9 +198,10 @@ const Home = () => {
           </video>
           <header>
             <button
+              ref={buttonRef}
               className={`${styles.toggleAsideBtn} ${
                 active ? styles.active : ""
-              } ${buttonDark ? styles.dark : ""}`}
+              }${buttonDark ? styles.dark : ""}`}
               onClick={toggleAside}
             >
               <i className="fa-solid fa-bars" />
@@ -228,7 +225,7 @@ const Home = () => {
             </button>
           </div>
         </section>
-        <section id={styles.seeTypes}>
+        <section id={styles.seeTypes} ref={sectionBrancaRef}>
           <h1 className={styles.scrollInner}>Conheça as nossas categorias:</h1>
           <div id={styles.animatedCar} className={styles.scrollInner}>
             <img src={carSvg} alt="" />
