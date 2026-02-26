@@ -1,67 +1,31 @@
-.bgWrapper {
+.pageContainer {
+    display: flex;
     height: 100vh;
-    max-height: 100vh;
     width: 100vw;
-    max-width: 100vw;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
     overflow: hidden;
-    position: relative;
-    background-color: #0e0b25;
+    background-image: url("../../assets/img/wallpaper3.png");
+    background-size: cover;
+    background-position: center;
 }
 
-.wallpaper {
-    filter: blur(5px) brightness(0.8);
-    width: 100%;
-    min-height: 100vh;
-    scale: 1.01;
-    object-fit: cover;
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 1;
-}
 
-.backBtn {
-    position: absolute;
-    top: 2rem;
-    left: 2rem;
-    color: white;
-    text-decoration: none;
-    font-size: 1.5rem;
-    font-weight: 300;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    transition: opacity 0.3s ease;
-    z-index: 5;
-}
-
-.backBtn:hover {
-    opacity: 0.7;
-}
-
-.logo {
-    height: 40px;
-}
-
-.container {
+.mainContent {
+    backdrop-filter: blur(5px) brightness(.6);
+    flex: 1;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    gap: 2rem;
-    width: 100%;
-    height: 100%;
-    z-index: 5;
+    justify-content: center;
+    padding: 40px;
+    box-sizing: border-box;
 }
 
 .profileCard {
     background-color: #ddd;
-    width: 100%;
-    max-width: 500px;
+    width: fit-content;
+    min-width: min(100%, 500px);
+    max-width: 95vw;
     padding: 0 10px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     display: flex;
@@ -79,78 +43,250 @@
 
 .profileHeader h2 {
     color: #000;
-    font-size: 2.5rem;
-    font-weight: 300;
-    margin: 0 0 15px 0;
-    text-align: center;
+}
+
+.dashboardContainer {
+    width: 100%;
+    max-width: 1200px;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 20px;
+}
+
+.profileTitle {
+    grid-column: 1 / span 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #ffffff;
+    background-color: #0e0b25;
+    font-size: 1.3rem;
+    padding: 30px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.267);
+}
+
+.leftColumn {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.rightColumn {
+    display: flex;
+    flex-direction: column;
+    gap: 20px
+}
+
+.userSummary {
+    background-color: white;
+    padding: 30px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.userSummary h2 {
+    margin: 0;
+    color: #333;
+    font-size: 1.8rem;
+    font-weight: 500;
+}
+
+.optionsList {
+    background-color: white;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .roleBadge {
-    background-color: #0e0b25;
+    display: inline-block;
+    background-color: #6c757d;
     color: white;
-    padding: 5px 15px;
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-top: 10px;
+    letter-spacing: 0.5px;
 }
 
-.infoSection {
+.infoGrid {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
-    margin-bottom: 40px;
-    padding: 0 40px;
+    gap: 30px;
+    width: 100%;
+}
+
+.sectionBlock {
+    background-color: white;
+    padding: 25px;
+    width: 100%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    box-sizing: border-box;
+}
+
+.sectionTitle {
+    color: #0e0b25;
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
 }
 
 .infoGroup {
     background-color: transparent;
     border-bottom: 1px solid #aaa;
-    padding-bottom: 10px;
+}
+
+
+.infoGroup p {
+    margin: 10px 0;
+    font-size: 1rem;
+    color: #333;
+    display: flex;
+    gap: 15px;
+    align-items: center;
 }
 
 .infoGroup p strong {
-    color: #666;
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-right: 10px;
     font-weight: 600;
+    color: #0e0b25;
+    flex-shrink: 0;
+    min-width: 150px;
 }
 
-.infoGroup p {
-    color: #000;
-    font-size: 1.2rem;
-    font-weight: 400;
-    margin: 0;
-    display: flex;
-    align-items: baseline;
+.infoGroup p span {
+    color: #555;
 }
 
-.actions {
-    display: flex;
-    padding: 0 40px 50px 40px;
-}
 
-.actions button {
-    flex: 1;
-    height: 3rem;
+.optionBtn,
+.optionBtnLink {
+    padding: 15px 20px;
+    background-color: transparent;
+    color: #333;
     border: none;
-    font-size: 1.2rem;
-    font-weight: 400;
+    font-size: 1.1rem;
     cursor: pointer;
-    transition: 0.5s;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    text-decoration: none;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.optionBtn:hover,
+.optionBtnLink:hover {
+    background-color: #f0f0f0;
+    color: #0e0b25;
+}
+
+
+.red,
+.red:hover {
+    color: #e74c3c;
+}
+
+.editModalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 10px;
+    z-index: 100;
 }
 
-.actions .logoutBtn {
+.editModal {
+    background-color: #ddd;
+    width: 90%;
+    max-width: 600px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    position: relative;
+}
+
+.editHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.editHeader h2 {
+    color: #000;
+    font-size: 2rem;
+    font-weight: 300;
+    margin: 0;
+}
+
+.closeBtn {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    cursor: pointer;
+    color: #333;
+}
+
+.editForm {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.inputGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.inputWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.inputWrapper label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #333;
+    padding-left: 2px;
+}
+
+.inputGrid input {
+    width: 100%;
+    height: 3rem;
+    border: none;
+    padding-left: 1rem;
+    box-sizing: border-box;
+}
+
+.saveBtn {
+    width: 100%;
+    height: 3rem;
+    border: none;
+    color: white;
     background-color: #0e0b25;
-    color: white;
+    transition: 0.3s;
+    font-size: 1.1rem;
+    cursor: pointer;
 }
 
-.actions .logoutBtn:hover {
-    background-color: #a00000;
-    color: white;
+.saveBtn:hover {
+    background-color: rgb(39, 41, 61);
+}
+
+.saveBtn:active {
+    scale: 0.98;
 }

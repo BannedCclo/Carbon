@@ -70,6 +70,50 @@ router.get("/id/:id", async (req, res) => {
   }
 });
 
+router.put("/id/:id", async (req, res) => {
+  const { id } = req.params;
+  const { nome, sobrenome, telefone, endereco } = req.body;
+
+  try {
+    const user = await User.findByPk(id);
+    if (!user) {
+      return res.status(404).json({ erro: "Usuário não encontrado" });
+    }
+
+    user.nome = nome || user.nome;
+    user.sobrenome = sobrenome || user.sobrenome;
+    user.telefone = telefone || user.telefone;
+    user.endereco = endereco || user.endereco;
+
+    await user.save();
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ erro: "Erro ao atualizar usuário", detalhes: err });
+  }
+});
+
+router.delete("/id/:id", async (req, res) => {
+  const { id } = req.params;
+  const { senha } = req.body;
+
+  try {
+    const user = await User.findByPk(id);
+
+    if (!user) {
+      return res.status(404).json({ erro: "Usuário não encontrado" });
+    }
+
+    if (user.senha !== senha) {
+      return res.status(401).json({ erro: "Senha incorreta" });
+    }
+
+    await user.destroy();
+    res.json({ mensagem: "Conta deletada com sucesso" });
+  } catch (err) {
+    res.status(500).json({ erro: "Erro ao deletar usuário", detalhes: err });
+  }
+});
+
 router.post("/", async (req, res) => {
   const { email } = req.body;
 
@@ -117,6 +161,111 @@ router.post("/resend-verification", async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ erro: "Erro ao reenviar código", detalhes: err });
+  }
+});
+
+router.post("/request-email-change", async (req, res) => {
+  const { id } = req.body;
+
+  try {
+    const user = await User.findByPk(id);
+
+    if (!user) {
+      return res.status(404).json({ erro: "Usuário não encontrado" });
+    }
+
+    const codigo = crypto.randomInt(100000, 999999).toString();
+    user.codigoVerificacao = codigo;
+    await user.save();
+
+    await enviarEmailVerificacao(user.email, codigo);
+
+    res.json({ mensagem: "Código de verificação enviado para o e-mail atual" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ erro: "Erro ao solicitar mudança de e-mail", detalhes: err });
+  }
+});
+
+router.post("/confirm-email-change", async (req, res) => {
+  const { id, code, newEmail } = req.body;
+
+  try {
+    const user = await User.findByPk(id);
+
+    if (!user) {
+      return res.status(404).json({ erro: "Usuário não encontrado" });
+    }
+
+    if (user.codigoVerificacao != code) {
+      return res.status(400).json({ erro: "Código de verificação inválido" });
+    }
+
+    const emailInUse = await User.findOne({ where: { email: newEmail } });
+    if (emailInUse && emailInUse.id !== user.id) {
+      return res.status(400).json({ erro: "O novo e-mail já está em uso" });
+    }
+
+    const novoCodigo = crypto.randomInt(100000, 999999).toString();
+    user.email = newEmail;
+    user.verificado = false;
+    user.codigoVerificacao = novoCodigo;
+    await user.save();
+
+    await enviarEmailVerificacao(newEmail, novoCodigo);
+
+    res.json({ mensagem: "E-mail alterado. Verifique o novo e-mail." });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ erro: "Erro ao confirmar mudança de e-mail", detalhes: err });
+  }
+});
+
+router.post("/request-password-change", async (req, res) => {
+  const { id } = req.body;
+
+  try {
+    const user = await User.findByPk(id);
+
+    if (!user) {
+      return res.status(404).json({ erro: "Usuário não encontrado" });
+    }
+
+    const codigo = crypto.randomInt(100000, 999999).toString();
+    user.codigoVerificacao = codigo;
+    await user.save();
+
+    await enviarEmailVerificacao(user.email, codigo);
+
+    res.json({ mensagem: "Código de verificação enviado para o seu e-mail" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ erro: "Erro ao solicitar mudança de senha", detalhes: err });
+  }
+});
+
+router.post("/confirm-password-change", async (req, res) => {
+  const { id, code, newPassword } = req.body;
+
+  try {
+    const user = await User.findByPk(id);
+
+    if (!user) {
+      return res.status(404).json({ erro: "Usuário não encontrado" });
+    }
+
+    if (user.codigoVerificacao != code) {
+      return res.status(400).json({ erro: "Código de verificação inválido" });
+    }
+
+    user.senha = newPassword;
+    user.codigoVerificacao = null;
+    await user.save();
+
+    res.json({ mensagem: "Senha alterada com sucesso!" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ erro: "Erro ao confirmar mudança de senha", detalhes: err });
   }
 });
 
