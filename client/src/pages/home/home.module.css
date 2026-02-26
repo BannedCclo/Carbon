@@ -17,6 +17,7 @@ body {
   justify-content: center;
   align-items: center;
 }
+
 .overlay {
   position: fixed;
   inset: 0;
@@ -34,6 +35,51 @@ body {
   z-index: 49;
   padding: 20px;
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+}
+
+.asideContent {
+  margin-top: 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.asideLink {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  text-decoration: none;
+  color: #0e0b25;
+  font-size: 1.5rem;
+  font-weight: 500;
+  padding: 15px;
+  transition: all 0.3s ease;
+}
+
+.asideLink:hover {
+  background-color: #f0f0f5;
+  transform: translateX(5px);
+}
+
+.asideLink i {
+  font-size: 1.2rem;
+  width: 25px;
+  text-align: center;
+}
+
+.logoutBtn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #a00000;
+  width: 100%;
+  font-family: inherit;
+}
+
+.logoutBtn:hover {
+  background-color: #ffeaea;
 }
 
 .toggleAsideBtn {
@@ -83,8 +129,6 @@ body {
 }
 
 #new video {
-  animation: blackout;
-  animation-timeline: view(0% 100%);
   position: absolute;
   top: 0;
   left: 0;
@@ -141,7 +185,7 @@ body {
   scale: 0.95;
 }
 
-#newTitle button > div {
+#newTitle button>div {
   display: flex;
   flex-direction: row;
   position: absolute;
@@ -153,19 +197,20 @@ body {
   transition: all 1s ease-in-out;
 }
 
-#newTitle button:hover > div {
+#newTitle button:hover>div {
   left: 0;
 }
 
-#newTitle button > div > div {
+#newTitle button>div>div {
   flex: 1;
   background-color: gold;
 }
 
-#newTitle button > div > div:nth-child(1) {
+#newTitle button>div>div:nth-child(1) {
   & img {
     width: 90%;
   }
+
   color: black;
   display: flex;
   align-items: center;
@@ -178,17 +223,17 @@ body {
   flex: 1;
 }
 
-#flag > div:nth-child(1) {
+#flag>div:nth-child(1) {
   flex: 1;
   background-color: green;
 }
 
-#flag > div:nth-child(2) {
+#flag>div:nth-child(2) {
   flex: 1;
   background-color: white;
 }
 
-#flag > div:nth-child(3) {
+#flag>div:nth-child(3) {
   flex: 1;
   background-color: red;
 }
@@ -212,7 +257,7 @@ body {
   z-index: 2;
 }
 
-#buttons > button {
+#buttons>button {
   width: 300px;
   height: 100px;
   color: #0e0b25;
@@ -224,27 +269,25 @@ body {
   position: relative;
 }
 
-#buttons > button::after {
+#buttons>button::after {
   content: "";
   width: 310px;
   height: 110px;
   top: -5px;
   left: -5px;
-  background: conic-gradient(
-    from 0deg,
-    #0e0b25 0%,
-    #0e0b25 var(--percentage),
-    transparent var(--percentage)
-  );
+  background: conic-gradient(from 0deg,
+      #0e0b25 0%,
+      #0e0b25 var(--percentage),
+      transparent var(--percentage));
   position: absolute;
   z-index: -1;
 }
 
-#buttons > button:hover::after {
+#buttons>button:hover::after {
   animation: borderAnimation 0.5s linear forwards;
 }
 
-#buttons > img {
+#buttons>img {
   width: 100%;
 }
 
@@ -293,8 +336,6 @@ body {
   overflow: clip;
   position: relative;
   scroll-snap-align: start;
-  animation: lightOn;
-  animation-timeline: view(40% 0);
 }
 
 @keyframes lightOn {
@@ -303,7 +344,7 @@ body {
   }
 }
 
-#highlights > h1 {
+#highlights>h1 {
   position: absolute;
   width: 100%;
   z-index: 3;
@@ -517,15 +558,7 @@ body {
   width: 100%;
 }
 
-.scrollInner {
-  animation: scrollIn;
-  animation-timeline: view(70% 0);
-}
 
-.scrollOuter {
-  animation: scrollOut forwards;
-  animation-timeline: view(20% 30%);
-}
 
 @property --percentage {
   syntax: "<percentage>";
@@ -539,6 +572,7 @@ body {
     scale: 1.2;
     opacity: 1;
   }
+
   to {
     transform: translateX(-220px);
     scale: 1;
@@ -552,6 +586,7 @@ body {
     scale: 1.2;
     filter: brightness(1);
   }
+
   to {
     transform: translateX(0);
     scale: 1;
@@ -565,6 +600,7 @@ body {
     scale: 1;
     filter: brightness(0.8);
   }
+
   to {
     transform: translateX(-200px);
     scale: 1.2;
@@ -578,6 +614,7 @@ body {
     scale: 1;
     opacity: 0;
   }
+
   to {
     transform: translateX(0);
     scale: 1.2;
@@ -589,6 +626,7 @@ body {
   from {
     transform: translateX(-220px);
   }
+
   to {
     transform: translateX(0);
   }
@@ -598,6 +636,7 @@ body {
   from {
     transform: translateX(0);
   }
+
   to {
     transform: translateX(-220px);
   }
@@ -607,34 +646,41 @@ body {
   0% {
     opacity: 1;
   }
+
   100% {
     opacity: 0;
     transform: translateY(-100px);
   }
 }
+
 @keyframes scrollIn {
   0% {
     opacity: 0;
     transform: translateY(100px);
     scale: 0.5;
   }
+
   100% {
     opacity: 1;
     scale: 1;
   }
 }
+
 @keyframes borderAnimation {
   0% {
     --percentage: 0%;
   }
+
   100% {
     --percentage: 100%;
   }
 }
+
 @keyframes roadMove {
   from {
     left: 100%;
   }
+
   to {
     left: -200%;
   }
@@ -644,9 +690,11 @@ body {
   0% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(3px);
   }
+
   100% {
     transform: translateY(0);
   }
@@ -656,6 +704,7 @@ body {
   from {
     filter: brightness(0.8);
   }
+
   to {
     filter: brightness(0.3);
   }
@@ -663,4 +712,26 @@ body {
 
 Footer {
   scroll-snap-align: end;
+}
+
+@supports (animation-timeline: view()) {
+  #new video {
+    animation: blackout;
+    animation-timeline: view(0% 100%);
+  }
+
+  #highlights {
+    animation: lightOn;
+    animation-timeline: view(40% 0);
+  }
+
+  .scrollInner {
+    animation: scrollIn;
+    animation-timeline: view(70% 0);
+  }
+
+  .scrollOuter {
+    animation: scrollOut forwards;
+    animation-timeline: view(20% 30%);
+  }
 }

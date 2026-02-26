@@ -57,6 +57,19 @@ router.get("/:email", async (req, res) => {
   }
 });
 
+router.get("/id/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const user = await User.findByPk(id);
+    if (!user) {
+      return res.status(404).json({ erro: "Usuário não encontrado" });
+    }
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ erro: "Erro ao buscar usuário", detalhes: err });
+  }
+});
+
 router.post("/", async (req, res) => {
   const { email } = req.body;
 

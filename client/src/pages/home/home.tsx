@@ -20,6 +20,7 @@ import carSvg from "../../assets/svg/car.svg";
 import { jwtDecode } from "jwt-decode";
 import { AnimatePresence, motion } from "framer-motion";
 import Footer from "../../components/footer/footer";
+import { AsideLink } from "../../components/asideLink/asideLink";
 
 const Home = () => {
   const destaques = [
@@ -84,22 +85,21 @@ const Home = () => {
       return;
     }
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setBtnDark(
-          entry.boundingClientRect.top < window.innerHeight &&
-            entry.intersectionRatio > 0
-        );
-      },
-      {
-        threshold: [0],
-        rootMargin: "20px 0px 0px 0px",
+    let animationFrameId: number;
+
+    const checkOverlap = () => {
+      const rect = whiteSection.getBoundingClientRect();
+      if (rect.top <= 80 && rect.bottom >= 0) {
+        setBtnDark(true);
+      } else {
+        setBtnDark(false);
       }
-    );
+      animationFrameId = requestAnimationFrame(checkOverlap);
+    };
 
-    observer.observe(whiteSection);
+    animationFrameId = requestAnimationFrame(checkOverlap);
 
-    return () => observer.disconnect();
+    return () => cancelAnimationFrame(animationFrameId);
   }, []);
 
   useEffect(() => {
@@ -165,6 +165,18 @@ const Home = () => {
     }
   }
 
+  let isAdmin = false;
+  if (token) {
+    try {
+      const decodedToken: any = jwtDecode(token);
+      if (decodedToken && decodedToken.tipo === "admin") {
+        isAdmin = true;
+      }
+    } catch (error) {
+      console.error("Invalid token:", error);
+    }
+  }
+
   function toggleAside() {
     setActive(!active);
   }
@@ -192,6 +204,27 @@ const Home = () => {
                 transition={{ duration: 0.4, ease: "easeInOut" }}
               >
                 <header></header>
+                <div className={styles.asideContent}>
+                  <AsideLink
+                    to={token ? "/profile" : "/login"}
+                    iconClass={token ? "fa-solid fa-user" : "fa-solid fa-right-to-bracket"}
+                    text={token ? "Perfil" : "Entrar"}
+                  />
+                  {isAdmin && (
+                    <AsideLink
+                      to="/admin"
+                      iconClass="fa-solid fa-lock"
+                      text="Admin"
+                    />
+                  )}
+                  {token && (
+                    <AsideLink
+                      iconClass="fa-solid fa-arrow-right-from-bracket"
+                      text="Sair"
+                      isLogout={true}
+                    />
+                  )}
+                </div>
               </motion.aside>
             </>
           )}
@@ -202,9 +235,8 @@ const Home = () => {
           </video>
           <header>
             <button
-              className={`${styles.toggleAsideBtn} ${
-                active ? styles.active : ""
-              } ${buttonDark ? styles.dark : ""}`}
+              className={`${styles.toggleAsideBtn} ${active ? styles.active : ""
+                } ${buttonDark ? styles.dark : ""}`}
               onClick={toggleAside}
             >
               <i className="fa-solid fa-bars" />
@@ -258,9 +290,8 @@ const Home = () => {
             <h2>
               {animating != "prev"
                 ? `${destaques.find((item) => item.id === cards[0].id)?.modelo}`
-                : `${
-                    destaques.find((item) => item.id === cards[1].id)?.modelo
-                  }`}
+                : `${destaques.find((item) => item.id === cards[1].id)?.modelo
+                }`}
             </h2>
             <p>
               {animating != "prev"
@@ -272,12 +303,10 @@ const Home = () => {
             <img
               src={
                 animating != "prev"
-                  ? `${
-                      destaques.find((item) => item.id === cards[0].id)?.float
-                    }`
-                  : `${
-                      destaques.find((item) => item.id === cards[1].id)?.float
-                    }`
+                  ? `${destaques.find((item) => item.id === cards[0].id)?.float
+                  }`
+                  : `${destaques.find((item) => item.id === cards[1].id)?.float
+                  }`
               }
               alt=""
             />

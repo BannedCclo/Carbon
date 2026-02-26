@@ -1,6 +1,6 @@
 import styles from "./search.module.css";
 
-const Home = () => {
+const Search = () => {
   return (
     <>
       <div className={styles.bgWrapper}></div>
@@ -8,4 +8,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Search;

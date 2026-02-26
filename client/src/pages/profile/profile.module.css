@@ -1,0 +1,156 @@
+.bgWrapper {
+    height: 100vh;
+    max-height: 100vh;
+    width: 100vw;
+    max-width: 100vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+    background-color: #0e0b25;
+}
+
+.wallpaper {
+    filter: blur(5px) brightness(0.8);
+    width: 100%;
+    min-height: 100vh;
+    scale: 1.01;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+.backBtn {
+    position: absolute;
+    top: 2rem;
+    left: 2rem;
+    color: white;
+    text-decoration: none;
+    font-size: 1.5rem;
+    font-weight: 300;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transition: opacity 0.3s ease;
+    z-index: 5;
+}
+
+.backBtn:hover {
+    opacity: 0.7;
+}
+
+.logo {
+    height: 40px;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    width: 100%;
+    height: 100%;
+    z-index: 5;
+}
+
+.profileCard {
+    background-color: #ddd;
+    width: 100%;
+    max-width: 500px;
+    padding: 0 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+.profileHeader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 50px;
+    margin-bottom: 30px;
+}
+
+.profileHeader h2 {
+    color: #000;
+    font-size: 2.5rem;
+    font-weight: 300;
+    margin: 0 0 15px 0;
+    text-align: center;
+}
+
+.roleBadge {
+    background-color: #0e0b25;
+    color: white;
+    padding: 5px 15px;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.infoSection {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-bottom: 40px;
+    padding: 0 40px;
+}
+
+.infoGroup {
+    background-color: transparent;
+    border-bottom: 1px solid #aaa;
+    padding-bottom: 10px;
+}
+
+.infoGroup p strong {
+    color: #666;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-right: 10px;
+    font-weight: 600;
+}
+
+.infoGroup p {
+    color: #000;
+    font-size: 1.2rem;
+    font-weight: 400;
+    margin: 0;
+    display: flex;
+    align-items: baseline;
+}
+
+.actions {
+    display: flex;
+    padding: 0 40px 50px 40px;
+}
+
+.actions button {
+    flex: 1;
+    height: 3rem;
+    border: none;
+    font-size: 1.2rem;
+    font-weight: 400;
+    cursor: pointer;
+    transition: 0.5s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.actions .logoutBtn {
+    background-color: #0e0b25;
+    color: white;
+}
+
+.actions .logoutBtn:hover {
+    background-color: #a00000;
+    color: white;
+}

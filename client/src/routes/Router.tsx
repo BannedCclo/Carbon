@@ -4,6 +4,7 @@ import Login from "../pages/login/login";
 import Signup from "../pages/signup/signup";
 import Verify from "../pages/verify/verify";
 import Home from "../pages/home/home";
+import Profile from "../pages/profile/profile";
 
 const AppRouter = () => {
   return (
@@ -14,6 +15,7 @@ const AppRouter = () => {
         <Route path="/signup" element={<Signup />} />
         <Route path="/verify" element={<Verify />} />
         <Route path="/search" element={<Search />} />
+        <Route path="/profile" element={<Profile />} />
       </Routes>
     </BrowserRouter>
   );

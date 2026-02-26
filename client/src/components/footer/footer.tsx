@@ -1,5 +1,6 @@
 import styles from "./footer.module.css";
 import textLogoBigWhite from "../../assets/img/textLogoBigWhite.png";
+import Signature from "../signature/signature";
 
 const Footer = () => {
   return (
@@ -14,7 +15,10 @@ const Footer = () => {
             <button>Visite a loja</button>
           </section>
           <section>
-            <p>Designed and developed by Marcelo Guimarães</p>
+            <div className={styles.signatureContainer}>
+              <p>Designed and developed by Marcelo Guimarães</p>
+              <Signature />
+            </div>
             <ul>
               <li>
                 <i className="fa-brands fa-instagram"></i> Instagram:{" "}
@@ -49,7 +53,7 @@ const Footer = () => {
                   href="https://www.linkedin.com/in/marcelo-santos-34aa98264/"
                   target="_blank"
                 >
-                  Marcelo Santos
+                  Marcelo Guimarães
                 </a>
               </li>
               <li>
