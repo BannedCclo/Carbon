@@ -4,6 +4,8 @@ import { jwtDecode } from "jwt-decode";
 import toast, { Toaster } from "react-hot-toast";
 import styles from "./profile.module.css";
 import api from "../../services/api";
+import { useMediaLoader } from "../../hooks/useMediaLoader";
+import wallpaper3 from "../../assets/img/wallpaper3.png";
 
 interface UserProfile {
     id: number;
@@ -261,10 +263,8 @@ const Profile = () => {
 
         try {
             const decoded: any = jwtDecode(token);
-            // Initially set user with decoded data so the page renders fast
             setUser(decoded);
 
-            // Fetch full profile data based on decoded token ID
             api.get(`/users/id/${decoded.id}`)
                 .then(response => {
                     setUser(response.data);
@@ -279,7 +279,9 @@ const Profile = () => {
         }
     }, [navigate]);
 
-    if (!user) return null;
+    const isMediaLoaded = useMediaLoader([wallpaper3]);
+
+    if (!user || !isMediaLoaded) return null;
 
     return (
         <div className={styles.pageContainer}>

@@ -1,13 +1,16 @@
 import { useNavigate } from "react-router-dom";
 import styles from "./login.module.css";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import onlyTextWhite from "../../assets/img/onlyTextWhite.png";
 import wallpaper from "../../assets/img/wallpaper2.png";
 import api from "../../services/api";
 import toast, { Toaster } from "react-hot-toast";
+import { useMediaLoader } from "../../hooks/useMediaLoader";
 
 const Login = () => {
   const navigate = useNavigate();
+
+  const isMediaLoaded = useMediaLoader([wallpaper, onlyTextWhite]);
 
   const [seePassword, setSeePassword] = useState(false);
   const [email, setEmail] = useState("");
@@ -37,6 +40,9 @@ const Login = () => {
       toast.error("Preencha todos os campos");
     }
   }
+
+  if (!isMediaLoaded) return null;
+
   return (
     <>
       <div className={styles.bgWrapper}>

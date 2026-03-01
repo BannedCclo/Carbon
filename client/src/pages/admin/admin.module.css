@@ -1,0 +1,125 @@
+.adminContainer {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    background-color: #f4f6f8;
+    font-family: "Outfit", "Inter", sans-serif;
+    overflow: hidden;
+}
+
+/* Sidebar Styles */
+.sidebar {
+    width: 280px;
+    background-color: #1a1e23;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+}
+
+.sidebarHeader {
+    padding: 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sidebarHeader h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: #f8fafc;
+}
+
+.sidebarNav {
+    flex-grow: 1;
+    padding: 20px 0;
+}
+
+.sidebarNav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebarNav li {
+    padding: 16px 24px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    font-weight: 500;
+    font-size: 1.05rem;
+    color: #cbd5e1;
+}
+
+.sidebarNav li:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: #fff;
+}
+
+.sidebarNav li.active {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-left: 4px solid #3b82f6;
+    padding-left: 20px;
+    color: #fff;
+}
+
+/* Main Content Styles */
+.mainContent {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.topbar {
+    background-color: #fff;
+    padding: 20px 32px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    z-index: 5;
+}
+
+.topbar h1 {
+    margin: 0;
+    font-size: 1.75rem;
+    color: #1e293b;
+    font-weight: 600;
+}
+
+.contentArea {
+    padding: 32px;
+}
+
+/* Placeholder Card */
+.card {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02), 0 10px 15px rgba(0, 0, 0, 0.03);
+    border: 1px solid #f1f5f9;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.05), 0 20px 25px rgba(0, 0, 0, 0.04);
+}
+
+.card h3 {
+    margin-top: 0;
+    color: #0f172a;
+    font-size: 1.35rem;
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+.card p {
+    color: #64748b;
+    line-height: 1.6;
+    margin: 0;
+    font-size: 1rem;
+}

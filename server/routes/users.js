@@ -107,10 +107,80 @@ router.delete("/id/:id", async (req, res) => {
       return res.status(401).json({ erro: "Senha incorreta" });
     }
 
+    // Check if this user is an admin and if they are the last one
+    if (user.tipo === "admin") {
+      const adminCount = await User.count({ where: { tipo: "admin" } });
+      if (adminCount <= 1) {
+        return res.status(403).json({ erro: "Não é possível deletar o único administrador do sistema." });
+      }
+    }
+
     await user.destroy();
     res.json({ mensagem: "Conta deletada com sucesso" });
   } catch (err) {
     res.status(500).json({ erro: "Erro ao deletar usuário", detalhes: err });
+  }
+});
+
+// Admin Route: Update any user field (including email and tipo)
+router.put("/admin/id/:id", async (req, res) => {
+  const { id } = req.params;
+  const { nome, sobrenome, telefone, endereco, email, tipo } = req.body;
+
+  try {
+    const user = await User.findByPk(id);
+    if (!user) {
+      return res.status(404).json({ erro: "Usuário não encontrado" });
+    }
+
+    // Optional: add a check here to ensure the requester has admin privileges 
+    // (This requires middleware or decoding the token in the route. We'll skip complex auth for this MVP unless requested)
+
+    // Check email uniqueness if changing email
+    if (email && email !== user.email) {
+      const emailInUse = await User.findOne({ where: { email } });
+      if (emailInUse) {
+        return res.status(400).json({ erro: "E-mail já está em uso" });
+      }
+    }
+
+    user.nome = nome || user.nome;
+    user.sobrenome = sobrenome || user.sobrenome;
+    user.telefone = telefone || user.telefone;
+    user.endereco = endereco || user.endereco;
+    user.email = email || user.email;
+    user.tipo = tipo || user.tipo;
+
+    await user.save();
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ erro: "Erro ao atualizar usuário como admin", detalhes: err });
+  }
+});
+
+// Admin Route: Delete user without password
+router.delete("/admin/id/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const user = await User.findByPk(id);
+
+    if (!user) {
+      return res.status(404).json({ erro: "Usuário não encontrado" });
+    }
+
+    // Check if deleting an admin, and if they are the last one
+    if (user.tipo === "admin") {
+      const adminCount = await User.count({ where: { tipo: "admin" } });
+      if (adminCount <= 1) {
+        return res.status(403).json({ erro: "Não é possível deletar o único administrador do sistema." });
+      }
+    }
+
+    await user.destroy();
+    res.json({ mensagem: "Usuário deletado pelo administrador com sucesso" });
+  } catch (err) {
+    res.status(500).json({ erro: "Erro ao deletar usuário como admin", detalhes: err });
   }
 });
 

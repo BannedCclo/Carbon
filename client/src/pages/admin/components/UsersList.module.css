@@ -1,0 +1,166 @@
+.usersListContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.usersListContainer h2 {
+    font-size: 1.5rem;
+    color: #1e293b;
+    margin: 0;
+}
+
+.headerRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 8px;
+}
+
+.searchContainer {
+    display: flex;
+    align-items: center;
+    background-color: white;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 0 16px;
+    width: 100%;
+    max-width: 400px;
+    transition: all 0.2s ease;
+}
+
+.searchContainer:focus-within {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.searchIcon {
+    color: #94a3b8;
+    margin-right: 10px;
+}
+
+.searchInput {
+    flex: 1;
+    border: none;
+    padding: 12px 0;
+    font-size: 1rem;
+    color: #1e293b;
+    background: transparent;
+    outline: none;
+}
+
+.searchInput::placeholder {
+    color: #94a3b8;
+}
+
+.filterBubble {
+    display: flex;
+    align-items: center;
+    background-color: #e0e7ff;
+    color: #4338ca;
+    padding: 4px 10px;
+    border-radius: 9999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-right: 8px;
+    gap: 6px;
+    white-space: nowrap;
+}
+
+.clearBubbleBtn {
+    background: none;
+    border: none;
+    color: #4338ca;
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.clearBubbleBtn:hover {
+    color: #312e81;
+}
+
+.noResults {
+    color: #64748b;
+    font-size: 1.1rem;
+    text-align: center;
+    grid-column: 1 / -1;
+    padding: 40px;
+    background: white;
+    border-radius: 12px;
+    border: 1px dashed #cbd5e1;
+}
+
+.usersGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+}
+
+.userCard {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e2e8f0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.userCard:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    border-color: #cbd5e1;
+}
+
+.cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.userTypeBadge {
+    background-color: #f1f5f9;
+    color: #64748b;
+    padding: 4px 12px;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.adminBadge {
+    background-color: #eff6ff;
+    color: #2563eb;
+}
+
+.userId {
+    font-size: 0.85rem;
+    color: #94a3b8;
+    font-weight: 500;
+}
+
+.userName {
+    margin: 0;
+    font-size: 1.25rem;
+    color: #0f172a;
+    font-weight: 600;
+}
+
+.userEmail {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #64748b;
+    word-break: break-all;
+}

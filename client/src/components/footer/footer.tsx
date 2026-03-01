@@ -1,6 +1,7 @@
 import styles from "./footer.module.css";
 import textLogoBigWhite from "../../assets/img/textLogoBigWhite.png";
 import Signature from "../signature/signature";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -12,7 +13,9 @@ const Footer = () => {
         <main>
           <section>
             <h1>Quer conhecer mais modelos?</h1>
-            <button>Visite a loja</button>
+            <Link to="/shop">
+              <button>Visite a loja</button>
+            </Link>
           </section>
           <section>
             <div className={styles.signatureContainer}>

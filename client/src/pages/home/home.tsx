@@ -1,6 +1,6 @@
 import styles from "./home.module.css";
 import { useState, useEffect, useRef } from "react";
-import toast, { Toaster } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 import Ferrari812Superfast from "../../assets/video/Ferrari 812 Superfast.mp4";
 import textLogoBigWhite from "../../assets/img/textLogoBigWhite.png";
 import FerrariLogo from "../../assets/svg/ferrarilogo.svg";
@@ -21,6 +21,7 @@ import { jwtDecode } from "jwt-decode";
 import { AnimatePresence, motion } from "framer-motion";
 import Footer from "../../components/footer/footer";
 import { AsideLink } from "../../components/asideLink/asideLink";
+import { useMediaLoader } from "../../hooks/useMediaLoader";
 
 const Home = () => {
   const destaques = [
@@ -70,7 +71,7 @@ const Home = () => {
         id: item.id,
         float: item.float,
       };
-    })
+    }),
   );
   const [banner, setBanner] = useState(destaques.map((item) => item.bg));
   const [animating, setAnimating] = useState<"next" | "prev" | null>(null);
@@ -181,6 +182,19 @@ const Home = () => {
     setActive(!active);
   }
 
+  const allImages = [
+    ...destaques.map((d) => d.bg),
+    ...destaques.map((d) => d.card),
+    ...destaques.map((d) => d.float),
+    textLogoBigWhite,
+    FerrariLogo,
+    carSvg,
+  ];
+
+  const isMediaLoaded = useMediaLoader(allImages, [Ferrari812Superfast]);
+
+  if (!isMediaLoaded) return null;
+
   return (
     <>
       <div className={styles.bgWrapper}>
@@ -207,8 +221,17 @@ const Home = () => {
                 <div className={styles.asideContent}>
                   <AsideLink
                     to={token ? "/profile" : "/login"}
-                    iconClass={token ? "fa-solid fa-user" : "fa-solid fa-right-to-bracket"}
+                    iconClass={
+                      token
+                        ? "fa-solid fa-user"
+                        : "fa-solid fa-right-to-bracket"
+                    }
                     text={token ? "Perfil" : "Entrar"}
+                  />
+                  <AsideLink
+                    to="/shop"
+                    iconClass="fa-solid fa-shop"
+                    text="Loja"
                   />
                   {isAdmin && (
                     <AsideLink
@@ -235,8 +258,9 @@ const Home = () => {
           </video>
           <header>
             <button
-              className={`${styles.toggleAsideBtn} ${active ? styles.active : ""
-                } ${buttonDark ? styles.dark : ""}`}
+              className={`${styles.toggleAsideBtn} ${
+                active ? styles.active : ""
+              } ${buttonDark ? styles.dark : ""}`}
               onClick={toggleAside}
             >
               <i className="fa-solid fa-bars" />
@@ -290,8 +314,9 @@ const Home = () => {
             <h2>
               {animating != "prev"
                 ? `${destaques.find((item) => item.id === cards[0].id)?.modelo}`
-                : `${destaques.find((item) => item.id === cards[1].id)?.modelo
-                }`}
+                : `${
+                    destaques.find((item) => item.id === cards[1].id)?.modelo
+                  }`}
             </h2>
             <p>
               {animating != "prev"
@@ -303,10 +328,12 @@ const Home = () => {
             <img
               src={
                 animating != "prev"
-                  ? `${destaques.find((item) => item.id === cards[0].id)?.float
-                  }`
-                  : `${destaques.find((item) => item.id === cards[1].id)?.float
-                  }`
+                  ? `${
+                      destaques.find((item) => item.id === cards[0].id)?.float
+                    }`
+                  : `${
+                      destaques.find((item) => item.id === cards[1].id)?.float
+                    }`
               }
               alt=""
             />
