@@ -8,6 +8,8 @@ import Profile from "../pages/profile/profile";
 import Admin from "../pages/admin/admin";
 import Shop from "../pages/shop/shop";
 import CarDetails from "../pages/carDetails/CarDetails";
+import ResetPassword from "../pages/resetPassword/resetPassword";
+import Ball from "../pages/ball/ball";
 
 const AppRouter = () => {
   return (
@@ -22,6 +24,8 @@ const AppRouter = () => {
         <Route path="/car/:id" element={<CarDetails />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/admin" element={<Admin />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/ball" element={<Ball />} />
       </Routes>
     </BrowserRouter>
   );

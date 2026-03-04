@@ -22,8 +22,10 @@ import { AnimatePresence, motion } from "framer-motion";
 import Footer from "../../components/footer/footer";
 import { AsideLink } from "../../components/asideLink/asideLink";
 import { useMediaLoader } from "../../hooks/useMediaLoader";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
+  const navigate = useNavigate();
   const destaques = [
     {
       id: 1,
@@ -295,9 +297,13 @@ const Home = () => {
           </div>
 
           <div id={styles.buttons} className={styles.scrollInner}>
-            <button>Sedan</button>
-            <button>Sport</button>
-            <button>SUV</button>
+            <button onClick={() => navigate("/shop?categoria=sedan")}>
+              Sedan
+            </button>
+            <button onClick={() => navigate("/shop?categoria=sport")}>
+              Sport
+            </button>
+            <button onClick={() => navigate("/shop?categoria=suv")}>SUV</button>
           </div>
         </section>
         <section

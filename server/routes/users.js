@@ -3,7 +3,8 @@ const router = express.Router();
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
-const enviarEmailVerificacao = require("../utils/enviarEmail");
+const bcrypt = require("bcryptjs");
+const { enviarEmailVerificacao, enviarEmailResetSenha } = require("../utils/enviarEmail");
 require("dotenv").config();
 
 const jwtPass = process.env.JWT_SECRET;
@@ -14,7 +15,12 @@ router.post("/login", async (req, res) => {
   try {
     const user = await User.findOne({ where: { email } });
 
-    if (!user || user.senha !== senha) {
+    if (!user) {
+      return res.status(401).json({ erro: "Credenciais inválidas" });
+    }
+
+    const isMatch = await bcrypt.compare(senha, user.senha);
+    if (!isMatch) {
       return res.status(401).json({ erro: "Credenciais inválidas" });
     }
 
@@ -103,7 +109,8 @@ router.delete("/id/:id", async (req, res) => {
       return res.status(404).json({ erro: "Usuário não encontrado" });
     }
 
-    if (user.senha !== senha) {
+    const isMatch = await bcrypt.compare(senha, user.senha);
+    if (!isMatch) {
       return res.status(401).json({ erro: "Senha incorreta" });
     }
 
@@ -185,13 +192,17 @@ router.delete("/admin/id/:id", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  const { email } = req.body;
+  const { email, senha } = req.body;
 
   try {
+    const salt = await bcrypt.genSalt(10);
+    const hashedSenha = await bcrypt.hash(senha, salt);
+
     const codigo = crypto.randomInt(100000, 999999).toString();
 
     const novoUser = await User.create({
       ...req.body,
+      senha: hashedSenha,
       verificado: false,
       codigoVerificacao: codigo,
     });
@@ -301,13 +312,14 @@ router.post("/request-password-change", async (req, res) => {
       return res.status(404).json({ erro: "Usuário não encontrado" });
     }
 
-    const codigo = crypto.randomInt(100000, 999999).toString();
+    const codigo = crypto.randomBytes(32).toString("hex");
     user.codigoVerificacao = codigo;
     await user.save();
 
-    await enviarEmailVerificacao(user.email, codigo);
+    const resetLink = `http://localhost:5173/reset-password?token=${codigo}&id=${user.id}`;
+    await enviarEmailResetSenha(user.email, resetLink);
 
-    res.json({ mensagem: "Código de verificação enviado para o seu e-mail" });
+    res.json({ mensagem: "Link de redefinição enviado para o seu e-mail" });
   } catch (err) {
     console.error(err);
     res.status(500).json({ erro: "Erro ao solicitar mudança de senha", detalhes: err });
@@ -328,7 +340,10 @@ router.post("/confirm-password-change", async (req, res) => {
       return res.status(400).json({ erro: "Código de verificação inválido" });
     }
 
-    user.senha = newPassword;
+    const salt = await bcrypt.genSalt(10);
+    const hashedSenha = await bcrypt.hash(newPassword, salt);
+
+    user.senha = hashedSenha;
     user.codigoVerificacao = null;
     await user.save();
 

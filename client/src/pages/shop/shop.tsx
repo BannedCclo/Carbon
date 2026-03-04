@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styles from "./shop.module.css";
 import { useMediaLoader } from "../../hooks/useMediaLoader";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 
 type Carro = {
   id: number;
@@ -21,12 +21,14 @@ type Carro = {
 
 const Shop: React.FC = () => {
   const isLoaded = useMediaLoader();
+  const [searchParams] = useSearchParams();
   const [carros, setCarros] = useState<Carro[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Filter States
   const [searchTerm, setSearchTerm] = useState("");
-  const [categoria, setCategoria] = useState("todos");
+  const initialCategoria = searchParams.get("categoria") || "todos";
+  const [categoria, setCategoria] = useState(initialCategoria);
   const [precoMin, setPrecoMin] = useState<string>("");
   const [precoMax, setPrecoMax] = useState<string>("");
   const [anoMin, setAnoMin] = useState<string>("");
