@@ -1,9 +1,6 @@
 .modalOverlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
+    inset: 0;
     background-color: rgba(15, 23, 42, 0.85);
     backdrop-filter: blur(8px);
     display: flex;
@@ -22,12 +19,20 @@
     background: #0e0b25;
     border: 1px solid #334155;
     padding: 35px;
-    width: 90%;
-    max-width: 500px;
+    width: min(500px, 92vw);
+    max-height: 90dvh;
+    overflow-y: auto;
     position: relative;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
     animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     color: #e2e8f0;
+    box-sizing: border-box;
+}
+
+@media (max-width: 480px) {
+    .modalContent {
+        padding: 24px;
+    }
 }
 
 @keyframes slideUp {

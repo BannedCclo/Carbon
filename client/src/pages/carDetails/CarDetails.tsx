@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import styles from "./CarDetails.module.css";
-import { useMediaLoader } from "../../hooks/useMediaLoader";
 import ContactModal from "./components/ContactModal";
+import { TopBar } from "../../components/nav/TopBar";
 
 type Carro = {
   id: number;
@@ -22,7 +22,6 @@ type Carro = {
 
 const CarDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const isLoaded = useMediaLoader();
   const [carro, setCarro] = useState<Carro | null>(null);
   const [loading, setLoading] = useState(true);
   const [mainImageIndex, setMainImageIndex] = useState(0);
@@ -54,8 +53,6 @@ const CarDetails: React.FC = () => {
     }).format(value);
   };
 
-  if (!isLoaded) return null;
-
   if (loading) {
     return (
       <div className={styles.carDetailsContainer}>
@@ -81,6 +78,7 @@ const CarDetails: React.FC = () => {
 
   return (
     <div className={styles.carDetailsContainer}>
+      <TopBar />
       <header className={styles.detailsHeader}>
         <div className={styles.headerContent}>
           <Link to="/shop" className={styles.backButtonAction}>
@@ -125,7 +123,11 @@ const CarDetails: React.FC = () => {
                   className={`${styles.thumbnailWrapper} ${idx === mainImageIndex ? styles.activeThumbnail : ""}`}
                   onClick={() => setMainImageIndex(idx)}
                 >
-                  <img src={img.imagem_base64} alt={`Thumbnail ${idx + 1}`} />
+                  <img
+                    src={img.imagem_base64}
+                    alt={`Thumbnail ${idx + 1}`}
+                    loading="lazy"
+                  />
                 </div>
               ))}
             </div>

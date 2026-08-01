@@ -104,6 +104,7 @@ const EstoqueList: React.FC = () => {
                       src={carro.imagens[0].imagem_base64}
                       alt={`${carro.marca} ${carro.modelo}`}
                       className={styles.carImage}
+                      loading="lazy"
                     />
                   ) : (
                     <div className={styles.noImagePlaceholder}>

@@ -1,0 +1,74 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background-color: #0e0b25;
+  z-index: 998;
+}
+
+.panel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100dvh;
+  background-color: #fff;
+  z-index: 999;
+  padding: 20px;
+  padding-top: max(20px, env(safe-area-inset-top));
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+/* Acima de 768px volta a ser um drawer lateral, como no design original. */
+@media (min-width: 769px) {
+  .panel {
+    width: 300px;
+  }
+}
+
+.panelContent {
+  margin-top: 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.asideLink {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  text-decoration: none;
+  color: #0e0b25;
+  font-size: 1.3rem;
+  font-weight: 500;
+  padding: 15px;
+  min-height: var(--tap);
+  transition: all 0.3s ease;
+}
+
+.asideLink:hover {
+  background-color: #f0f0f5;
+  transform: translateX(5px);
+}
+
+.asideLink i {
+  font-size: 1.2rem;
+  width: 25px;
+  text-align: center;
+}
+
+.logoutBtn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #a00000;
+  width: 100%;
+  font-family: inherit;
+  text-align: left;
+}
+
+.logoutBtn:hover {
+  background-color: #ffeaea;
+}

@@ -25,7 +25,7 @@ const Verify = () => {
         const user = await api.get(`/users/${encodeURIComponent(email)}`, {});
         console.log(user.data);
         if (user.data.verificado == true) {
-          toast.error((t) => (
+          toast.error(() => (
             <span>
               Essa conta já está verificada
               <button

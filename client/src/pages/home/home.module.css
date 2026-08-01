@@ -1,85 +1,30 @@
 html,
 body {
-  scroll-snap-type: y proximity;
   scroll-behavior: smooth;
   overflow-y: scroll;
   height: 100%;
 }
 
+/* O scroll-snap pressupõe que cada seção caiba em uma tela. No mobile as
+   seções empilham e passam de 100vh, então o snap prende o scroll no meio
+   do conteúdo. Só vale a partir do layout desktop. */
+@media (min-width: 1280px) {
+
+  html,
+  body {
+    scroll-snap-type: y proximity;
+  }
+}
+
 .bgWrapper {
   background-color: #0e0b25;
   position: relative;
-  min-height: 100vh;
-  width: 100vw;
-  max-width: 100vw;
+  min-height: 100dvh;
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-}
-
-.overlay {
-  position: fixed;
-  inset: 0;
-  background-color: #0e0b25;
-  z-index: 5;
-}
-
-.aside {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 300px;
-  height: 100vh;
-  background-color: #fff;
-  z-index: 49;
-  padding: 20px;
-  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.4);
-  display: flex;
-  flex-direction: column;
-}
-
-.asideContent {
-  margin-top: 100px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.asideLink {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  text-decoration: none;
-  color: #0e0b25;
-  font-size: 1.5rem;
-  font-weight: 500;
-  padding: 15px;
-  transition: all 0.3s ease;
-}
-
-.asideLink:hover {
-  background-color: #f0f0f5;
-  transform: translateX(5px);
-}
-
-.asideLink i {
-  font-size: 1.2rem;
-  width: 25px;
-  text-align: center;
-}
-
-.logoutBtn {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  color: #a00000;
-  width: 100%;
-  font-family: inherit;
-}
-
-.logoutBtn:hover {
-  background-color: #ffeaea;
 }
 
 .toggleAsideBtn {
@@ -87,14 +32,14 @@ body {
   top: 20px;
   left: 20px;
   z-index: 1000;
-  font-size: 24px;
+  min-width: var(--tap);
+  min-height: var(--tap);
   padding: 8px;
   background-color: transparent;
   color: white;
   border: none;
   border-radius: 50%;
   cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease;
   font-size: 2em;
   transition: color 0.3s;
 }
@@ -107,63 +52,69 @@ body {
   color: #0e0b25;
 }
 
-.bgWrapper aside header {
+#new {
+  background-color: #0e0b25;
+  position: relative;
+  min-height: 100dvh;
+  scroll-snap-align: end;
+  overflow: clip;
+  width: 100%;
+}
+
+#new .heroMedia {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  height: 7vh;
-  padding: 3vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-#new {
-  background-color: #0e0b25;
-  position: relative;
-  min-height: 100vh;
-  scroll-snap-align: end;
-  overflow: clip;
-  width: 100vw;
-}
-
-#new video {
-  position: absolute;
-  top: 0;
-  left: 0;
+  height: 100%;
   min-width: 100%;
+  object-fit: cover;
   filter: brightness(0.8);
 }
 
+/* height + padding em box-sizing: border-box (reset global) esmagava o
+   conteúdo do header; a altura passa a ser mínima e a logo ganha tamanho
+   próprio. */
 #new header {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  height: 7vh;
-  padding: 3vh;
+  min-height: 7vh;
+  padding: 3vh var(--gutter);
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 #new header img {
-  height: 100%;
+  height: clamp(22px, 5vh, 46px);
+  width: auto;
 }
 
 #newTitle {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
   position: absolute;
   bottom: 7vh;
-  left: 7vh;
-  gap: 50px;
+  left: var(--gutter);
+  right: var(--gutter);
+  gap: clamp(12px, 3vw, 50px);
+}
+
+/* A partir de tablet o título e o botão voltam a dividir a linha; as
+   margens laterais só viram o recuo original de 7vh no desktop. */
+@media (min-width: 768px) {
+  #newTitle {
+    flex-direction: row;
+    align-items: center;
+  }
 }
 
 #newTitle h1 {
   color: #fff;
-  font-size: 4rem;
+  font-size: clamp(2rem, 9vw, 4rem);
   font-weight: 300;
 }
 
@@ -172,7 +123,7 @@ body {
   color: #fff;
   background-color: transparent;
   border: 3px solid #fff;
-  font-size: 3em;
+  font-size: clamp(1.5rem, 6vw, 3em);
   padding: 1rem;
   font-weight: 300;
   cursor: pointer;
@@ -199,6 +150,18 @@ body {
 
 #newTitle button:hover>div {
   left: 0;
+}
+
+/* Em telas de toque não existe :hover, então a revelação só dispara no
+   toque — e mais rápido, porque o dedo não fica "parado" sobre o botão. */
+@media (hover: none) {
+  #newTitle button>div {
+    transition: all 0.35s ease-in-out;
+  }
+
+  #newTitle button:active>div {
+    left: 0;
+  }
 }
 
 #newTitle button>div>div {
@@ -240,41 +203,40 @@ body {
 
 #seeTypes {
   display: flex;
-  width: 100vw;
+  width: 100%;
   flex-direction: column;
   position: relative;
   background-color: white;
 }
 
 #buttons {
-  box-sizing: border-box;
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: center;
-  padding: 10vh 10vw;
-  gap: 5vh;
-  width: 100vw;
+  padding: clamp(40px, 8vh, 10vh) var(--gutter);
+  gap: clamp(16px, 3vh, 5vh);
+  width: 100%;
   z-index: 2;
 }
 
 #buttons>button {
-  width: 300px;
-  height: 100px;
+  width: 100%;
+  max-width: 400px;
+  height: clamp(64px, 12vw, 100px);
   color: #0e0b25;
   font-weight: 400;
-  font-size: 2em;
+  font-size: clamp(1.25rem, 5vw, 2em);
   border: 1px solid #0e0b25;
   cursor: pointer;
   background-color: white;
   position: relative;
 }
 
+/* inset: -5px reproduz o antigo 310x110 deslocado de -5px em um botão de
+   300x100, mas continua valendo para qualquer tamanho de botão. */
 #buttons>button::after {
   content: "";
-  width: 310px;
-  height: 110px;
-  top: -5px;
-  left: -5px;
+  inset: -5px;
   background: conic-gradient(from 0deg,
       #0e0b25 0%,
       #0e0b25 var(--percentage),
@@ -291,25 +253,45 @@ body {
   width: 100%;
 }
 
+@media (min-width: 1024px) {
+  #buttons {
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 10vh 10vw;
+    gap: 5vh;
+  }
+
+  #buttons>button {
+    width: 300px;
+    max-width: none;
+    height: 100px;
+    font-size: 2em;
+  }
+}
+
+/* O carro e a pista viram percentuais de um wrapper fluido: os keyframes
+   carMove/roadMove animam left/transform e seguem válidos sem alteração. */
 #animatedCar {
-  width: 100%;
+  width: min(500px, 90vw);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-top: 100px;
+  margin-top: clamp(32px, 8vw, 100px);
+  margin-left: auto;
+  margin-right: auto;
   overflow: clip;
 }
 
 #animatedCar img {
   animation: carMove 1s linear infinite;
-  width: 500px;
+  width: 100%;
 }
 
 #roadsContainer {
   display: flex;
-  gap: 200px;
-  width: 500px;
+  gap: 40%;
+  width: 100%;
   overflow: clip;
 }
 
@@ -317,25 +299,47 @@ body {
   animation: roadMove 2s linear infinite;
   left: 0;
   position: relative;
-  min-width: 350px;
+  min-width: 70%;
   height: 10px;
   background-color: #0e0b25;
 }
 
+/* O hambúrguer é fixo no topo esquerdo; no mobile o título ocupa a largura
+   toda e passaria por baixo dele. */
 #seeTypes h1 {
-  padding-top: 5vh;
+  padding-top: max(5vh, 72px);
+  padding-inline: var(--gutter);
   color: #0e0b25;
-  font-size: 3rem;
+  font-size: clamp(1.5rem, 6vw, 3rem);
   font-weight: 300;
   text-align: center;
 }
 
+/* --- Destaques ---------------------------------------------------------
+   Mobile: tudo em fluxo, empilhado (título -> carro -> texto -> carrossel
+   -> setas) via `order`. O layout absoluto original volta em >=1280px.
+   Os filhos usam position: relative (não static) porque o z-index deles
+   precisa continuar valendo sobre os #bgImg, que são absolutos.        */
 #highlights {
-  width: 100vw;
-  height: 100vh;
+  /* Geometria do carrossel. Antes as animações traziam -200px (largura do
+     card) e -220px (card + gap) cravados, o que impedia reduzir os cards. */
+  --card-w: clamp(110px, 28vw, 200px);
+  --card-gap: 20px;
+  --step-card: calc(-1 * var(--card-w));
+  --step-slot: calc(-1 * (var(--card-w) + var(--card-gap)));
+
+  width: 100%;
+  min-height: 100vh;
   overflow: clip;
   position: relative;
   scroll-snap-align: start;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(14px, 2.5vh, 28px);
+  padding: clamp(24px, 6vh, 60px) 0;
 }
 
 @keyframes lightOn {
@@ -345,24 +349,23 @@ body {
 }
 
 #highlights>h1 {
-  position: absolute;
-  width: 100%;
+  order: 1;
+  position: relative;
   z-index: 3;
+  width: 100%;
+  padding-inline: var(--gutter);
   font-weight: 300;
   color: white;
-  font-size: 5em;
+  font-size: clamp(2rem, 9vw, 5em);
   text-align: center;
-  top: 20px;
 }
 
 #bgImg {
   object-fit: cover;
   position: absolute;
-  top: 0;
-  left: 0;
-  min-width: 100%;
-  max-width: 100%;
-  min-height: 100vh;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   filter: blur(5px) brightness(0.7);
   opacity: 0;
   transition: 0.4s;
@@ -387,12 +390,15 @@ body {
 }
 
 #info {
-  position: absolute;
+  order: 3;
+  position: relative;
   z-index: 3;
   display: flex;
   flex-direction: column;
-  left: 100px;
-  top: 150px;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  padding-inline: var(--gutter);
   animation: blurIn 0.45s forwards;
 }
 
@@ -439,45 +445,51 @@ body {
 }
 
 #info h1 {
-  font-size: 4em;
+  font-size: clamp(1.75rem, 8vw, 4em);
   color: white;
   line-height: 100%;
 }
 
 #info h2 {
-  font-size: 6em;
+  font-size: clamp(2rem, 11vw, 6em);
   color: #0e0b25;
   text-shadow: 0 0 2px white;
   line-height: 100%;
 }
 
 #info p {
-  font-size: 2em;
+  font-size: clamp(1rem, 4vw, 2em);
   color: white;
-  width: 500px;
+  width: min(500px, 85vw);
 }
 
 #slider {
-  position: absolute;
+  order: 4;
+  position: relative;
+  z-index: 3;
   display: flex;
-  gap: 20px;
-  bottom: 100px;
-  left: calc(100vw - 750px);
+  gap: var(--card-gap);
+  align-self: flex-start;
+  /* O card ativo escala 1.2 com transform-origin: right center, ou seja,
+     cresce para a esquerda; sem esse respiro ele sairia cortado. */
+  padding-left: calc(var(--gutter) + 0.2 * var(--card-w));
 }
 
 #sliderBtns {
-  position: absolute;
-  bottom: 100px;
-  left: 100px;
+  order: 5;
+  position: relative;
+  z-index: 3;
   display: flex;
-  gap: 100px;
+  gap: clamp(28px, 12vw, 100px);
 }
 
 #sliderBtns button {
   background-color: transparent;
   color: rgba(255, 255, 255, 0.6);
   border: none;
-  font-size: 3em;
+  font-size: clamp(1.5rem, 6vw, 3em);
+  min-width: var(--tap);
+  min-height: var(--tap);
   cursor: pointer;
   transition: 0.3s;
 }
@@ -491,12 +503,12 @@ body {
 }
 
 .item {
-  width: 200px;
-  height: 300px;
+  width: var(--card-w);
+  height: calc(var(--card-w) * 1.5);
+  flex-shrink: 0;
   overflow: hidden;
   border: 5px solid #0e0b25;
   filter: brightness(0.8);
-  box-sizing: border-box;
 }
 
 .next .item:nth-child(1) {
@@ -541,24 +553,93 @@ body {
 }
 
 #floatCar {
+  order: 2;
+  position: relative;
   z-index: 4;
-  position: absolute;
-  top: 0;
-  right: 100px;
-  width: 700px;
-  height: 300px;
-  top: 150px;
+  width: min(700px, 85vw);
   display: flex;
   align-items: center;
   animation: blurIn 0.45s forwards;
 }
 
 #floatCar img {
-  position: absolute;
+  position: relative;
   width: 100%;
+  height: auto;
 }
 
+/* Layout original: hero e destaques voltam ao posicionamento absoluto. */
+@media (min-width: 1280px) {
+  #newTitle {
+    flex-direction: row;
+    align-items: center;
+    left: 7vh;
+    right: auto;
+    gap: 50px;
+  }
 
+  #seeTypes h1 {
+    padding-top: 5vh;
+  }
+
+  #highlights {
+    display: block;
+    height: 100vh;
+    gap: normal;
+    padding: 0;
+  }
+
+  #highlights>h1 {
+    position: absolute;
+    top: 20px;
+    padding-inline: 0;
+  }
+
+  #info {
+    position: absolute;
+    left: 100px;
+    top: 150px;
+    width: auto;
+    padding-inline: 0;
+    align-items: stretch;
+    text-align: left;
+  }
+
+  #info p {
+    width: 500px;
+  }
+
+  #floatCar {
+    position: absolute;
+    right: 100px;
+    top: 150px;
+    width: 700px;
+    height: 300px;
+  }
+
+  #floatCar img {
+    position: absolute;
+  }
+
+  /* calc(100% - 750px) em vez de 100vw: 100vw inclui a barra de rolagem e
+     empurrava o carrossel para fora, criando scroll horizontal. O anchor
+     continua sendo `left` porque as animações do carrossel dependem disso
+     (com `right`, acrescentar um card deslocaria a fila inteira). */
+  #slider {
+    position: absolute;
+    bottom: 100px;
+    left: calc(100% - 750px);
+    align-self: auto;
+    padding-left: 0;
+  }
+
+  #sliderBtns {
+    position: absolute;
+    bottom: 100px;
+    left: 100px;
+    gap: 100px;
+  }
+}
 
 @property --percentage {
   syntax: "<percentage>";
@@ -574,7 +655,7 @@ body {
   }
 
   to {
-    transform: translateX(-220px);
+    transform: translateX(var(--step-slot));
     scale: 1;
     opacity: 0;
   }
@@ -582,7 +663,7 @@ body {
 
 @keyframes unactiveCard {
   from {
-    transform: translateX(-200px);
+    transform: translateX(var(--step-card));
     scale: 1.2;
     filter: brightness(1);
   }
@@ -602,7 +683,7 @@ body {
   }
 
   to {
-    transform: translateX(-200px);
+    transform: translateX(var(--step-card));
     scale: 1.2;
     filter: brightness(1);
   }
@@ -610,7 +691,7 @@ body {
 
 @keyframes prevToActive {
   from {
-    transform: translateX(-220px);
+    transform: translateX(var(--step-slot));
     scale: 1;
     opacity: 0;
   }
@@ -624,7 +705,7 @@ body {
 
 @keyframes prevCard {
   from {
-    transform: translateX(-220px);
+    transform: translateX(var(--step-slot));
   }
 
   to {
@@ -638,7 +719,7 @@ body {
   }
 
   to {
-    transform: translateX(-220px);
+    transform: translateX(var(--step-slot));
   }
 }
 
@@ -715,7 +796,7 @@ Footer {
 }
 
 @supports (animation-timeline: view()) {
-  #new video {
+  #new video.heroMedia {
     animation: blackout;
     animation-timeline: view(0% 100%);
   }

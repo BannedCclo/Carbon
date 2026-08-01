@@ -219,6 +219,7 @@ const CarDetailsModal: React.FC<CarDetailsModalProps> = ({
                           <img
                             src={img.imagem_base64}
                             alt={`Miniatura ${idx + 1}`}
+                            loading="lazy"
                           />
                         </div>
                       ))}

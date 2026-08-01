@@ -260,6 +260,16 @@
     gap: 20px;
 }
 
+@media (max-width: 480px) {
+    .specsGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .titleSection h1 {
+        font-size: 1.6rem;
+    }
+}
+
 .specItem {
     display: flex;
     align-items: center;
@@ -348,10 +358,7 @@
 /* Fullscreen Overlay Styles */
 .fullscreenOverlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
+    inset: 0;
     background-color: rgba(15, 23, 42, 0.95);
     z-index: 9999;
     display: flex;
@@ -362,14 +369,14 @@
 }
 
 .closeFullscreenBtn {
-    background-color: transparent;  
+    background-color: transparent;
     position: absolute;
-    top: 30px;
-    right: 40px;
+    top: clamp(12px, 4vw, 30px);
+    right: clamp(12px, 4vw, 40px);
     border: none;
     color: white;
-    width: 50px;
-    height: 50px;
+    width: var(--tap);
+    height: var(--tap);
     font-size: 1.5rem;
     cursor: pointer;
     display: flex;
@@ -404,13 +411,14 @@
 
 .fullscreenNav {
     position: absolute;
-    bottom: 40px;
+    bottom: clamp(12px, 4vw, 40px);
     left: 50%;
     transform: translateX(-50%);
     display: flex;
     align-items: center;
-    gap: 20px;
-    padding: 10px 20px;
+    gap: clamp(8px, 3vw, 20px);
+    padding: 10px clamp(10px, 3vw, 20px);
+    max-width: 95vw;
     backdrop-filter: blur(10px);
 }
 
@@ -420,8 +428,9 @@
     color: white;
     font-size: 1.5rem;
     cursor: pointer;
-    width: 40px;
-    height: 40px;
+    width: var(--tap);
+    height: var(--tap);
+    flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;

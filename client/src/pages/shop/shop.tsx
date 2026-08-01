@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styles from "./shop.module.css";
-import { useMediaLoader } from "../../hooks/useMediaLoader";
 import { Link, useSearchParams } from "react-router-dom";
+import { TopBar } from "../../components/nav/TopBar";
 
 type Carro = {
   id: number;
@@ -20,7 +20,6 @@ type Carro = {
 };
 
 const Shop: React.FC = () => {
-  const isLoaded = useMediaLoader();
   const [searchParams] = useSearchParams();
   const [carros, setCarros] = useState<Carro[]>([]);
   const [loading, setLoading] = useState(true);
@@ -83,10 +82,9 @@ const Shop: React.FC = () => {
     return matchTerm && matchCategoria && matchPreco && matchAno && matchKm;
   });
 
-  if (!isLoaded) return null; // App global loader takes care of this
-
   return (
     <div className={styles.shopContainer}>
+      <TopBar />
       <header className={styles.shopHeader}>
         <div className={styles.headerContent}>
           <div className={styles.logoAndTitle}>
@@ -223,6 +221,7 @@ const Shop: React.FC = () => {
                         <img
                           src={carro.imagens[0].imagem_base64}
                           alt={`${carro.marca} ${carro.modelo}`}
+                          loading="lazy"
                         />
                       ) : (
                         <div className={styles.placeholderImage}>

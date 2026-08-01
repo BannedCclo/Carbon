@@ -1,0 +1,48 @@
+/*
+  Fundação global de responsividade.
+  Breakpoints padronizados no projeto (usar estes valores em @media; var()
+  não funciona dentro de @media, então ficam documentados aqui):
+    480px  — celulares grandes
+    768px  — tablets / corte mobile
+    1024px — laptops pequenos
+    1280px — desktop (onde o layout absoluto original da home volta a valer)
+*/
+
+:root {
+  --color-ink: #0e0b25;
+  --color-ink-soft: rgb(39, 41, 61);
+  --color-bg-light: #ddd;
+  --color-white: #fff;
+
+  /* Substitui os "padding: 0 100px" hardcoded (footer, signup, verify).
+     Em 320px resolve para ~16px; no desktop chega a 100px, preservando o
+     visual atual. */
+  --gutter: clamp(16px, 5vw, 100px);
+
+  /* Escala tipográfica fluida, para textos que hoje usam rem/em fixos
+     desproporcionais em telas pequenas (ex.: títulos em 4-6em). */
+  --fs-h1: clamp(1.75rem, 5vw + 0.5rem, 4rem);
+  --fs-h2: clamp(1.5rem, 4vw + 0.5rem, 3rem);
+  --fs-body: clamp(0.95rem, 0.5vw + 0.85rem, 1.05rem);
+
+  /* Alvo mínimo de toque recomendado (WCAG 2.5.5 / Apple HIG). */
+  --tap: 44px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}

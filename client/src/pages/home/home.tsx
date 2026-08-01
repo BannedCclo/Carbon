@@ -1,7 +1,6 @@
 import styles from "./home.module.css";
 import { useState, useEffect, useRef } from "react";
 import { Toaster } from "react-hot-toast";
-import Ferrari812Superfast from "../../assets/video/Ferrari 812 Superfast.mp4";
 import textLogoBigWhite from "../../assets/img/textLogoBigWhite.png";
 import FerrariLogo from "../../assets/svg/ferrarilogo.svg";
 import sennaCard from "../../assets/img/sennaCard.png";
@@ -18,11 +17,13 @@ import huayraBg from "../../assets/img/huayraBg.jpg";
 import svjBg from "../../assets/img/svjBg.jpg";
 import carSvg from "../../assets/svg/car.svg";
 import { jwtDecode } from "jwt-decode";
-import { AnimatePresence, motion } from "framer-motion";
 import Footer from "../../components/footer/footer";
-import { AsideLink } from "../../components/asideLink/asideLink";
-import { useMediaLoader } from "../../hooks/useMediaLoader";
+import { MobileNav } from "../../components/nav/MobileNav";
+import { useMediaQuery } from "../../hooks/useMediaQuery";
 import { useNavigate } from "react-router-dom";
+
+const HERO_VIDEO_SRC = "/ferrari-812-superfast.mp4";
+const HERO_POSTER_SRC = "/ferrari-812-poster.jpg";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -65,6 +66,7 @@ const Home = () => {
     },
   ];
   const [active, setActive] = useState(false);
+  const toggleButtonRef = useRef<HTMLButtonElement>(null);
   const token = localStorage.getItem("token");
   const [cards, setCards] = useState(
     destaques.map((item) => {
@@ -149,18 +151,6 @@ const Home = () => {
     }, 700);
   };
 
-  useEffect(() => {
-    if (active) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
-
-    return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, [active]);
-
   function test() {
     if (token) {
       const data = jwtDecode(token);
@@ -168,104 +158,55 @@ const Home = () => {
     }
   }
 
-  let isAdmin = false;
-  if (token) {
-    try {
-      const decodedToken: any = jwtDecode(token);
-      if (decodedToken && decodedToken.tipo === "admin") {
-        isAdmin = true;
-      }
-    } catch (error) {
-      console.error("Invalid token:", error);
-    }
-  }
-
   function toggleAside() {
-    setActive(!active);
+    setActive((prev) => !prev);
   }
 
-  const allImages = [
-    ...destaques.map((d) => d.bg),
-    ...destaques.map((d) => d.card),
-    ...destaques.map((d) => d.float),
-    textLogoBigWhite,
-    FerrariLogo,
-    carSvg,
-  ];
+  function closeAside() {
+    setActive(false);
+    toggleButtonRef.current?.focus();
+  }
 
-  const isMediaLoaded = useMediaLoader(allImages, [Ferrari812Superfast]);
-
-  if (!isMediaLoaded) return null;
+  const isDesktop = useMediaQuery("(min-width: 768px)");
 
   return (
     <>
       <div className={styles.bgWrapper}>
-        <AnimatePresence>
-          {active && (
-            <>
-              <motion.div
-                className={styles.overlay}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.6 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.3 }}
-                onClick={toggleAside}
-              />
-
-              <motion.aside
-                className={styles.aside}
-                initial={{ x: "-100%", opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                exit={{ x: "-100%", opacity: 0 }}
-                transition={{ duration: 0.4, ease: "easeInOut" }}
-              >
-                <header></header>
-                <div className={styles.asideContent}>
-                  <AsideLink
-                    to={token ? "/profile" : "/login"}
-                    iconClass={
-                      token
-                        ? "fa-solid fa-user"
-                        : "fa-solid fa-right-to-bracket"
-                    }
-                    text={token ? "Perfil" : "Entrar"}
-                  />
-                  <AsideLink
-                    to="/shop"
-                    iconClass="fa-solid fa-shop"
-                    text="Loja"
-                  />
-                  {isAdmin && (
-                    <AsideLink
-                      to="/admin"
-                      iconClass="fa-solid fa-lock"
-                      text="Admin"
-                    />
-                  )}
-                  {token && (
-                    <AsideLink
-                      iconClass="fa-solid fa-arrow-right-from-bracket"
-                      text="Sair"
-                      isLogout={true}
-                    />
-                  )}
-                </div>
-              </motion.aside>
-            </>
-          )}
-        </AnimatePresence>
+        <MobileNav active={active} onClose={closeAside} />
         <section id={styles.new}>
-          <video muted loop autoPlay>
-            <source src={Ferrari812Superfast} />
-          </video>
+          {isDesktop ? (
+            <video
+              className={styles.heroMedia}
+              muted
+              loop
+              autoPlay
+              playsInline
+              preload="metadata"
+              poster={HERO_POSTER_SRC}
+            >
+              <source src={HERO_VIDEO_SRC} />
+            </video>
+          ) : (
+            <img
+              className={styles.heroMedia}
+              src={HERO_POSTER_SRC}
+              alt=""
+              loading="eager"
+              fetchPriority="high"
+            />
+          )}
           <header>
             <button
+              ref={toggleButtonRef}
+              type="button"
               className={`${styles.toggleAsideBtn} ${
                 active ? styles.active : ""
               } ${buttonDark ? styles.dark : ""}`}
               onClick={toggleAside}
+              aria-label={active ? "Fechar menu" : "Abrir menu"}
+              aria-expanded={active}
             >
-              <i className="fa-solid fa-bars" />
+              <i className={active ? "fa-solid fa-xmark" : "fa-solid fa-bars"} />
             </button>
             <img src={textLogoBigWhite} alt="" />
           </header>

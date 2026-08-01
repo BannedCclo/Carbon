@@ -16,9 +16,8 @@
 .modalContent {
     background: white;
     border-radius: 16px;
-    width: 100%;
-    max-width: 500px;
-    max-height: 90vh;
+    width: min(500px, 92vw);
+    max-height: 90dvh;
     display: flex;
     flex-direction: column;
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
@@ -214,4 +213,31 @@ button:disabled {
     border-radius: 8px;
     font-size: 0.9rem;
     border: 1px solid #fecaca;
+}
+
+@media (max-width: 480px) {
+    .inputGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .modalHeader,
+    .modalBody,
+    .modalFooter {
+        padding: 16px;
+    }
+
+    .modalFooter {
+        flex-direction: column-reverse;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .footerActions {
+        flex-direction: column;
+    }
+
+    .footerActions button,
+    .deleteBtn {
+        width: 100%;
+    }
 }

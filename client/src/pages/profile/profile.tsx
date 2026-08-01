@@ -4,8 +4,7 @@ import { jwtDecode } from "jwt-decode";
 import toast, { Toaster } from "react-hot-toast";
 import styles from "./profile.module.css";
 import api from "../../services/api";
-import { useMediaLoader } from "../../hooks/useMediaLoader";
-import wallpaper3 from "../../assets/img/wallpaper3.png";
+import { TopBar } from "../../components/nav/TopBar";
 
 interface UserProfile {
   id: number;
@@ -274,12 +273,11 @@ const Profile = () => {
     }
   }, [navigate]);
 
-  const isMediaLoaded = useMediaLoader([wallpaper3]);
-
-  if (!user || !isMediaLoaded) return null;
+  if (!user) return null;
 
   return (
     <div className={styles.pageContainer}>
+      <TopBar />
       <main className={styles.mainContent}>
         <div className={styles.dashboardContainer}>
           <div className={styles.profileTitle}>

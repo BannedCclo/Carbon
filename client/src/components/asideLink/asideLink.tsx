@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import styles from "../../pages/home/home.module.css";
+import styles from "../nav/MobileNav.module.css";
 
 interface AsideLinkProps {
     to?: string;

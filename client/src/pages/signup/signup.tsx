@@ -24,7 +24,6 @@ const Signup = () => {
   const [seePassword, setSeePassword] = useState(false);
   const [seePassword2, setSeePassword2] = useState(false);
   const [camposInvalidos, setCamposInvalidos] = useState<string[]>([]);
-  const imagens = Array.from(document.images);
 
   useEffect(() => {
     consultarCep(cep);
@@ -100,7 +99,7 @@ const Signup = () => {
         );
 
         if (emailExistente?.data) {
-          toast((t) => (
+          toast(() => (
             <span>
               Esse email já está cadastrado.
               <button onClick={() => navigate("/login")} id="alertButton">
@@ -153,10 +152,6 @@ const Signup = () => {
     } else {
       toast.error("Campos com valor inválido");
     }
-  };
-
-  const teste = async () => {
-    api.get("/teste");
   };
 
   return (
