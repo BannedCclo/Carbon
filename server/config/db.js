@@ -1,15 +1,28 @@
 const { Sequelize } = require("sequelize");
 require("dotenv").config();
 
-const sequelize = new Sequelize(
-  "carbon",
-  "postgres",
-  process.env.SEQUELIZE_PASS,
-  {
-    host: "localhost",
-    dialect: "postgres",
-    logging: false,
-  }
-);
+// DATABASE_URL cobre provedores hospedados (Neon, Supabase, Vercel Postgres,
+// Railway etc.), que expõem uma connection string em vez de host/porta
+// separados. Sem ela, cai nas variáveis individuais (com os defaults de
+// desenvolvimento local de sempre).
+const sequelize = process.env.DATABASE_URL
+  ? new Sequelize(process.env.DATABASE_URL, {
+      dialect: "postgres",
+      logging: false,
+      dialectOptions: process.env.DB_SSL === "false"
+        ? {}
+        : { ssl: { require: true, rejectUnauthorized: false } },
+    })
+  : new Sequelize(
+      process.env.SEQUELIZE_DB || "carbon",
+      process.env.SEQUELIZE_USER || "postgres",
+      process.env.SEQUELIZE_PASS,
+      {
+        host: process.env.SEQUELIZE_HOST || "localhost",
+        port: process.env.SEQUELIZE_PORT || 5432,
+        dialect: "postgres",
+        logging: false,
+      }
+    );
 
 module.exports = sequelize;

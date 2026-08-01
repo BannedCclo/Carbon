@@ -31,21 +31,28 @@ app.use("/api/users", usersRoutes);
 app.use("/api/cep", cepRoutes);
 app.use("/api/contact", contactRoutes);
 
+app.get("/teste", (req, res) => {
+  console.log(res);
+});
+
 sequelize
   .authenticate()
   .then(() => {
     console.log("🟢 Conectado ao PostgreSQL com sucesso!", __dirname);
     return sequelize.sync({ alter: true });
   })
-  .then(() => {
-    app.listen(port, () => {
-      console.log(`🚀 Servidor rodando em http://localhost:${port}`);
-    });
-  })
   .catch((err) => {
     console.error("❌ Erro ao conectar no banco:", err);
   });
 
-app.get("/teste", (req, res) => {
-  console.log(res);
-});
+// Na Vercel o arquivo é importado e o app é invocado diretamente como
+// função serverless — não existe processo de longa duração para dar
+// listen(). Rodar app.listen() só localmente evita porta duplicada e
+// deixa claro qual é o entrypoint que a Vercel deve consumir.
+if (require.main === module) {
+  app.listen(port, () => {
+    console.log(`🚀 Servidor rodando em http://localhost:${port}`);
+  });
+}
+
+module.exports = app;
