@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styles from "./CarDetailsModal.module.css";
 import toast from "react-hot-toast";
+import { API_BASE_URL } from "../../../services/api";
 
 type Carro = {
   id: number;
@@ -110,7 +111,7 @@ const CarDetailsModal: React.FC<CarDetailsModalProps> = ({
     setIsDeleting(true);
     try {
       const response = await fetch(
-        `http://localhost:3000/api/carros/${carro.id}`,
+        `${API_BASE_URL}/carros/${carro.id}`,
         {
           method: "DELETE",
         },
@@ -158,7 +159,7 @@ const CarDetailsModal: React.FC<CarDetailsModalProps> = ({
 
     try {
       const response = await fetch(
-        `http://localhost:3000/api/carros/${carro.id}`,
+        `${API_BASE_URL}/carros/${carro.id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },

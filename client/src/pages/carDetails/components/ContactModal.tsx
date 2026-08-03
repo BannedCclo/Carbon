@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styles from "./ContactModal.module.css";
+import { API_BASE_URL } from "../../../services/api";
 
 interface ContactModalProps {
   carroMarca: string;
@@ -52,7 +53,7 @@ const ContactModal: React.FC<ContactModalProps> = ({
 
     try {
       const response = await fetch(
-        "http://localhost:3000/api/contact/purchase-interest",
+        `${API_BASE_URL}/contact/purchase-interest`,
         {
           method: "POST",
           headers: {

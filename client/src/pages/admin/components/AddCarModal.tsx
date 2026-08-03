@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styles from "./AddCarModal.module.css";
 import toast, { Toaster } from "react-hot-toast";
+import { API_BASE_URL } from "../../../services/api";
 
 type AddCarModalProps = {
   onClose: () => void;
@@ -87,7 +88,7 @@ const AddCarModal: React.FC<AddCarModalProps> = ({ onClose, onAdd }) => {
     };
 
     try {
-      const response = await fetch("http://localhost:3000/api/carros", {
+      const response = await fetch(`${API_BASE_URL}/carros`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

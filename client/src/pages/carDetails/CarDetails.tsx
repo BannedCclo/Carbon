@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import styles from "./CarDetails.module.css";
 import ContactModal from "./components/ContactModal";
 import { TopBar } from "../../components/nav/TopBar";
+import { API_BASE_URL } from "../../services/api";
 
 type Carro = {
   id: number;
@@ -31,7 +32,7 @@ const CarDetails: React.FC = () => {
   useEffect(() => {
     const fetchCarro = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/api/carros/${id}`);
+        const response = await fetch(`${API_BASE_URL}/carros/${id}`);
         if (!response.ok) throw new Error("Carro não encontrado");
         const data = await response.json();
         setCarro(data);

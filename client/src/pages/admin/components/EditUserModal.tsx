@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styles from './EditUserModal.module.css';
-import api from '../../../services/api';
+import api, { API_BASE_URL } from '../../../services/api';
 
 type User = {
     id: number;
@@ -124,7 +124,7 @@ const EditUserModal: React.FC<EditUserModalProps> = ({ user, onClose, onUpdate, 
         setLoading(true);
         setError('');
         try {
-            const response = await fetch(`http://localhost:3000/api/users/admin/id/${user.id}`, {
+            const response = await fetch(`${API_BASE_URL}/users/admin/id/${user.id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData),
@@ -148,7 +148,7 @@ const EditUserModal: React.FC<EditUserModalProps> = ({ user, onClose, onUpdate, 
         setLoading(true);
         setError('');
         try {
-            const response = await fetch(`http://localhost:3000/api/users/admin/id/${user.id}`, {
+            const response = await fetch(`${API_BASE_URL}/users/admin/id/${user.id}`, {
                 method: 'DELETE',
             });
 

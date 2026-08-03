@@ -4,6 +4,7 @@ import { jwtDecode } from "jwt-decode";
 import styles from "./admin.module.css";
 import UsersList from "./components/UsersList";
 import EstoqueList from "./components/EstoqueList";
+import { API_BASE_URL } from "../../services/api";
 
 const Admin = () => {
   const [activeTab, setActiveTab] = useState("users");
@@ -26,7 +27,7 @@ const Admin = () => {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:3000/api/users");
+      const response = await fetch(`${API_BASE_URL}/users`);
       const data = await response.json();
       setUsers(data);
     } catch (error) {

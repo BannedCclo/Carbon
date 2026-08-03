@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styles from "./shop.module.css";
 import { Link, useSearchParams } from "react-router-dom";
 import { TopBar } from "../../components/nav/TopBar";
+import { API_BASE_URL } from "../../services/api";
 
 type Carro = {
   id: number;
@@ -37,7 +38,7 @@ const Shop: React.FC = () => {
   useEffect(() => {
     const fetchEstoque = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/carros");
+        const response = await fetch(`${API_BASE_URL}/carros`);
         const data = await response.json();
         setCarros(data);
       } catch (error) {

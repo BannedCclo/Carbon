@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styles from "./EstoqueList.module.css";
 import AddCarModal from "./AddCarModal.tsx";
 import CarDetailsModal from "./CarDetailsModal.tsx";
+import { API_BASE_URL } from "../../../services/api";
 
 type Carro = {
   id: number;
@@ -29,7 +30,7 @@ const EstoqueList: React.FC = () => {
   const fetchCarros = async () => {
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:3000/api/carros");
+      const response = await fetch(`${API_BASE_URL}/carros`);
       const data = await response.json();
       setCarros(data);
     } catch (error) {
