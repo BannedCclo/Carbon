@@ -1,17 +1,21 @@
 html,
 body {
   scroll-behavior: smooth;
-  overflow-y: scroll;
-  height: 100%;
 }
 
-/* O scroll-snap pressupõe que cada seção caiba em uma tela. No mobile as
-   seções empilham e passam de 100vh, então o snap prende o scroll no meio
-   do conteúdo. Só vale a partir do layout desktop. */
+/* overflow-y:scroll, height:100% e o scroll-snap só fazem sentido junto com
+   o layout absoluto original da home, que só volta a valer no desktop.
+   Como html/body são seletores globais (não isolados pelo CSS Modules) e
+   home.module.css é carregado em todas as paginas (Home é import eager no
+   Router), aplicar isso sem media query forçava uma scrollbar extra em
+   login/cadastro/etc mesmo no mobile, duplicando a barra de rolagem interna
+   dos formulários. */
 @media (min-width: 1280px) {
 
   html,
   body {
+    overflow-y: scroll;
+    height: 100%;
     scroll-snap-type: y proximity;
   }
 }

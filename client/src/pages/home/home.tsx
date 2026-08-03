@@ -169,22 +169,22 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    console.log(cards);
-  }, [cards]);
+    if (cards.length <= 1) return;
 
-  useEffect(() => {
-    if (autoRun) {
+    autoRun.current = setTimeout(() => {
+      click("next");
+    }, timeout);
+
+    return () => {
       if (autoRun.current !== null) {
         clearTimeout(autoRun.current);
       }
-      autoRun.current = setTimeout(() => {
-        click("next");
-      }, timeout);
-    }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cards]);
 
   const click = (type: "next" | "prev") => {
-    if (animating || cards.length === 0) return;
+    if (animating || cards.length <= 1) return;
 
     requestAnimationFrame(() => {
       setAnimating(type);
