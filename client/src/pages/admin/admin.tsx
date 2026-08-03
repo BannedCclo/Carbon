@@ -4,6 +4,8 @@ import { jwtDecode } from "jwt-decode";
 import styles from "./admin.module.css";
 import UsersList from "./components/UsersList";
 import EstoqueList from "./components/EstoqueList";
+import HighlightsManager from "./components/HighlightsManager";
+import HeroManager from "./components/HeroManager";
 import { API_BASE_URL } from "../../services/api";
 
 const Admin = () => {
@@ -73,6 +75,18 @@ const Admin = () => {
             >
               Estoque
             </li>
+            <li
+              className={activeTab === "highlights" ? styles.active : ""}
+              onClick={() => setActiveTab("highlights")}
+            >
+              Destaques
+            </li>
+            <li
+              className={activeTab === "hero" ? styles.active : ""}
+              onClick={() => setActiveTab("hero")}
+            >
+              Hero
+            </li>
           </ul>
         </nav>
       </aside>
@@ -81,9 +95,10 @@ const Admin = () => {
       <main className={styles.mainContent}>
         <header className={styles.topbar}>
           <h1>
-            {activeTab === "users"
-              ? "Gerenciamento de Usuários"
-              : "Gerenciamento de Estoque"}
+            {activeTab === "users" && "Gerenciamento de Usuários"}
+            {activeTab === "estoque" && "Gerenciamento de Estoque"}
+            {activeTab === "highlights" && "Destaques da Home"}
+            {activeTab === "hero" && "Destaque Principal (Hero) da Home"}
           </h1>
         </header>
         <section className={styles.contentArea}>
@@ -100,6 +115,10 @@ const Admin = () => {
             ))}
 
           {activeTab === "estoque" && <EstoqueList />}
+
+          {activeTab === "highlights" && <HighlightsManager />}
+
+          {activeTab === "hero" && <HeroManager />}
         </section>
       </main>
     </div>

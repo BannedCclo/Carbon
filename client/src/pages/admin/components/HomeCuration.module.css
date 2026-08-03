@@ -1,0 +1,77 @@
+.helperText {
+    color: #64748b;
+    font-size: 0.9rem;
+    margin: -8px 0 4px 0;
+    max-width: 700px;
+}
+
+.selectedCard {
+    outline: 3px solid #3b82f6;
+    outline-offset: -3px;
+}
+
+.toggleRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #334155;
+    margin-top: 4px;
+    cursor: pointer;
+}
+
+.heroCurrentBox {
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.heroCurrentBox strong {
+    font-size: 1.1rem;
+    color: #0f172a;
+}
+
+.inputWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.inputWrapper label {
+    font-size: 0.9rem;
+    color: #475569;
+    font-weight: 600;
+}
+
+.heroPreviewRow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.heroPreviewImg {
+    width: 120px;
+    height: 70px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+
+.removeBtn {
+    background-color: #fee2e2;
+    color: #dc2626;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.removeBtn:hover {
+    background-color: #fecaca;
+}

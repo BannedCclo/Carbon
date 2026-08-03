@@ -3,6 +3,18 @@ import { useState, useEffect, useRef } from "react";
 import { Toaster } from "react-hot-toast";
 import textLogoBigWhite from "../../assets/img/textLogoBigWhite.png";
 import FerrariLogo from "../../assets/svg/ferrarilogo.svg";
+import sennaCard from "../../assets/img/sennaCard.png";
+import gt3Card from "../../assets/img/gt3Card.png";
+import huayraCard from "../../assets/img/huayraCard.png";
+import svjCard from "../../assets/img/svjCard.png";
+import gt3Float from "../../assets/img/gt3Float.png";
+import sennaFloat from "../../assets/img/sennaFloat.png";
+import huayraFloat from "../../assets/img/huayraFloat.png";
+import svjFloat from "../../assets/img/svjFloat.png";
+import sennaBg from "../../assets/img/sennaBg.jpg";
+import gt3Bg from "../../assets/img/gt3Bg.jpg";
+import huayraBg from "../../assets/img/huayraBg.jpg";
+import svjBg from "../../assets/img/svjBg.jpg";
 import carSvg from "../../assets/svg/car.svg";
 import { jwtDecode } from "jwt-decode";
 import Footer from "../../components/footer/footer";
@@ -14,6 +26,45 @@ import { API_BASE_URL } from "../../services/api";
 const HERO_VIDEO_SRC = "/ferrari-812-superfast.mp4";
 const HERO_POSTER_SRC = "/ferrari-812-poster.jpg";
 const HERO_TITLE_FALLBACK = "Ferrari 812 Superfast";
+
+// Arte original de destaque para os modelos "ícone" do catálogo. Quando um
+// carro marcado como destaque bate com uma dessas chaves (marca+modelo,
+// normalizado), usamos as imagens/descrição curadas em vez da primeira foto
+// cadastrada no anúncio - assim o visual volta a ser o mesmo de antes,
+// mas a associação com o carro real do estoque continua existindo.
+const CURATED_HIGHLIGHTS: Record<
+  string,
+  { desc: string; bg: string; card: string; float: string }
+> = {
+  "porsche|911 gt3-rs": {
+    desc: "Um 911 feito para as pistas. Leve, afiado e com alma de corrida. É a Porsche em sua forma mais pura.",
+    bg: gt3Bg,
+    card: gt3Card,
+    float: gt3Float,
+  },
+  "mclaren|senna": {
+    desc: "Criado para honrar uma lenda, o Senna é pista pura. Brutal, leve, sem frescura. Como o próprio Ayrton.",
+    bg: sennaBg,
+    card: sennaCard,
+    float: sennaFloat,
+  },
+  "pagani|huayra bc": {
+    desc: "Uma obra de arte sobre rodas, feita à mão em carbono e emoção. Mais raro que veloz, e ele é muito veloz.",
+    bg: huayraBg,
+    card: huayraCard,
+    float: huayraFloat,
+  },
+  "lamborghini|aventador svj": {
+    desc: "O V12 em sua forma mais selvagem. Aberto ao céu, barulhento por natureza e sem nenhum filtro.",
+    bg: svjBg,
+    card: svjCard,
+    float: svjFloat,
+  },
+};
+
+function curatedKey(marca: string, modelo: string) {
+  return `${marca}|${modelo}`.toLowerCase().trim().replace(/\s+/g, " ");
+}
 
 type Carro = {
   id: number;
@@ -55,15 +106,16 @@ const Home = () => {
   const destaques = carros
     .filter((c) => c.destaque)
     .map((c) => {
+      const curada = CURATED_HIGHLIGHTS[curatedKey(c.marca, c.modelo)];
       const imagem = c.imagens?.[0]?.imagem_base64 || "";
       return {
         id: c.id,
         marca: c.marca,
         modelo: c.modelo,
-        desc: c.descricao,
-        bg: imagem,
-        card: imagem,
-        float: imagem,
+        desc: curada?.desc || c.descricao,
+        bg: curada?.bg || imagem,
+        card: curada?.card || imagem,
+        float: curada?.float || imagem,
       };
     });
 
