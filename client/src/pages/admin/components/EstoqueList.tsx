@@ -18,6 +18,8 @@ type Carro = {
   descricao: string;
   categoria: string;
   imagens?: { id: number; imagem_base64: string }[];
+  destaque?: boolean;
+  hero?: boolean;
 };
 
 const EstoqueList: React.FC = () => {
@@ -118,9 +120,17 @@ const EstoqueList: React.FC = () => {
                 <div className={styles.cardContent}>
                   <div className={styles.cardHeader}>
                     <span className={styles.carId}>ID: {carro.id}</span>
-                    <span className={styles.carCategory}>
-                      {carro.categoria.toUpperCase()}
-                    </span>
+                    <div className={styles.badgeGroup}>
+                      {carro.destaque && (
+                        <span className={styles.carCategory}>Destaque</span>
+                      )}
+                      {carro.hero && (
+                        <span className={styles.carCategory}>Hero</span>
+                      )}
+                      <span className={styles.carCategory}>
+                        {carro.categoria.toUpperCase()}
+                      </span>
+                    </div>
                   </div>
                   <h3 className={styles.carTitle}>
                     {carro.marca} {carro.modelo}

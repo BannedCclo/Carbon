@@ -150,6 +150,11 @@
     font-weight: 500;
 }
 
+.badgeGroup {
+    display: flex;
+    gap: 6px;
+}
+
 .carCategory {
     background-color: #e2e8f0;
     color: #475569;

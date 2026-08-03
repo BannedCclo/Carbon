@@ -352,6 +352,12 @@
     min-height: 80px;
 }
 
+.helperText {
+    font-size: 0.8rem;
+    color: #64748b;
+    margin: 0;
+}
+
 .inputWrapper input:focus,
 .inputWrapper select:focus,
 .inputWrapper textarea:focus {

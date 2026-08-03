@@ -1,4 +1,5 @@
 const express = require('express');
+const { Op } = require('sequelize');
 const router = express.Router();
 const Carro = require('../models/Carro');
 const CarroImagem = require('../models/CarroImagem');
@@ -21,6 +22,12 @@ router.get('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const { imagensBase64, ...carroData } = req.body;
+
+    // Só pode existir um carro em destaque no hero por vez.
+    if (carroData.hero) {
+      await Carro.update({ hero: false }, { where: { hero: true } });
+    }
+
     const novoCarro = await Carro.create(carroData);
 
     if (imagensBase64 && Array.isArray(imagensBase64) && imagensBase64.length > 0) {
@@ -47,6 +54,15 @@ router.put('/:id', async (req, res) => {
 
   try {
     const { imagensBase64, ...carroData } = req.body;
+
+    // Só pode existir um carro em destaque no hero por vez.
+    if (carroData.hero) {
+      await Carro.update(
+        { hero: false },
+        { where: { hero: true, id: { [Op.ne]: carro.id } } }
+      );
+    }
+
     await carro.update(carroData);
 
     if (imagensBase64 && Array.isArray(imagensBase64)) {

@@ -17,6 +17,9 @@ type Carro = {
   descricao: string;
   categoria: string;
   imagens?: { id: number; imagem_base64: string }[];
+  destaque?: boolean;
+  hero?: boolean;
+  hero_imagem_base64?: string | null;
 };
 
 type CarDetailsModalProps = {
@@ -49,6 +52,11 @@ const CarDetailsModal: React.FC<CarDetailsModalProps> = ({
   const [categoria, setCategoria] = useState(carro.categoria);
   const [imagens, setImagens] = useState<string[]>(
     carro.imagens ? carro.imagens.map((img) => img.imagem_base64) : [],
+  );
+  const [destaque, setDestaque] = useState(!!carro.destaque);
+  const [hero, setHero] = useState(!!carro.hero);
+  const [heroImagem, setHeroImagem] = useState<string | null>(
+    carro.hero_imagem_base64 || null,
   );
 
   const formatCurrency = (value: number) => {
@@ -98,6 +106,14 @@ const CarDetailsModal: React.FC<CarDetailsModalProps> = ({
 
   const removeImage = (indexToRemove: number) => {
     setImagens((prev) => prev.filter((_, index) => index !== indexToRemove));
+  };
+
+  const handleHeroImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !file.type.startsWith("image/")) return;
+    const reader = new FileReader();
+    reader.onloadend = () => setHeroImagem(reader.result as string);
+    reader.readAsDataURL(file);
   };
 
   const handleDelete = async () => {
@@ -155,6 +171,9 @@ const CarDetailsModal: React.FC<CarDetailsModalProps> = ({
       descricao,
       categoria,
       imagensBase64: imagens,
+      destaque,
+      hero,
+      hero_imagem_base64: hero ? heroImagem : null,
     };
 
     try {
@@ -189,6 +208,18 @@ const CarDetailsModal: React.FC<CarDetailsModalProps> = ({
           <h2>
             {isEditing ? "Editando Veículo" : "Detalhes do Veículo"}{" "}
             <span className={styles.carIdBadge}>ID {carro.id}</span>
+            {destaque && (
+              <>
+                {" "}
+                <span className={styles.carIdBadge}>Destaque</span>
+              </>
+            )}
+            {hero && (
+              <>
+                {" "}
+                <span className={styles.carIdBadge}>Hero</span>
+              </>
+            )}
           </h2>
           <button className={styles.closeBtn} onClick={onClose}>
             &times;
@@ -431,6 +462,59 @@ const CarDetailsModal: React.FC<CarDetailsModalProps> = ({
                     </div>
                   )}
                 </div>
+
+                <div className={`${styles.inputWrapper} ${styles.fullWidth}`}>
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={destaque}
+                      onChange={(e) => setDestaque(e.target.checked)}
+                    />{" "}
+                    Exibir na seção "Destaques" da home
+                  </label>
+                </div>
+
+                <div className={`${styles.inputWrapper} ${styles.fullWidth}`}>
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={hero}
+                      onChange={(e) => setHero(e.target.checked)}
+                    />{" "}
+                    Usar como carro em destaque no topo (hero) da home
+                  </label>
+                  <p className={styles.helperText}>
+                    Só um carro pode ser o destaque do hero por vez; marcar
+                    este substitui o atual.
+                  </p>
+                </div>
+
+                {hero && (
+                  <div
+                    className={`${styles.inputWrapper} ${styles.fullWidth}`}
+                  >
+                    <label>Imagem de fundo do hero (opcional)</label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleHeroImageChange}
+                    />
+                    {heroImagem && (
+                      <div className={styles.imagePreviews}>
+                        <div className={styles.previewCard}>
+                          <img src={heroImagem} alt="Preview do hero" />
+                          <button
+                            type="button"
+                            className={styles.removeImageBtn}
+                            onClick={() => setHeroImagem(null)}
+                          >
+                            &times;
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             </form>
           )}

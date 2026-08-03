@@ -3,81 +3,90 @@ import { useState, useEffect, useRef } from "react";
 import { Toaster } from "react-hot-toast";
 import textLogoBigWhite from "../../assets/img/textLogoBigWhite.png";
 import FerrariLogo from "../../assets/svg/ferrarilogo.svg";
-import sennaCard from "../../assets/img/sennaCard.png";
-import gt3Card from "../../assets/img/gt3Card.png";
-import huayraCard from "../../assets/img/huayraCard.png";
-import svjCard from "../../assets/img/svjCard.png";
-import gt3Float from "../../assets/img/gt3Float.png";
-import sennaFloat from "../../assets/img/sennaFloat.png";
-import huayraFloat from "../../assets/img/huayraFloat.png";
-import svjFloat from "../../assets/img/svjFloat.png";
-import sennaBg from "../../assets/img/sennaBg.jpg";
-import gt3Bg from "../../assets/img/gt3Bg.jpg";
-import huayraBg from "../../assets/img/huayraBg.jpg";
-import svjBg from "../../assets/img/svjBg.jpg";
 import carSvg from "../../assets/svg/car.svg";
 import { jwtDecode } from "jwt-decode";
 import Footer from "../../components/footer/footer";
 import { MobileNav } from "../../components/nav/MobileNav";
 import { useMediaQuery } from "../../hooks/useMediaQuery";
 import { useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "../../services/api";
 
 const HERO_VIDEO_SRC = "/ferrari-812-superfast.mp4";
 const HERO_POSTER_SRC = "/ferrari-812-poster.jpg";
+const HERO_TITLE_FALLBACK = "Ferrari 812 Superfast";
+
+type Carro = {
+  id: number;
+  marca: string;
+  modelo: string;
+  descricao: string;
+  destaque?: boolean;
+  hero?: boolean;
+  hero_imagem_base64?: string | null;
+  imagens?: { id: number; imagem_base64: string }[];
+};
 
 const Home = () => {
   const navigate = useNavigate();
-  const destaques = [
-    {
-      id: 1,
-      marca: "Porsche",
-      modelo: "911 GT3-RS",
-      desc: "Um 911 feito para as pistas. Leve, afiado e com alma de corrida. É a Porsche em sua forma mais pura.",
-      bg: gt3Bg,
-      card: gt3Card,
-      float: gt3Float,
-    },
-    {
-      id: 2,
-      marca: "McLaren",
-      modelo: "Senna",
-      desc: "Criado para honrar uma lenda, o Senna é pista pura. Brutal, leve, sem frescura. Como o próprio Ayrton.",
-      bg: sennaBg,
-      card: sennaCard,
-      float: sennaFloat,
-    },
-    {
-      id: 3,
-      marca: "Pagani",
-      modelo: "Huayra BC",
-      desc: "Uma obra de arte sobre rodas, feita à mão em carbono e emoção. Mais raro que veloz, e ele é muito veloz.",
-      bg: huayraBg,
-      card: huayraCard,
-      float: huayraFloat,
-    },
-    {
-      id: 4,
-      marca: "Lamborghini",
-      modelo: "Aventador Svj ",
-      desc: "O V12 em sua forma mais selvagem. Aberto ao céu, barulhento por natureza e sem nenhum filtro.",
-      bg: svjBg,
-      card: svjCard,
-      float: svjFloat,
-    },
-  ];
+  const [carros, setCarros] = useState<Carro[]>([]);
+  const [carrosLoaded, setCarrosLoaded] = useState(false);
+
+  useEffect(() => {
+    const fetchCarros = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/carros`);
+        const data = await response.json();
+        setCarros(data);
+      } catch (error) {
+        console.error("Erro ao buscar carros em destaque:", error);
+      } finally {
+        setCarrosLoaded(true);
+      }
+    };
+    fetchCarros();
+  }, []);
+
+  const heroCarro = carros.find((c) => c.hero) || null;
+  const heroTitulo = heroCarro
+    ? `${heroCarro.marca} ${heroCarro.modelo}`
+    : HERO_TITLE_FALLBACK;
+  const heroPoster = heroCarro?.hero_imagem_base64 || HERO_POSTER_SRC;
+
+  const destaques = carros
+    .filter((c) => c.destaque)
+    .map((c) => {
+      const imagem = c.imagens?.[0]?.imagem_base64 || "";
+      return {
+        id: c.id,
+        marca: c.marca,
+        modelo: c.modelo,
+        desc: c.descricao,
+        bg: imagem,
+        card: imagem,
+        float: imagem,
+      };
+    });
+
   const [active, setActive] = useState(false);
   const toggleButtonRef = useRef<HTMLButtonElement>(null);
   const token = localStorage.getItem("token");
-  const [cards, setCards] = useState(
-    destaques.map((item) => {
-      return {
+  const [cards, setCards] = useState<
+    { card: string; id: number; float: string }[]
+  >([]);
+  const [banner, setBanner] = useState<string[]>([]);
+
+  useEffect(() => {
+    setCards(
+      destaques.map((item) => ({
         card: item.card,
         id: item.id,
         float: item.float,
-      };
-    }),
-  );
-  const [banner, setBanner] = useState(destaques.map((item) => item.bg));
+      })),
+    );
+    setBanner(destaques.map((item) => item.bg));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [carrosLoaded]);
+
   const [animating, setAnimating] = useState<"next" | "prev" | null>(null);
   const [buttonDark, setBtnDark] = useState(false);
   const timeout = 7000;
@@ -123,7 +132,7 @@ const Home = () => {
   }, [cards]);
 
   const click = (type: "next" | "prev") => {
-    if (animating) return;
+    if (animating || cards.length === 0) return;
 
     requestAnimationFrame(() => {
       setAnimating(type);
@@ -182,14 +191,14 @@ const Home = () => {
               autoPlay
               playsInline
               preload="metadata"
-              poster={HERO_POSTER_SRC}
+              poster={heroPoster}
             >
               <source src={HERO_VIDEO_SRC} />
             </video>
           ) : (
             <img
               className={styles.heroMedia}
-              src={HERO_POSTER_SRC}
+              src={heroPoster}
               alt=""
               loading="eager"
               fetchPriority="high"
@@ -211,7 +220,7 @@ const Home = () => {
             <img src={textLogoBigWhite} alt="" />
           </header>
           <div id={styles.newTitle} className={styles.scrollOuter}>
-            <h1>Ferrari 812 Superfast</h1>
+            <h1>{heroTitulo}</h1>
             <button onClick={test}>
               Conheça
               <div>
@@ -247,6 +256,7 @@ const Home = () => {
             <button onClick={() => navigate("/shop?categoria=suv")}>SUV</button>
           </div>
         </section>
+        {cards.length > 0 && (
         <section
           id={styles.highlights}
           className={animating ? styles[animating] : ""}
@@ -255,20 +265,20 @@ const Home = () => {
           <div id={styles.info}>
             <h1>
               {animating != "prev"
-                ? `${destaques.find((item) => item.id === cards[0].id)?.marca}`
-                : `${destaques.find((item) => item.id === cards[1].id)?.marca}`}
+                ? `${destaques.find((item) => item.id === cards[0]?.id)?.marca}`
+                : `${destaques.find((item) => item.id === cards[1]?.id)?.marca}`}
             </h1>
             <h2>
               {animating != "prev"
-                ? `${destaques.find((item) => item.id === cards[0].id)?.modelo}`
+                ? `${destaques.find((item) => item.id === cards[0]?.id)?.modelo}`
                 : `${
-                    destaques.find((item) => item.id === cards[1].id)?.modelo
+                    destaques.find((item) => item.id === cards[1]?.id)?.modelo
                   }`}
             </h2>
             <p>
               {animating != "prev"
-                ? `${destaques.find((item) => item.id === cards[0].id)?.desc}`
-                : `${destaques.find((item) => item.id === cards[1].id)?.desc}`}
+                ? `${destaques.find((item) => item.id === cards[0]?.id)?.desc}`
+                : `${destaques.find((item) => item.id === cards[1]?.id)?.desc}`}
             </p>
           </div>
           <div id={styles.floatCar}>
@@ -276,17 +286,17 @@ const Home = () => {
               src={
                 animating != "prev"
                   ? `${
-                      destaques.find((item) => item.id === cards[0].id)?.float
+                      destaques.find((item) => item.id === cards[0]?.id)?.float
                     }`
                   : `${
-                      destaques.find((item) => item.id === cards[1].id)?.float
+                      destaques.find((item) => item.id === cards[1]?.id)?.float
                     }`
               }
               alt=""
             />
           </div>
-          {banner.map((src, index) => (
-            <img src={src} alt={`Carro ${index}`} id={styles.bgImg} />
+          {banner.filter(Boolean).map((src, index) => (
+            <img src={src} alt={`Carro ${index}`} id={styles.bgImg} key={index} />
           ))}
           <div id={styles.sliderBtns}>
             <button
@@ -305,13 +315,14 @@ const Home = () => {
             </button>
           </div>
           <div id={styles.slider}>
-            {cards.map((item, index) => (
+            {cards.filter(Boolean).map((item, index) => (
               <div key={index} className={styles.item}>
-                <img src={item.card} alt={`Carro ${index}`} />
+                <img src={item?.card} alt={`Carro ${index}`} />
               </div>
             ))}
           </div>
         </section>
+        )}
         <Footer />
         <Toaster toastOptions={{ style: { borderRadius: 0 } }} />
       </div>

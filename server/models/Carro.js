@@ -52,6 +52,18 @@ const Carro = sequelize.define(
       type: DataTypes.ENUM("sport", "suv", "sedan"),
       allowNull: false,
     },
+    destaque: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    hero: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    hero_imagem_base64: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
   },
   {
     tableName: "carros",

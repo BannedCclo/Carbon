@@ -21,6 +21,9 @@ const AddCarModal: React.FC<AddCarModalProps> = ({ onClose, onAdd }) => {
   const [descricao, setDescricao] = useState("");
   const [categoria, setCategoria] = useState("sport");
   const [imagens, setImagens] = useState<string[]>([]);
+  const [destaque, setDestaque] = useState(false);
+  const [hero, setHero] = useState(false);
+  const [heroImagem, setHeroImagem] = useState<string | null>(null);
 
   const [isDragging, setIsDragging] = useState(false);
 
@@ -64,6 +67,14 @@ const AddCarModal: React.FC<AddCarModalProps> = ({ onClose, onAdd }) => {
     setImagens((prev) => prev.filter((_, index) => index !== indexToRemove));
   };
 
+  const handleHeroImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !file.type.startsWith("image/")) return;
+    const reader = new FileReader();
+    reader.onloadend = () => setHeroImagem(reader.result as string);
+    reader.readAsDataURL(file);
+  };
+
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -85,6 +96,9 @@ const AddCarModal: React.FC<AddCarModalProps> = ({ onClose, onAdd }) => {
       descricao,
       categoria,
       imagensBase64: imagens,
+      destaque,
+      hero,
+      hero_imagem_base64: hero ? heroImagem : null,
     };
 
     try {
@@ -277,6 +291,57 @@ const AddCarModal: React.FC<AddCarModalProps> = ({ onClose, onAdd }) => {
                   </div>
                 )}
               </div>
+
+              <div className={`${styles.inputWrapper} ${styles.fullWidth}`}>
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={destaque}
+                    onChange={(e) => setDestaque(e.target.checked)}
+                  />{" "}
+                  Exibir na seção "Destaques" da home
+                </label>
+              </div>
+
+              <div className={`${styles.inputWrapper} ${styles.fullWidth}`}>
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={hero}
+                    onChange={(e) => setHero(e.target.checked)}
+                  />{" "}
+                  Usar como carro em destaque no topo (hero) da home
+                </label>
+                <p className={styles.helperText}>
+                  Só um carro pode ser o destaque do hero por vez; marcar
+                  este substitui o atual.
+                </p>
+              </div>
+
+              {hero && (
+                <div className={`${styles.inputWrapper} ${styles.fullWidth}`}>
+                  <label>Imagem de fundo do hero (opcional)</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleHeroImageChange}
+                  />
+                  {heroImagem && (
+                    <div className={styles.imagePreviews}>
+                      <div className={styles.previewCard}>
+                        <img src={heroImagem} alt="Preview do hero" />
+                        <button
+                          type="button"
+                          className={styles.removeImageBtn}
+                          onClick={() => setHeroImagem(null)}
+                        >
+                          &times;
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </form>
         </div>
