@@ -32,10 +32,10 @@
 
 #loginForm {
   box-sizing: border-box;
-  padding: 0 10px;
+  padding: 2.5rem 10px;
   display: flex;
   flex-flow: column;
-  justify-content: center;
+  justify-content: safe center;
   align-items: center;
   gap: 1.5rem;
   background-color: #ddd;

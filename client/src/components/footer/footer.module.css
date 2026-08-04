@@ -37,6 +37,7 @@ footer section {
   display: grid;
   justify-items: center;
   align-items: start;
+  gap: 24px;
 }
 
 footer section:nth-last-child(1) {
