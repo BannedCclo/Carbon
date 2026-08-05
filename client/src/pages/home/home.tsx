@@ -24,6 +24,7 @@ import { useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../../services/api";
 
 const HERO_VIDEO_SRC = "/ferrari-812-superfast.mp4";
+const HERO_VIDEO_SRC_MOBILE = "/ferrari-812-superfast-mobile.mp4";
 const HERO_POSTER_SRC = "/ferrari-812-poster.jpg";
 const HERO_TITLE_FALLBACK = "Ferrari 812 Superfast";
 
@@ -102,6 +103,9 @@ const Home = () => {
     ? `${heroCarro.marca} ${heroCarro.modelo}`
     : HERO_TITLE_FALLBACK;
   const heroPoster = heroCarro?.hero_imagem_base64 || HERO_POSTER_SRC;
+  // Foto da loja (não o frame do vídeo) - é a que fica nítida, centralizada,
+  // por cima do vídeo desfocado no mobile (ver seção #new abaixo).
+  const heroShopImage = heroCarro?.imagens?.[0]?.imagem_base64 || heroPoster;
 
   const destaques = carros
     .filter((c) => c.destaque)
@@ -329,13 +333,36 @@ const Home = () => {
               <source src={HERO_VIDEO_SRC} />
             </video>
           ) : (
-            <img
-              className={styles.heroMedia}
-              src={heroPoster}
-              alt=""
-              loading="eager"
-              fetchPriority="high"
-            />
+            <>
+              <video
+                className={styles.heroMedia}
+                muted
+                loop
+                autoPlay
+                playsInline
+                preload="auto"
+                poster={heroPoster}
+              >
+                <source src={HERO_VIDEO_SRC_MOBILE} />
+              </video>
+              <div className={styles.heroBlur}></div>
+              <div className={styles.heroPosterWrap}>
+                <img
+                  className={styles.heroPoster}
+                  src={heroShopImage}
+                  alt=""
+                  loading="eager"
+                  fetchPriority="high"
+                />
+                <div className={styles.heroBadge}>
+                  <img
+                    className={styles.heroBadgeLogo}
+                    src={FerrariLogo}
+                    alt="Ferrari"
+                  />
+                </div>
+              </div>
+            </>
           )}
           <header>
             <button

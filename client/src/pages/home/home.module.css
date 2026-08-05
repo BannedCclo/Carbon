@@ -76,6 +76,60 @@ body {
   filter: brightness(0.8);
 }
 
+/* Mobile: o vídeo do hero é 16:9 e a tela é retrato, então cover recorta
+   demais pra caber sem distorcer. Em vez de travar num frame estático
+   (como antes), o vídeo continua tocando ao fundo (mesmo enquadramento
+   de .heroMedia, sem alteração) só que desfocado via backdrop-filter, e
+   por cima entra, centralizada, a foto nítida do carro em destaque - o
+   mesmo tratamento de "blur de fundo + card nítido no centro" usado pra
+   conteúdo paisagem em tela retrato. */
+#new .heroBlur {
+  position: absolute;
+  inset: 0;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+#new .heroPosterWrap {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(88vw, 480px);
+  aspect-ratio: 16 / 9;
+  border: 5px solid #0e0b25;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+#new .heroPoster {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Selo de marca sobre a foto nítida, no mesmo estilo dos chips quadrados
+   usados no resto da seção (borda sólida #0e0b25, sem arredondamento). O
+   logo é um traço preto (ver ferrarilogo.svg) - o chip claro por trás
+   garante contraste em qualquer foto, já que o fundo por trás varia por
+   carro. */
+#new .heroBadge {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  display: flex;
+  align-items: center;
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 2px solid #0e0b25;
+}
+
+#new .heroBadgeLogo {
+  height: clamp(16px, 4vw, 22px);
+  width: auto;
+  display: block;
+}
+
 /* height + padding em box-sizing: border-box (reset global) esmagava o
    conteúdo do header; a altura passa a ser mínima e a logo ganha tamanho
    próprio. */
@@ -505,7 +559,19 @@ body {
 @media (max-width: 1279px) {
   #slider {
     width: calc(3 * var(--card-w) + 2 * var(--card-gap));
-    overflow: clip;
+    /* overflow-x (não o shorthand overflow): só o eixo X precisa recortar,
+       pra manter a janela de 3 cards. O ativo (.item:nth-child(1)) escala
+       1.2x a partir do centro, ultrapassando a altura natural do slider -
+       com overflow:clip nos dois eixos isso cortava as bordas superior e
+       inferior do card em destaque. Diferente de hidden, overflow-x:clip
+       sozinho não força overflow-y pra auto/scroll, então o eixo Y fica
+       livre sem ganhar scrollbar. */
+    overflow-x: clip;
+    overflow-y: visible;
+    /* Espaço extra pro card ativo "vazar" verticalmente sem encostar no
+       texto acima nem nos botões abaixo, já que ele agora escala fora dos
+       limites do slider (ver overflow-y acima). */
+    margin-top: clamp(16px, 4vw, 32px);
   }
 
   /* Traz o último card (o "anterior" na ordem circular) para antes do
