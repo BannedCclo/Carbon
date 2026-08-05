@@ -103,9 +103,14 @@ const Home = () => {
     ? `${heroCarro.marca} ${heroCarro.modelo}`
     : HERO_TITLE_FALLBACK;
   const heroPoster = heroCarro?.hero_imagem_base64 || HERO_POSTER_SRC;
-  // Foto da loja (não o frame do vídeo) - é a que fica nítida, centralizada,
-  // por cima do vídeo desfocado no mobile (ver seção #new abaixo).
-  const heroShopImage = heroCarro?.imagens?.[0]?.imagem_base64 || heroPoster;
+  // Fotos da loja (não o frame do vídeo) - ficam nítidas, centralizadas, por
+  // cima do vídeo desfocado no mobile (ver seção #new abaixo). Todas as fotos
+  // cadastradas para o carro em destaque entram no carrossel; sem nenhuma
+  // cadastrada, cai no poster estático de sempre.
+  const heroImages =
+    heroCarro?.imagens && heroCarro.imagens.length > 0
+      ? heroCarro.imagens.map((img) => img.imagem_base64)
+      : [heroPoster];
 
   const destaques = carros
     .filter((c) => c.destaque)
@@ -122,6 +127,21 @@ const Home = () => {
         float: curada?.float || imagem,
       };
     });
+
+  const [heroImageIndex, setHeroImageIndex] = useState(0);
+
+  useEffect(() => {
+    setHeroImageIndex(0);
+  }, [heroCarro?.id]);
+
+  useEffect(() => {
+    if (heroImages.length <= 1) return;
+    const id = setInterval(() => {
+      setHeroImageIndex((prev) => (prev + 1) % heroImages.length);
+    }, 4000);
+    return () => clearInterval(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [heroImages.length]);
 
   const [active, setActive] = useState(false);
   const toggleButtonRef = useRef<HTMLButtonElement>(null);
@@ -347,20 +367,33 @@ const Home = () => {
               </video>
               <div className={styles.heroBlur}></div>
               <div className={styles.heroPosterWrap}>
-                <img
-                  className={styles.heroPoster}
-                  src={heroShopImage}
-                  alt=""
-                  loading="eager"
-                  fetchPriority="high"
-                />
-                <div className={styles.heroBadge}>
+                {heroImages.map((src, index) => (
                   <img
-                    className={styles.heroBadgeLogo}
-                    src={FerrariLogo}
-                    alt="Ferrari"
+                    key={index}
+                    className={`${styles.heroPoster} ${
+                      index === heroImageIndex ? styles.heroPosterActive : ""
+                    }`}
+                    src={src}
+                    alt=""
+                    loading={index === 0 ? "eager" : "lazy"}
+                    fetchPriority={index === 0 ? "high" : "auto"}
                   />
-                </div>
+                ))}
+                {heroImages.length > 1 && (
+                  <div className={styles.heroPosterDots}>
+                    {heroImages.map((_, index) => (
+                      <button
+                        key={index}
+                        type="button"
+                        className={`${styles.heroPosterDot} ${
+                          index === heroImageIndex ? styles.active : ""
+                        }`}
+                        aria-label={`Ver foto ${index + 1}`}
+                        onClick={() => setHeroImageIndex(index)}
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
             </>
           )}
@@ -375,7 +408,9 @@ const Home = () => {
               aria-label={active ? "Fechar menu" : "Abrir menu"}
               aria-expanded={active}
             >
-              <i className={active ? "fa-solid fa-xmark" : "fa-solid fa-bars"} />
+              <i
+                className={active ? "fa-solid fa-xmark" : "fa-solid fa-bars"}
+              />
             </button>
             <img src={textLogoBigWhite} alt="" />
           </header>
@@ -417,74 +452,81 @@ const Home = () => {
           </div>
         </section>
         {cards.length > 0 && (
-        <section
-          ref={highlightsRef}
-          id={styles.highlights}
-          className={`${animating ? styles[animating] : ""} ${
-            revealed ? styles.revealed : ""
-          }`}
-        >
-          <h1>Destaques</h1>
-          <div id={styles.info}>
-            <h1>
-              {animating != "prev"
-                ? `${destaques.find((item) => item.id === cards[0]?.id)?.marca}`
-                : `${destaques.find((item) => item.id === cards[1]?.id)?.marca}`}
-            </h1>
-            <h2>
-              {animating != "prev"
-                ? `${destaques.find((item) => item.id === cards[0]?.id)?.modelo}`
-                : `${
-                    destaques.find((item) => item.id === cards[1]?.id)?.modelo
-                  }`}
-            </h2>
-            <p>
-              {animating != "prev"
-                ? `${destaques.find((item) => item.id === cards[0]?.id)?.desc}`
-                : `${destaques.find((item) => item.id === cards[1]?.id)?.desc}`}
-            </p>
-          </div>
-          <div id={styles.floatCar}>
-            <img
-              src={
-                animating != "prev"
-                  ? `${
-                      destaques.find((item) => item.id === cards[0]?.id)?.float
-                    }`
+          <section
+            ref={highlightsRef}
+            id={styles.highlights}
+            className={`${animating ? styles[animating] : ""} ${
+              revealed ? styles.revealed : ""
+            }`}
+          >
+            <h1>Destaques</h1>
+            <div id={styles.info}>
+              <h1>
+                {animating != "prev"
+                  ? `${destaques.find((item) => item.id === cards[0]?.id)?.marca}`
+                  : `${destaques.find((item) => item.id === cards[1]?.id)?.marca}`}
+              </h1>
+              <h2>
+                {animating != "prev"
+                  ? `${destaques.find((item) => item.id === cards[0]?.id)?.modelo}`
                   : `${
-                      destaques.find((item) => item.id === cards[1]?.id)?.float
-                    }`
-              }
-              alt=""
-            />
-          </div>
-          {banner.filter(Boolean).map((src, index) => (
-            <img src={src} alt={`Carro ${index}`} id={styles.bgImg} key={index} />
-          ))}
-          <div id={styles.sliderBtns}>
-            <button
-              onClick={() => {
-                click("prev");
-              }}
-            >
-              <i className="fa-solid fa-arrow-left"></i>
-            </button>
-            <button
-              onClick={() => {
-                click("next");
-              }}
-            >
-              <i className="fa-solid fa-arrow-right"></i>
-            </button>
-          </div>
-          <div id={styles.slider}>
-            {cards.filter(Boolean).map((item, index) => (
-              <div key={index} className={styles.item}>
-                <img src={item?.card} alt={`Carro ${index}`} />
-              </div>
+                      destaques.find((item) => item.id === cards[1]?.id)?.modelo
+                    }`}
+              </h2>
+              <p>
+                {animating != "prev"
+                  ? `${destaques.find((item) => item.id === cards[0]?.id)?.desc}`
+                  : `${destaques.find((item) => item.id === cards[1]?.id)?.desc}`}
+              </p>
+            </div>
+            <div id={styles.floatCar}>
+              <img
+                src={
+                  animating != "prev"
+                    ? `${
+                        destaques.find((item) => item.id === cards[0]?.id)
+                          ?.float
+                      }`
+                    : `${
+                        destaques.find((item) => item.id === cards[1]?.id)
+                          ?.float
+                      }`
+                }
+                alt=""
+              />
+            </div>
+            {banner.filter(Boolean).map((src, index) => (
+              <img
+                src={src}
+                alt={`Carro ${index}`}
+                id={styles.bgImg}
+                key={index}
+              />
             ))}
-          </div>
-        </section>
+            <div id={styles.sliderBtns}>
+              <button
+                onClick={() => {
+                  click("prev");
+                }}
+              >
+                <i className="fa-solid fa-arrow-left"></i>
+              </button>
+              <button
+                onClick={() => {
+                  click("next");
+                }}
+              >
+                <i className="fa-solid fa-arrow-right"></i>
+              </button>
+            </div>
+            <div id={styles.slider}>
+              {cards.filter(Boolean).map((item, index) => (
+                <div key={index} className={styles.item}>
+                  <img src={item?.card} alt={`Carro ${index}`} />
+                </div>
+              ))}
+            </div>
+          </section>
         )}
         <Footer />
         <Toaster toastOptions={{ style: { borderRadius: 0 } }} />

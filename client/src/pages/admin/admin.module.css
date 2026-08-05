@@ -19,6 +19,7 @@
 }
 
 .sidebarHeader {
+    position: relative;
     padding: 24px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     display: flex;
@@ -90,6 +91,30 @@
     font-weight: 600;
 }
 
+.backButton {
+    position: absolute;
+    left: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    border-radius: 8px;
+    color: #cbd5e1;
+    font-size: 1.1rem;
+    text-decoration: none;
+    transition: all 0.2s ease-in-out;
+    flex-shrink: 0;
+}
+
+.backButton:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+    color: #fff;
+}
+
 .contentArea {
     padding: clamp(16px, 4vw, 32px);
 }
@@ -110,6 +135,10 @@
 
     .sidebarHeader {
         padding: 16px;
+    }
+
+    .backButton {
+        left: 16px;
     }
 
     .sidebarNav {

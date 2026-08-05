@@ -50,19 +50,13 @@ const Admin = () => {
       {/* Sidebar */}
       <aside className={styles.sidebar}>
         <div className={styles.sidebarHeader}>
+          <Link to="/" className={styles.backButton} aria-label="Voltar">
+            <i className="fa-solid fa-arrow-left"></i>
+          </Link>
           <h2>Painel Admin</h2>
         </div>
         <nav className={styles.sidebarNav}>
           <ul>
-            <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
-              <li>
-                <i
-                  className="fa-solid fa-arrow-left"
-                  style={{ marginRight: "8px" }}
-                ></i>{" "}
-                Voltar
-              </li>
-            </Link>
             <li
               className={activeTab === "users" ? styles.active : ""}
               onClick={() => setActiveTab("users")}

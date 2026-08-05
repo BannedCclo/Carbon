@@ -11,7 +11,6 @@ body {
    login/cadastro/etc mesmo no mobile, duplicando a barra de rolagem interna
    dos formulários. */
 @media (min-width: 1280px) {
-
   html,
   body {
     overflow-y: scroll;
@@ -102,10 +101,43 @@ body {
 }
 
 #new .heroPoster {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
+  opacity: 0;
+  transition: opacity 0.6s ease-in-out;
+}
+
+#new .heroPosterActive {
+  opacity: 1;
+}
+
+/* Indicadores do carrossel de fotos do carro em destaque - mesmo canto
+   oposto ao selo da marca, para não competir por espaço com ele. */
+#new .heroPosterDots {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  z-index: 1;
+  display: flex;
+  gap: 6px;
+}
+
+#new .heroPosterDot {
+  width: 7px;
+  height: 7px;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(14, 11, 37, 0.6);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#new .heroPosterDot.active {
+  background: #fff;
 }
 
 /* Selo de marca sobre a foto nítida, no mesmo estilo dos chips quadrados
@@ -113,22 +145,6 @@ body {
    logo é um traço preto (ver ferrarilogo.svg) - o chip claro por trás
    garante contraste em qualquer foto, já que o fundo por trás varia por
    carro. */
-#new .heroBadge {
-  position: absolute;
-  right: 10px;
-  bottom: 10px;
-  display: flex;
-  align-items: center;
-  padding: 8px 10px;
-  background: rgba(255, 255, 255, 0.92);
-  border: 2px solid #0e0b25;
-}
-
-#new .heroBadgeLogo {
-  height: clamp(16px, 4vw, 22px);
-  width: auto;
-  display: block;
-}
 
 /* height + padding em box-sizing: border-box (reset global) esmagava o
    conteúdo do header; a altura passa a ser mínima e a logo ganha tamanho
@@ -194,7 +210,7 @@ body {
   scale: 0.95;
 }
 
-#newTitle button>div {
+#newTitle button > div {
   display: flex;
   flex-direction: row;
   position: absolute;
@@ -206,28 +222,28 @@ body {
   transition: all 1s ease-in-out;
 }
 
-#newTitle button:hover>div {
+#newTitle button:hover > div {
   left: 0;
 }
 
 /* Em telas de toque não existe :hover, então a revelação só dispara no
    toque — e mais rápido, porque o dedo não fica "parado" sobre o botão. */
 @media (hover: none) {
-  #newTitle button>div {
+  #newTitle button > div {
     transition: all 0.35s ease-in-out;
   }
 
-  #newTitle button:active>div {
+  #newTitle button:active > div {
     left: 0;
   }
 }
 
-#newTitle button>div>div {
+#newTitle button > div > div {
   flex: 1;
   background-color: gold;
 }
 
-#newTitle button>div>div:nth-child(1) {
+#newTitle button > div > div:nth-child(1) {
   & img {
     width: 90%;
   }
@@ -244,17 +260,17 @@ body {
   flex: 1;
 }
 
-#flag>div:nth-child(1) {
+#flag > div:nth-child(1) {
   flex: 1;
   background-color: green;
 }
 
-#flag>div:nth-child(2) {
+#flag > div:nth-child(2) {
   flex: 1;
   background-color: white;
 }
 
-#flag>div:nth-child(3) {
+#flag > div:nth-child(3) {
   flex: 1;
   background-color: red;
 }
@@ -277,7 +293,7 @@ body {
   z-index: 2;
 }
 
-#buttons>button {
+#buttons > button {
   width: 100%;
   max-width: 400px;
   height: clamp(64px, 12vw, 100px);
@@ -292,22 +308,24 @@ body {
 
 /* inset: -5px reproduz o antigo 310x110 deslocado de -5px em um botão de
    300x100, mas continua valendo para qualquer tamanho de botão. */
-#buttons>button::after {
+#buttons > button::after {
   content: "";
   inset: -5px;
-  background: conic-gradient(from 0deg,
-      #0e0b25 0%,
-      #0e0b25 var(--percentage),
-      transparent var(--percentage));
+  background: conic-gradient(
+    from 0deg,
+    #0e0b25 0%,
+    #0e0b25 var(--percentage),
+    transparent var(--percentage)
+  );
   position: absolute;
   z-index: -1;
 }
 
-#buttons>button:hover::after {
+#buttons > button:hover::after {
   animation: borderAnimation 0.5s linear forwards;
 }
 
-#buttons>img {
+#buttons > img {
   width: 100%;
 }
 
@@ -319,7 +337,7 @@ body {
     gap: 5vh;
   }
 
-  #buttons>button {
+  #buttons > button {
     width: 300px;
     max-width: none;
     height: 100px;
@@ -413,7 +431,7 @@ body {
   filter: none;
 }
 
-#highlights>h1 {
+#highlights > h1 {
   order: 1;
   position: relative;
   z-index: 3;
@@ -760,7 +778,7 @@ body {
     padding: 0;
   }
 
-  #highlights>h1 {
+  #highlights > h1 {
     position: absolute;
     top: 20px;
     padding-inline: 0;
@@ -810,7 +828,10 @@ body {
   #slider {
     position: absolute;
     bottom: clamp(40px, 8vh, 100px);
-    left: max(var(--gutter), calc(100% - var(--float-w) - var(--dest-margin) - 50px));
+    left: max(
+      var(--gutter),
+      calc(100% - var(--float-w) - var(--dest-margin) - 50px)
+    );
     align-self: auto;
     padding-left: 0;
   }

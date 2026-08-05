@@ -62,6 +62,9 @@ const CarDetailsModal: React.FC<CarDetailsModalProps> = ({
   };
 
   const [isDragging, setIsDragging] = useState(false);
+  const [draggedImageIndex, setDraggedImageIndex] = useState<number | null>(
+    null,
+  );
 
   const processFiles = (files: File[]) => {
     files.forEach((file) => {
@@ -101,6 +104,33 @@ const CarDetailsModal: React.FC<CarDetailsModalProps> = ({
 
   const removeImage = (indexToRemove: number) => {
     setImagens((prev) => prev.filter((_, index) => index !== indexToRemove));
+  };
+
+  const handleImageDragStart = (
+    e: React.DragEvent<HTMLDivElement>,
+    index: number,
+  ) => {
+    setDraggedImageIndex(index);
+    e.dataTransfer.effectAllowed = "move";
+  };
+
+  const handleImageDragOver = (
+    e: React.DragEvent<HTMLDivElement>,
+    index: number,
+  ) => {
+    e.preventDefault();
+    if (draggedImageIndex === null || draggedImageIndex === index) return;
+    setImagens((prev) => {
+      const updated = [...prev];
+      const [moved] = updated.splice(draggedImageIndex, 1);
+      updated.splice(index, 0, moved);
+      return updated;
+    });
+    setDraggedImageIndex(index);
+  };
+
+  const handleImageDragEnd = () => {
+    setDraggedImageIndex(null);
   };
 
   const handleDelete = async () => {
@@ -430,20 +460,42 @@ const CarDetailsModal: React.FC<CarDetailsModalProps> = ({
                     </label>
                   </div>
                   {imagens.length > 0 && (
-                    <div className={styles.imagePreviews}>
-                      {imagens.map((base64, idx) => (
-                        <div key={idx} className={styles.previewCard}>
-                          <img src={base64} alt={`Preview ${idx}`} />
-                          <button
-                            type="button"
-                            className={styles.removeImageBtn}
-                            onClick={() => removeImage(idx)}
+                    <>
+                      <p className={styles.helperText}>
+                        Arraste as imagens para reordená-las. A primeira será
+                        a imagem principal.
+                      </p>
+                      <div className={styles.imagePreviews}>
+                        {imagens.map((base64, idx) => (
+                          <div
+                            key={idx}
+                            className={`${styles.previewCard} ${
+                              draggedImageIndex === idx ? styles.dragging : ""
+                            }`}
+                            draggable
+                            onDragStart={(e) => handleImageDragStart(e, idx)}
+                            onDragOver={(e) => handleImageDragOver(e, idx)}
+                            onDragEnd={handleImageDragEnd}
                           >
-                            &times;
-                          </button>
-                        </div>
-                      ))}
-                    </div>
+                            <div className={styles.dragHandle}>
+                              <i className="fa-solid fa-grip-vertical"></i>
+                            </div>
+                            <img
+                              src={base64}
+                              alt={`Preview ${idx}`}
+                              draggable={false}
+                            />
+                            <button
+                              type="button"
+                              className={styles.removeImageBtn}
+                              onClick={() => removeImage(idx)}
+                            >
+                              &times;
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </>
                   )}
                 </div>
               </div>

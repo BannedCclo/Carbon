@@ -327,7 +327,8 @@
 
 .carSpecs {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
+    gap: 40px;
     padding-top: 15px;
     border-top: 1px solid #334155;
     margin-bottom: 25px;
@@ -336,9 +337,10 @@
 .specItem {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     color: #94a3b8;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
+    white-space: nowrap;
 }
 
 .specItem i {

@@ -255,12 +255,8 @@ const Shop: React.FC = () => {
                           <span>{carro.rodagem_km.toLocaleString()} km</span>
                         </div>
                         <div className={styles.specItem}>
-                          <i className="fa-solid fa-gas-pump"></i>
-                          <span>{carro.combustivel}</span>
-                        </div>
-                        <div className={styles.specItem}>
-                          <i className="fa-solid fa-gear"></i>
-                          <span>{carro.cambio.split(" ")[0]}</span>
+                          <i className="fa-solid fa-calendar"></i>
+                          <span>{carro.ano}</span>
                         </div>
                       </div>
 
