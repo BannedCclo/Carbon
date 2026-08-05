@@ -413,11 +413,15 @@ body {
   animation: blurIn 0.45s forwards;
 }
 
+/* Mobile: título/texto e a imagem do carro ficam empilhados na vertical
+   (ver comentário em #highlights), então uma saída para cima (translateY)
+   fazia o texto sobrepor o carro antes de sumir. Os dois agora saem
+   juntos, na horizontal, no mesmo sentido do avanço/retrocesso - como um
+   slide único - nunca cruzando o caminho um do outro. O desktop (>=1280px,
+   lado a lado) recupera a saída vertical original mais abaixo, onde não
+   há esse problema de sobreposição. */
 .next #info,
-.prev #info {
-  animation: blurOut 0.6s forwards;
-}
-
+.prev #info,
 .next #floatCar,
 .prev #floatCar {
   animation: fadeSide 0.6s forwards;
@@ -474,16 +478,26 @@ body {
   width: min(500px, 85vw);
 }
 
+/* Mobile: carrossel centralizado (card ativo no meio, vizinhos espiando
+   dos dois lados) em vez do formato desktop (ativo grudado na borda
+   esquerda, nada antes dele) - fica mais natural para o padrão de tela
+   pequena. align-self:center substitui o flex-start usado no desktop. */
 #slider {
   order: 4;
   position: relative;
   z-index: 3;
   display: flex;
   gap: var(--card-gap);
-  align-self: flex-start;
-  /* O card ativo escala 1.2 com transform-origin: right center, ou seja,
-     cresce para a esquerda; sem esse respiro ele sairia cortado. */
-  padding-left: calc(var(--gutter) + 0.2 * var(--card-w));
+  align-self: center;
+}
+
+/* Traz o último card (o "anterior" na ordem circular) para antes do
+   ativo via `order` - não mexe na ordem real do DOM, da qual as animações
+   .next/.prev dependem via :nth-child. Só se aplica fora de transição
+   para não trocar de lugar no meio da animação (o array ganha um item
+   fantasma temporário, e :last-child passaria a apontar pra ele). */
+#highlights:not(.next):not(.prev) #slider .item:last-child {
+  order: -1;
 }
 
 #sliderBtns {
@@ -651,6 +665,14 @@ body {
     position: absolute;
   }
 
+  /* Lado a lado (info à esquerda, floatCar à direita) não tem o risco de
+     sobreposição do empilhamento mobile, então a saída original (texto
+     sobe e esmaece) volta a valer aqui. */
+  .next #info,
+  .prev #info {
+    animation: blurOut 0.6s forwards;
+  }
+
   /* left em vez de right: as animações do carrossel dependem desse anchor
      (com `right`, acrescentar um card deslocaria a fila inteira). O deslo-
      camento usa --float-w/--dest-margin para acompanhar o carro em vez de
@@ -661,6 +683,13 @@ body {
     left: max(var(--gutter), calc(100% - var(--float-w) - var(--dest-margin) - 50px));
     align-self: auto;
     padding-left: 0;
+  }
+
+  /* O carrossel centralizado (card anterior espiando à esquerda) é só
+     para mobile - no desktop o ativo volta a ser o primeiro, sem nada
+     antes dele. */
+  #highlights .item:last-child {
+    order: 0;
   }
 
   #sliderBtns {
@@ -829,11 +858,6 @@ Footer {
   #new video.heroMedia {
     animation: blackout;
     animation-timeline: view(0% 100%);
-  }
-
-  #highlights {
-    animation: lightOn;
-    animation-timeline: view(40% 0);
   }
 
   .scrollInner {
