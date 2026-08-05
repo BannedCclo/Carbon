@@ -333,7 +333,7 @@ body {
   --step-slot: calc(-1 * (var(--card-w) + var(--card-gap)));
 
   width: 100%;
-  min-height: 100vh;
+  min-height: 100dvh;
   overflow: clip;
   position: relative;
   scroll-snap-align: start;
@@ -344,12 +344,19 @@ body {
   justify-content: center;
   gap: clamp(14px, 2.5vh, 28px);
   padding: clamp(24px, 6vh, 60px) 0;
+
+  /* Revelação ao entrar na tela: era feita com animation-timeline: view(),
+     um recurso CSS ainda experimental e com suporte inconsistente em
+     navegadores mobile (o efeito ficava incompleto e o blur não
+     terminava de sumir). Agora um IntersectionObserver em JS aplica
+     styles.revealed quando a seção entra na tela, e a transição comum
+     abaixo cuida da suavização - funciona igual em qualquer navegador. */
+  filter: blur(5px) brightness(0.5);
+  transition: filter 0.6s ease;
 }
 
-@keyframes lightOn {
-  from {
-    filter: blur(5px) brightness(0.5);
-  }
+#highlights.revealed {
+  filter: none;
 }
 
 #highlights>h1 {
@@ -556,11 +563,16 @@ body {
   height: 100%;
 }
 
+/* aspect-ratio + object-fit:contain em vez de height:auto: cada carro tem
+   um PNG com proporção própria, então height:auto fazia a altura do
+   container (e com ela, a altura de #highlights e da página inteira)
+   mudar a cada troca de destaque, causando o "pulo" dos outros elementos. */
 #floatCar {
   order: 2;
   position: relative;
   z-index: 4;
   width: min(700px, 85vw);
+  aspect-ratio: 7 / 3;
   display: flex;
   align-items: center;
   animation: blurIn 0.45s forwards;
@@ -569,7 +581,8 @@ body {
 #floatCar img {
   position: relative;
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: contain;
 }
 
 /* Layout original: hero e destaques voltam ao posicionamento absoluto. */
@@ -587,8 +600,18 @@ body {
   }
 
   #highlights {
+    /* Deslocamentos e largura do carro escalam com clamp() em vez de px
+       fixos. Com valores cravados (100px/700px/750px), telas de laptop
+       (~1280–1600px) não tinham espaço para #info + #floatCar lado a lado
+       sem sobrepor — o carro cobria o título e os cards. Em telas bem
+       largas os clamps saturam no teto e o resultado é igual ao original. */
+    --dest-margin: clamp(24px, 5vw, 100px);
+    --dest-top: clamp(120px, 17vh, 150px);
+    --float-w: clamp(300px, 40vw, 700px);
+    --float-h: clamp(130px, 17vw, 300px);
+
     display: block;
-    height: 100vh;
+    height: 100dvh;
     gap: normal;
     padding: 0;
   }
@@ -601,47 +624,50 @@ body {
 
   #info {
     position: absolute;
-    left: 100px;
-    top: 150px;
+    left: var(--dest-margin);
+    top: var(--dest-top);
     width: auto;
+    max-width: calc(100% - var(--float-w) - 2 * var(--dest-margin) - 24px);
     padding-inline: 0;
     align-items: stretch;
     text-align: left;
   }
 
+  /* 100% aqui é relativo à largura de #info (já limitada por max-width
+     acima, não à viewport) — por isso não repete o cálculo do floatCar. */
   #info p {
-    width: 500px;
+    width: min(500px, 100%);
   }
 
   #floatCar {
     position: absolute;
-    right: 100px;
-    top: 150px;
-    width: 700px;
-    height: 300px;
+    right: var(--dest-margin);
+    top: var(--dest-top);
+    width: var(--float-w);
+    height: var(--float-h);
   }
 
   #floatCar img {
     position: absolute;
   }
 
-  /* calc(100% - 750px) em vez de 100vw: 100vw inclui a barra de rolagem e
-     empurrava o carrossel para fora, criando scroll horizontal. O anchor
-     continua sendo `left` porque as animações do carrossel dependem disso
-     (com `right`, acrescentar um card deslocaria a fila inteira). */
+  /* left em vez de right: as animações do carrossel dependem desse anchor
+     (com `right`, acrescentar um card deslocaria a fila inteira). O deslo-
+     camento usa --float-w/--dest-margin para acompanhar o carro em vez de
+     um valor cravado, evitando sobreposição em telas de laptop. */
   #slider {
     position: absolute;
-    bottom: 100px;
-    left: calc(100% - 750px);
+    bottom: clamp(40px, 8vh, 100px);
+    left: max(var(--gutter), calc(100% - var(--float-w) - var(--dest-margin) - 50px));
     align-self: auto;
     padding-left: 0;
   }
 
   #sliderBtns {
     position: absolute;
-    bottom: 100px;
-    left: 100px;
-    gap: 100px;
+    bottom: clamp(40px, 8vh, 100px);
+    left: var(--dest-margin);
+    gap: clamp(40px, 6vw, 100px);
   }
 }
 

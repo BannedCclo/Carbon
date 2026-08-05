@@ -136,6 +136,19 @@ const Home = () => {
       })),
     );
     setBanner(destaques.map((item) => item.bg));
+
+    // #floatCar só renderiza a imagem do carro ativo no momento - as dos
+    // outros destaques nunca chegam a entrar no DOM até você navegar até
+    // eles, então o navegador só começa a baixar aquele PNG (pesado) na
+    // hora da troca, e por ~2s a imagem antiga continua na tela. Criar um
+    // Image() para cada asset força o carregamento/cache adiantado.
+    destaques.forEach((item) => {
+      [item.bg, item.card, item.float].forEach((src) => {
+        if (!src) return;
+        const img = new Image();
+        img.src = src;
+      });
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [carrosLoaded]);
 
@@ -143,6 +156,42 @@ const Home = () => {
   const [buttonDark, setBtnDark] = useState(false);
   const timeout = 7000;
   let autoRun = useRef<NodeJS.Timeout | null>(null);
+  const finalizeRun = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (finalizeRun.current !== null) {
+        clearTimeout(finalizeRun.current);
+      }
+    };
+  }, []);
+
+  // Revela (tira o blur inicial) a seção de destaques quando ela entra na
+  // tela. Antes isso era feito com animation-timeline: view(), um recurso
+  // CSS ainda experimental e com suporte inconsistente em navegadores
+  // mobile - o blur ficava sem terminar de sumir. IntersectionObserver
+  // tem suporte universal e não depende do navegador aceitar scroll-driven
+  // animations, então funciona igual em qualquer dispositivo.
+  const highlightsRef = useRef<HTMLElement | null>(null);
+  const [revealed, setRevealed] = useState(false);
+
+  useEffect(() => {
+    const el = highlightsRef.current;
+    if (!el || revealed) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setRevealed(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.4 },
+    );
+    observer.observe(el);
+
+    return () => observer.disconnect();
+  }, [revealed, cards.length]);
 
   useEffect(() => {
     const whiteSection = document.querySelector(`#${styles.seeTypes}`);
@@ -171,36 +220,68 @@ const Home = () => {
   useEffect(() => {
     if (cards.length <= 1) return;
 
-    autoRun.current = setTimeout(() => {
-      click("next");
-    }, timeout);
+    const schedule = () => {
+      autoRun.current = setTimeout(() => {
+        click("next");
+      }, timeout);
+    };
 
-    return () => {
+    const clearAutoRun = () => {
       if (autoRun.current !== null) {
         clearTimeout(autoRun.current);
+        autoRun.current = null;
       }
+    };
+
+    schedule();
+
+    // Com a aba em segundo plano, esse setTimeout continua contando
+    // normalmente (só é jogado para intervalos de ~1s, não pausado), mas
+    // o requestAnimationFrame que o click() usava para iniciar a
+    // animação fica parado até a aba voltar ao foco - então um avanço
+    // automático disparado em background terminava sem nunca ter
+    // começado, dessincronizando cards/banner. Por isso pausamos o
+    // agendamento enquanto oculto e recomeçamos do zero ao voltar.
+    const handleVisibility = () => {
+      clearAutoRun();
+      if (document.hidden) return;
+      setAnimating(null);
+      schedule();
+    };
+
+    document.addEventListener("visibilitychange", handleVisibility);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibility);
+      clearAutoRun();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cards]);
 
   const click = (type: "next" | "prev") => {
-    if (animating || cards.length <= 1) return;
+    if (animating || cards.length <= 1 || document.hidden) return;
 
-    requestAnimationFrame(() => {
-      setAnimating(type);
-      if (type == "prev") {
-        setCards((prev) => [
-          prev[prev.length - 1],
-          ...prev.slice(0, -1),
-          prev[prev.length - 1],
-        ]);
-      }
-      if (type == "next") {
-        setCards((prev) => [...prev, prev[0]]);
-      }
-    });
+    // Início e fim da troca agora usam o mesmo mecanismo de timer. Antes
+    // o início rodava atrás de um requestAnimationFrame (pausado com a
+    // aba em segundo plano) enquanto o fim usava setTimeout (que continua
+    // contando em background) - um avanço automático disparado nesse
+    // meio tempo terminava a transição sem ela ter começado, corrompendo
+    // os arrays de cards/banner. CSS `animation` (keyframes) não precisa
+    // do truque de "esperar um frame" que `transition` exigiria, então
+    // dá para atualizar o estado direto aqui.
+    setAnimating(type);
+    if (type == "prev") {
+      setCards((prev) => [
+        prev[prev.length - 1],
+        ...prev.slice(0, -1),
+        prev[prev.length - 1],
+      ]);
+    }
+    if (type == "next") {
+      setCards((prev) => [...prev, prev[0]]);
+    }
 
-    setTimeout(() => {
+    finalizeRun.current = setTimeout(() => {
       setAnimating(null);
       if (type === "next") {
         setCards((prev) => [...prev.slice(1)]);
@@ -310,8 +391,11 @@ const Home = () => {
         </section>
         {cards.length > 0 && (
         <section
+          ref={highlightsRef}
           id={styles.highlights}
-          className={animating ? styles[animating] : ""}
+          className={`${animating ? styles[animating] : ""} ${
+            revealed ? styles.revealed : ""
+          }`}
         >
           <h1>Destaques</h1>
           <div id={styles.info}>

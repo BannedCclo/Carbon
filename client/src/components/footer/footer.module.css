@@ -64,7 +64,6 @@ footer button:hover {
   background-color: white;
 }
 
-
 .signatureContainer {
   grid-column: 1 / -1;
   display: flex;
@@ -89,10 +88,6 @@ footer ul:nth-last-child(1) {
 
 footer a {
   color: white;
-}
-
-footer section:nth-child(1) {
-  border-right: 1px solid #fff;
 }
 
 footer section:nth-last-child(1) {

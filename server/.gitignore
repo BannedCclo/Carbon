@@ -34,3 +34,5 @@ dist/
 
 # Outros
 coverage/
+.vercel
+.env*
