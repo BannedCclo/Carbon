@@ -115,6 +115,34 @@ body {
   opacity: 1;
 }
 
+/* Cobre o quadro enquanto a primeira foto do carrossel ainda não carregou,
+   para que o frame borrado do vídeo (.heroBlur, por baixo) não fique
+   visível através do quadro nesse meio-tempo. */
+#new .heroPosterLoading {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0e0b25;
+}
+
+#new .heroPosterSpinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(255, 255, 255, 0.25);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: heroPosterSpin 0.8s linear infinite;
+}
+
+@keyframes heroPosterSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 /* Indicadores do carrossel de fotos do carro em destaque - mesmo canto
    oposto ao selo da marca, para não competir por espaço com ele. */
 #new .heroPosterDots {

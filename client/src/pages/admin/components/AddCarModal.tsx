@@ -24,16 +24,17 @@ const AddCarModal: React.FC<AddCarModalProps> = ({ onClose, onAdd }) => {
 
   const [isDragging, setIsDragging] = useState(false);
 
-  const processFiles = (files: File[]) => {
-    files.forEach((file) => {
-      if (!file.type.startsWith("image/")) return;
+  const readFileAsDataURL = (file: File) =>
+    new Promise<string>((resolve) => {
       const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64String = reader.result as string;
-        setImagens((prev) => [...prev, base64String]);
-      };
+      reader.onloadend = () => resolve(reader.result as string);
       reader.readAsDataURL(file);
     });
+
+  const processFiles = async (files: File[]) => {
+    const imageFiles = files.filter((file) => file.type.startsWith("image/"));
+    const base64Strings = await Promise.all(imageFiles.map(readFileAsDataURL));
+    setImagens((prev) => [...prev, ...base64Strings]);
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {

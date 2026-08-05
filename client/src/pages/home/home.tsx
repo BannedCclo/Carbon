@@ -18,6 +18,7 @@ import svjBg from "../../assets/img/svjBg.jpg";
 import carSvg from "../../assets/svg/car.svg";
 import { jwtDecode } from "jwt-decode";
 import Footer from "../../components/footer/footer";
+import ShopCta from "../../components/footer/shopCta";
 import { MobileNav } from "../../components/nav/MobileNav";
 import { useMediaQuery } from "../../hooks/useMediaQuery";
 import { useNavigate } from "react-router-dom";
@@ -129,9 +130,19 @@ const Home = () => {
     });
 
   const [heroImageIndex, setHeroImageIndex] = useState(0);
+  // Enquanto a primeira foto do carrossel não carrega, o quadro mostra uma
+  // loading screen em vez de deixar o frame borrado do vídeo (que já está
+  // por baixo, ver .heroBlur) aparecer através dele. Também é preciso
+  // esperar `carrosLoaded`: até a API responder, heroImages cai no fallback
+  // HERO_POSTER_SRC, que é literalmente um frame estático extraído do
+  // próprio vídeo - exibi-lo mais cedo (só porque é local e carrega rápido)
+  // reproduziria exatamente o "frame travado" que essa loading screen existe
+  // para evitar.
+  const [heroImageLoaded, setHeroImageLoaded] = useState(false);
 
   useEffect(() => {
     setHeroImageIndex(0);
+    setHeroImageLoaded(false);
   }, [heroCarro?.id]);
 
   useEffect(() => {
@@ -226,9 +237,17 @@ const Home = () => {
 
     let animationFrameId: number;
 
+    // #highlights usa scroll-snap-align: start logo depois desta seção, então
+    // o snap trava com rect.bottom rente a 0 - às vezes alguns px acima por
+    // arredondamento de subpixel, faixa em que a seção de destaques (fundo
+    // escuro) já cobre visualmente o resto da seção branca. Sem tolerância,
+    // esse resto "tecnicamente ainda sobrepondo" prendia o ícone na cor
+    // escura, ilegível sobre o fundo escuro, até um scroll extra reavaliar.
+    const SNAP_TOLERANCE = 16;
+
     const checkOverlap = () => {
       const rect = whiteSection.getBoundingClientRect();
-      if (rect.top <= 80 && rect.bottom >= 0) {
+      if (rect.top <= 80 && rect.bottom > SNAP_TOLERANCE) {
         setBtnDark(true);
       } else {
         setBtnDark(false);
@@ -367,6 +386,11 @@ const Home = () => {
               </video>
               <div className={styles.heroBlur}></div>
               <div className={styles.heroPosterWrap}>
+                {(!carrosLoaded || !heroImageLoaded) && (
+                  <div className={styles.heroPosterLoading}>
+                    <span className={styles.heroPosterSpinner} />
+                  </div>
+                )}
                 {heroImages.map((src, index) => (
                   <img
                     key={index}
@@ -377,6 +401,11 @@ const Home = () => {
                     alt=""
                     loading={index === 0 ? "eager" : "lazy"}
                     fetchPriority={index === 0 ? "high" : "auto"}
+                    onLoad={
+                      index === 0
+                        ? () => setHeroImageLoaded(true)
+                        : undefined
+                    }
                   />
                 ))}
                 {heroImages.length > 1 && (
@@ -528,7 +557,9 @@ const Home = () => {
             </div>
           </section>
         )}
-        <Footer />
+        <Footer logo={<img src={textLogoBigWhite} alt="" />} backgroundColor="#0e0b25">
+          <ShopCta />
+        </Footer>
         <Toaster toastOptions={{ style: { borderRadius: 0 } }} />
       </div>
     </>

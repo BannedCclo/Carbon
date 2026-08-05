@@ -46,15 +46,17 @@ const EstoqueList: React.FC = () => {
     fetchCarros();
   }, []);
 
-  const filteredCarros = carros.filter((carro) => {
-    const term = searchTerm.toLowerCase();
-    return (
-      carro.id.toString().includes(term) ||
-      carro.marca.toLowerCase().includes(term) ||
-      carro.modelo.toLowerCase().includes(term) ||
-      carro.categoria.toLowerCase().includes(term)
-    );
-  });
+  const filteredCarros = carros
+    .filter((carro) => {
+      const term = searchTerm.toLowerCase();
+      return (
+        carro.id.toString().includes(term) ||
+        carro.marca.toLowerCase().includes(term) ||
+        carro.modelo.toLowerCase().includes(term) ||
+        carro.categoria.toLowerCase().includes(term)
+      );
+    })
+    .sort((a, b) => b.preco - a.preco);
 
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat("pt-BR", {

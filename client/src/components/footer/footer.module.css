@@ -1,38 +1,41 @@
-footer {
+.footer {
   width: 100%;
   min-height: 30vh;
   background-color: #0e0b25;
   box-sizing: border-box;
   padding-top: 50px;
+  padding-bottom: 50px;
   color: white;
 }
 
-footer header {
+.header {
   width: 100%;
   text-align: center;
   height: 50px;
 }
 
-footer img {
+.header img {
   height: 100%;
 }
 
-footer main {
+.main {
   margin-top: 50px;
   width: 100%;
   min-height: 30vh;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: start;
   flex-wrap: wrap;
   row-gap: 30px;
-  padding: 0 var(--gutter);
+  padding: 0 var(--gutter, clamp(16px, 5vw, 100px));
   box-sizing: border-box;
 }
 
-footer section {
+.leftSection,
+.rightSection {
+  flex: 1 1 50%;
+  min-width: 260px;
   height: 100%;
-  flex: 1 1 260px;
   color: white;
   display: grid;
   justify-items: center;
@@ -40,32 +43,11 @@ footer section {
   gap: 24px;
 }
 
-footer section:nth-last-child(1) {
-  grid-template-columns: 1fr 1fr;
-}
-
-footer h1 {
-  font-weight: 300;
-}
-
-footer button {
-  border: 0;
-  background-color: transparent;
-  border: 3px solid white;
-  color: white;
-  padding: 30px;
-  cursor: pointer;
-  font-size: 1.4em;
-  transition: 0.3s ease;
-}
-
-footer button:hover {
-  color: #0e0b25;
-  background-color: white;
+.rightSection {
+  border-left: 1px solid #fff;
 }
 
 .signatureContainer {
-  grid-column: 1 / -1;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -78,46 +60,60 @@ footer button:hover {
   margin-top: 20px;
 }
 
-footer ul {
+.contactList {
   list-style: none;
+  margin: 0 auto;
+  padding: 0;
+  display: grid;
+  grid-template-columns: auto auto;
+  column-gap: 12px;
+  row-gap: 8px;
 }
 
-footer ul:nth-last-child(1) {
+.contactItem {
+  display: contents;
+}
+
+.contactLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.contactIcon {
+  width: 1em;
+  text-align: center;
+}
+
+.contactLink {
+  color: white;
   text-align: end;
 }
 
-footer a {
-  color: white;
-}
-
-footer section:nth-last-child(1) {
-  border-left: 1px solid #fff;
-}
-
 @media (max-width: 768px) {
-  footer section:nth-child(1) {
-    border-right: none;
+  .leftSection {
     border-bottom: 1px solid #fff;
     padding-bottom: 20px;
   }
 
-  footer section:nth-last-child(1) {
+  .rightSection {
     border-left: none;
   }
 
-  footer button {
-    padding: 16px 24px;
+  .contactList {
+    row-gap: 12px;
+  }
+
+  .contactLabelText {
+    display: none;
+  }
+
+  .contactIcon {
     font-size: 1.1em;
   }
-}
 
-@media (max-width: 480px) {
-  footer section:nth-last-child(1) {
-    grid-template-columns: 1fr;
-    gap: 6px;
-  }
-
-  footer ul:nth-last-child(1) {
-    text-align: center;
+  .contactLink {
+    text-align: start;
   }
 }

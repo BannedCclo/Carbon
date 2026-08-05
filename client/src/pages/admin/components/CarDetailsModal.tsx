@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import styles from "./CarDetailsModal.module.css";
 import toast from "react-hot-toast";
 import { API_BASE_URL } from "../../../services/api";
@@ -65,17 +65,20 @@ const CarDetailsModal: React.FC<CarDetailsModalProps> = ({
   const [draggedImageIndex, setDraggedImageIndex] = useState<number | null>(
     null,
   );
+  const imageCardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const isPointerDraggingRef = useRef(false);
 
-  const processFiles = (files: File[]) => {
-    files.forEach((file) => {
-      if (!file.type.startsWith("image/")) return;
+  const readFileAsDataURL = (file: File) =>
+    new Promise<string>((resolve) => {
       const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64String = reader.result as string;
-        setImagens((prev) => [...prev, base64String]);
-      };
+      reader.onloadend = () => resolve(reader.result as string);
       reader.readAsDataURL(file);
     });
+
+  const processFiles = async (files: File[]) => {
+    const imageFiles = files.filter((file) => file.type.startsWith("image/"));
+    const base64Strings = await Promise.all(imageFiles.map(readFileAsDataURL));
+    setImagens((prev) => [...prev, ...base64Strings]);
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -106,31 +109,49 @@ const CarDetailsModal: React.FC<CarDetailsModalProps> = ({
     setImagens((prev) => prev.filter((_, index) => index !== indexToRemove));
   };
 
-  const handleImageDragStart = (
-    e: React.DragEvent<HTMLDivElement>,
+  const handleImagePointerDown = (
+    e: React.PointerEvent<HTMLDivElement>,
     index: number,
   ) => {
+    if ((e.target as HTMLElement).closest(`.${styles.removeImageBtn}`)) {
+      return;
+    }
+    isPointerDraggingRef.current = true;
     setDraggedImageIndex(index);
-    e.dataTransfer.effectAllowed = "move";
+    e.currentTarget.setPointerCapture(e.pointerId);
   };
 
-  const handleImageDragOver = (
-    e: React.DragEvent<HTMLDivElement>,
-    index: number,
-  ) => {
-    e.preventDefault();
-    if (draggedImageIndex === null || draggedImageIndex === index) return;
+  const handleImagePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!isPointerDraggingRef.current || draggedImageIndex === null) return;
+
+    const overIndex = imageCardRefs.current.findIndex((el) => {
+      if (!el) return false;
+      const rect = el.getBoundingClientRect();
+      return (
+        e.clientX >= rect.left &&
+        e.clientX <= rect.right &&
+        e.clientY >= rect.top &&
+        e.clientY <= rect.bottom
+      );
+    });
+
+    if (overIndex === -1 || overIndex === draggedImageIndex) return;
+
     setImagens((prev) => {
       const updated = [...prev];
       const [moved] = updated.splice(draggedImageIndex, 1);
-      updated.splice(index, 0, moved);
+      updated.splice(overIndex, 0, moved);
       return updated;
     });
-    setDraggedImageIndex(index);
+    setDraggedImageIndex(overIndex);
   };
 
-  const handleImageDragEnd = () => {
+  const handleImagePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    isPointerDraggingRef.current = false;
     setDraggedImageIndex(null);
+    if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    }
   };
 
   const handleDelete = async () => {
@@ -469,13 +490,18 @@ const CarDetailsModal: React.FC<CarDetailsModalProps> = ({
                         {imagens.map((base64, idx) => (
                           <div
                             key={idx}
+                            ref={(el) => {
+                              imageCardRefs.current[idx] = el;
+                            }}
                             className={`${styles.previewCard} ${
                               draggedImageIndex === idx ? styles.dragging : ""
                             }`}
-                            draggable
-                            onDragStart={(e) => handleImageDragStart(e, idx)}
-                            onDragOver={(e) => handleImageDragOver(e, idx)}
-                            onDragEnd={handleImageDragEnd}
+                            onPointerDown={(e) =>
+                              handleImagePointerDown(e, idx)
+                            }
+                            onPointerMove={handleImagePointerMove}
+                            onPointerUp={handleImagePointerUp}
+                            onPointerCancel={handleImagePointerUp}
                           >
                             <div className={styles.dragHandle}>
                               <i className="fa-solid fa-grip-vertical"></i>

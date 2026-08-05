@@ -6,14 +6,16 @@ const CarroImagem = require('../models/CarroImagem');
 
 router.get('/', async (req, res) => {
   const carros = await Carro.findAll({
-    include: [{ model: CarroImagem, as: 'imagens' }]
+    include: [{ model: CarroImagem, as: 'imagens' }],
+    order: [[{ model: CarroImagem, as: 'imagens' }, 'id', 'ASC']]
   });
   res.json(carros);
 });
 
 router.get('/:id', async (req, res) => {
   const carro = await Carro.findByPk(req.params.id, {
-    include: [{ model: CarroImagem, as: 'imagens' }]
+    include: [{ model: CarroImagem, as: 'imagens' }],
+    order: [[{ model: CarroImagem, as: 'imagens' }, 'id', 'ASC']]
   });
   if (!carro) return res.status(404).json({ erro: 'Carro não encontrado' });
   res.json(carro);
@@ -39,7 +41,8 @@ router.post('/', async (req, res) => {
     }
 
     const carroCriado = await Carro.findByPk(novoCarro.id, {
-      include: [{ model: CarroImagem, as: 'imagens' }]
+      include: [{ model: CarroImagem, as: 'imagens' }],
+      order: [[{ model: CarroImagem, as: 'imagens' }, 'id', 'ASC']]
     });
 
     res.status(201).json(carroCriado);
@@ -81,6 +84,7 @@ router.put('/:id', async (req, res) => {
 
     const carroAtualizado = await Carro.findByPk(carro.id, {
       include: [{ model: CarroImagem, as: 'imagens' }],
+      order: [[{ model: CarroImagem, as: 'imagens' }, 'id', 'ASC']]
     });
 
     res.json(carroAtualizado);

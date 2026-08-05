@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./shop.module.css";
 import { Link, useSearchParams } from "react-router-dom";
-import { TopBar } from "../../components/nav/TopBar";
+import { MobileNav } from "../../components/nav/MobileNav";
 import { API_BASE_URL } from "../../services/api";
 
 type Carro = {
@@ -24,6 +24,13 @@ const Shop: React.FC = () => {
   const [searchParams] = useSearchParams();
   const [carros, setCarros] = useState<Carro[]>([]);
   const [loading, setLoading] = useState(true);
+  const [menuActive, setMenuActive] = useState(false);
+  const menuToggleRef = useRef<HTMLButtonElement>(null);
+
+  const closeMenu = () => {
+    setMenuActive(false);
+    menuToggleRef.current?.focus();
+  };
 
   // Filter States
   const [searchTerm, setSearchTerm] = useState("");
@@ -81,17 +88,26 @@ const Shop: React.FC = () => {
     const matchKm = carro.rodagem_km <= parseInt(kmMax);
 
     return matchTerm && matchCategoria && matchPreco && matchAno && matchKm;
-  });
+  }).sort((a, b) => b.preco - a.preco);
 
   return (
     <div className={styles.shopContainer}>
-      <TopBar />
+      <button
+        ref={menuToggleRef}
+        type="button"
+        className={`${styles.toggleBtn} ${
+          menuActive ? styles.toggleBtnActive : styles.toggleBtnBubble
+        }`}
+        onClick={() => setMenuActive((v) => !v)}
+        aria-label={menuActive ? "Fechar menu" : "Abrir menu"}
+        aria-expanded={menuActive}
+      >
+        <i className={menuActive ? "fa-solid fa-xmark" : "fa-solid fa-bars"} />
+      </button>
+      <MobileNav active={menuActive} onClose={closeMenu} />
       <header className={styles.shopHeader}>
         <div className={styles.headerContent}>
           <div className={styles.logoAndTitle}>
-            <Link to="/" className={styles.backButton}>
-              <i className="fa-solid fa-arrow-left"></i>
-            </Link>
             <h1>O Nosso Catálogo</h1>
           </div>
           <p>Selecione o suprassumo da engenharia e da exclusividade.</p>

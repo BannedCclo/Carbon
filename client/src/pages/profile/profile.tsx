@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import toast, { Toaster } from "react-hot-toast";
 import styles from "./profile.module.css";
 import api from "../../services/api";
-import { TopBar } from "../../components/nav/TopBar";
+import { MobileNav } from "../../components/nav/MobileNav";
 
 interface UserProfile {
   id: number;
@@ -26,6 +26,13 @@ interface UserProfile {
 const Profile = () => {
   const [user, setUser] = useState<UserProfile | null>(null);
   const navigate = useNavigate();
+  const [menuActive, setMenuActive] = useState(false);
+  const menuToggleRef = useRef<HTMLButtonElement>(null);
+
+  const closeMenu = () => {
+    setMenuActive(false);
+    menuToggleRef.current?.focus();
+  };
 
   const [isEditing, setIsEditing] = useState(false);
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
@@ -277,7 +284,19 @@ const Profile = () => {
 
   return (
     <div className={styles.pageContainer}>
-      <TopBar />
+      <button
+        ref={menuToggleRef}
+        type="button"
+        className={`${styles.toggleBtn} ${
+          menuActive ? styles.toggleBtnActive : styles.toggleBtnBubble
+        }`}
+        onClick={() => setMenuActive((v) => !v)}
+        aria-label={menuActive ? "Fechar menu" : "Abrir menu"}
+        aria-expanded={menuActive}
+      >
+        <i className={menuActive ? "fa-solid fa-xmark" : "fa-solid fa-bars"} />
+      </button>
+      <MobileNav active={menuActive} onClose={closeMenu} />
       <main className={styles.mainContent}>
         <div className={styles.dashboardContainer}>
           <div className={styles.profileTitle}>

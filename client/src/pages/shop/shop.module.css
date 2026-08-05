@@ -9,7 +9,7 @@
 
 .shopHeader {
     background-color: #0e0b25;
-    padding: 30px 5%;
+    padding: 30px 5% 30px calc(5% + 60px);
     border-bottom: 1px solid #334155;
     position: sticky;
     top: 0;
@@ -28,23 +28,6 @@
     margin-bottom: 10px;
 }
 
-.backButton {
-    font-size: 2em;
-    color: #94a3b8;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-    transition: all 0.2s;
-}
-
-.backButton:hover {
-    color: white;
-}
-
 .logoAndTitle h1 {
     margin: 0;
     font-size: clamp(1.5rem, 5vw, 2.2rem);
@@ -57,7 +40,40 @@
     margin: 0;
     color: #94a3b8;
     font-size: 1rem;
-    margin-left: 60px;
+}
+
+.toggleBtn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
+    width: var(--tap);
+    height: var(--tap);
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.6rem;
+    line-height: 1;
+    transition: background-color 0.3s, box-shadow 0.3s, color 0.3s;
+}
+
+.toggleBtnBubble {
+    background-color: rgba(14, 11, 37, 0.85);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+
+.toggleBtnBubble:hover {
+    background-color: #0e0b25;
+}
+
+.toggleBtnActive {
+    color: #0e0b25;
 }
 
 .shopLayout {
@@ -408,7 +424,7 @@
 
 @media (max-width: 480px) {
     .shopHeader {
-        padding: 20px 5%;
+        padding: 20px 5% 20px calc(5% + 56px);
     }
 
     .shopLayout {
@@ -418,9 +434,5 @@
 
     .filterSidebar {
         padding: 16px;
-    }
-
-    .headerContent p {
-        margin-left: 0;
     }
 }
