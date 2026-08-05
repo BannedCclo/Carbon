@@ -491,13 +491,73 @@ body {
   align-self: center;
 }
 
-/* Traz o último card (o "anterior" na ordem circular) para antes do
-   ativo via `order` - não mexe na ordem real do DOM, da qual as animações
-   .next/.prev dependem via :nth-child. Só se aplica fora de transição
-   para não trocar de lugar no meio da animação (o array ganha um item
-   fantasma temporário, e :last-child passaria a apontar pra ele). */
-#highlights:not(.next):not(.prev) #slider .item:last-child {
-  order: -1;
+/* Mobile (<1280px): o carrossel mostra só 3 cards por vez (anterior,
+   ativo, próximo) numa janela de largura fixa centralizada na tela - é
+   isso que faz o ativo cair visualmente no meio, com um vizinho espiando
+   de cada lado, em vez de virar "segundo card de uma fileira comprida"
+   cortada meio ao acaso pelo overflow:clip da seção inteira.
+   Antes essa regra (e a de trazer o card anterior pra antes do ativo,
+   logo abaixo) não tinha media query, então valia pra qualquer tamanho de
+   tela - a tentativa de desfazê-la no desktop usava um seletor de
+   especificidade menor e por isso nunca vencia a cascata, deixando o
+   destaque "segundo da esquerda" nas duas telas. Escopando por tamanho de
+   tela (em vez de tentar cancelar depois) essa disputa deixa de existir. */
+@media (max-width: 1279px) {
+  #slider {
+    width: calc(3 * var(--card-w) + 2 * var(--card-gap));
+    overflow: clip;
+  }
+
+  /* Traz o último card (o "anterior" na ordem circular) para antes do
+     ativo via `order` - não mexe na ordem real do DOM, da qual as
+     animações .next/.prev dependem via :nth-child. Só se aplica fora de
+     transição para não trocar de lugar no meio da animação (o array
+     ganha um item fantasma temporário, e :last-child passaria a apontar
+     pra ele). */
+  #highlights:not(.next):not(.prev) #slider .item:last-child {
+    order: -1;
+  }
+
+  /* Durante a transição, o array ganha um item fantasma (clone do card
+     que está saindo/entrando, usado só pra dar continuidade visual ao
+     slide - ver home.tsx) e esse fantasma vira o novo :last-child. Isso
+     faz a regra acima (que só vale fora de transição) ficar desligada
+     bem na hora da animação, e o carrossel volta pra ordem natural do
+     DOM - onde o card ativo é sempre o primeiro elemento - até a troca
+     terminar. Resultado: o destaque pulava pra esquerda durante a
+     animação e só voltava pro centro depois dela.
+     O card "anterior" de verdade nesse momento intermediário não é o
+     :last-child (o fantasma), e sim o penúltimo - é ele que precisa ser
+     realocado pra frente pra manter o ativo centralizado a animação
+     inteira, não só nas pontas. */
+  #highlights.next #slider .item:nth-last-child(2),
+  #highlights.prev #slider .item:nth-last-child(2) {
+    order: -1;
+  }
+
+  /* As animações de nth-child(1)/(2) do desktop (vanishCard, activeCard,
+     unactiveCard, prevToActive) presumem um ativo sem vizinho à esquerda:
+     crescem/encolhem com --step-card e o card que sai desaparece via
+     opacity. No mobile o ativo sempre tem um vizinho físico ali do lado
+     (o card "anterior" reordenado acima), então a troca precisa manter
+     os dois cards visíveis o tempo todo - variando só escala/brilho - e
+     usar --step-slot (não --step-card) pra bater exatamente com a
+     largura de um slot da janela de 3 cards. */
+  #highlights.next #slider .item:nth-child(1) {
+    animation: activeToPrev 0.45s ease forwards;
+  }
+
+  #highlights.next #slider .item:nth-child(2) {
+    animation: next1ToActive 0.45s ease forwards;
+  }
+
+  #highlights.prev #slider .item:nth-child(1) {
+    animation: prevPeekToActive 0.45s ease forwards;
+  }
+
+  #highlights.prev #slider .item:nth-child(2) {
+    animation: activeToNext1 0.45s ease forwards;
+  }
 }
 
 #sliderBtns {
@@ -547,7 +607,11 @@ body {
 .item:nth-child(1) {
   filter: brightness(1);
   transform: scale(1.2);
-  transform-origin: right center;
+  /* Mobile: cresce a partir do centro para não invadir o card anterior,
+     que agora fica logo à esquerda do ativo (ver @media max-width:1279px
+     acima). No desktop (>=1280px) isso é sobrescrito para "right center",
+     já que lá o ativo é o primeiro card, sem vizinho à esquerda. */
+  transform-origin: center center;
 }
 
 .next .item:nth-child(2) {
@@ -685,11 +749,13 @@ body {
     padding-left: 0;
   }
 
-  /* O carrossel centralizado (card anterior espiando à esquerda) é só
-     para mobile - no desktop o ativo volta a ser o primeiro, sem nada
-     antes dele. */
-  #highlights .item:last-child {
-    order: 0;
+  /* Card ativo cresce para a direita (nada antes dele no desktop, já que
+     a regra de trazer o card anterior pra antes do ativo agora só existe
+     em @media (max-width: 1279px) acima - sem competir por especificidade
+     com nada aqui, o desktop já nasce com o ativo em primeiro e nenhum
+     card à esquerda dele). */
+  .item:nth-child(1) {
+    transform-origin: right center;
   }
 
   #sliderBtns {
@@ -779,6 +845,72 @@ body {
 
   to {
     transform: translateX(var(--step-slot));
+  }
+}
+
+/* Variantes mobile de vanishCard/activeCard/unactiveCard/prevToActive -
+   ver comentário em @media (max-width: 1279px) sobre #slider .item:nth-
+   child(1)/(2). Diferem das originais em dois pontos: usam --step-slot
+   (não --step-card), pra bater com a largura de slot da janela de 3
+   cards, e variam brightness em vez de opacity, já que no mobile os dois
+   cards envolvidos na troca (ativo e vizinho) continuam visíveis o tempo
+   todo em vez de um deles desaparecer.
+   translateX() e scale() vão juntos dentro de `transform` (em vez de
+   scale como propriedade separada, como as originais fazem) de propósito:
+   com propriedades separadas, o navegador sempre aplica a `scale` depois
+   do `transform`, então qualquer translateX aqui seria multiplicado pelo
+   fator de escala vigente no fim da animação. Nos dois keyframes que
+   terminam com scale 1.2 (next1ToActive, prevPeekToActive) isso amplificava
+   o deslocamento em 20% (130px viravam 156px), fazendo o card ativo
+   passar do slot certo e saltar de volta assim que a animação terminava
+   e a troca assentava na posição de repouso (sem esse fator). Unificar
+   numa só propriedade fixa a ordem de composição e mantém o deslocamento
+   em pixels exatos, com a escala variando por cima sem alterá-lo. */
+@keyframes activeToPrev {
+  from {
+    transform: translateX(0) scale(1.2);
+    filter: brightness(1);
+  }
+
+  to {
+    transform: translateX(var(--step-slot)) scale(1);
+    filter: brightness(0.8);
+  }
+}
+
+@keyframes next1ToActive {
+  from {
+    transform: translateX(0) scale(1);
+    filter: brightness(0.8);
+  }
+
+  to {
+    transform: translateX(var(--step-slot)) scale(1.2);
+    filter: brightness(1);
+  }
+}
+
+@keyframes prevPeekToActive {
+  from {
+    transform: translateX(var(--step-slot)) scale(1);
+    filter: brightness(0.8);
+  }
+
+  to {
+    transform: translateX(0) scale(1.2);
+    filter: brightness(1);
+  }
+}
+
+@keyframes activeToNext1 {
+  from {
+    transform: translateX(var(--step-slot)) scale(1.2);
+    filter: brightness(1);
+  }
+
+  to {
+    transform: translateX(0) scale(1);
+    filter: brightness(0.8);
   }
 }
 
