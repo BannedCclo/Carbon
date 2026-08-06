@@ -85,18 +85,33 @@ const Home = () => {
   const [carrosLoaded, setCarrosLoaded] = useState(false);
 
   useEffect(() => {
+    // Sem timeout, uma porta filtrada (ex: firewall bloqueando conexão de
+    // outro aparelho na rede) faz o fetch ficar pendurado indefinidamente -
+    // nem resolve nem rejeita, então o `finally` nunca roda e carrosLoaded
+    // fica false para sempre, travando a tela de loading do hero.
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 6000);
+
     const fetchCarros = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/carros`);
+        const response = await fetch(`${API_BASE_URL}/carros`, {
+          signal: controller.signal,
+        });
         const data = await response.json();
         setCarros(data);
       } catch (error) {
         console.error("Erro ao buscar carros em destaque:", error);
       } finally {
+        clearTimeout(timeoutId);
         setCarrosLoaded(true);
       }
     };
     fetchCarros();
+
+    return () => {
+      clearTimeout(timeoutId);
+      controller.abort();
+    };
   }, []);
 
   const heroCarro = carros.find((c) => c.hero) || null;
