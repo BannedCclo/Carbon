@@ -19,6 +19,28 @@ body {
   }
 }
 
+/* scroll-snap-align de #new/#highlights/Footer só faz sentido dentro do
+   scroll-snap-type acima (também restrito a >=1280px) - sem um container
+   com scroll-snap-type ativo eles já são inertes, mas deixamos explícito
+   aqui em vez de depender disso implicitamente: em mobile o scroll é
+   sempre o padrão do navegador, sem snap nem animação amarrada ao scroll,
+   pra evitar os pulos e travamentos que essas duas técnicas causavam em
+   Chrome Android real (ver comentários mais abaixo, perto de #highlights
+   e do @supports removido). */
+@media (min-width: 1280px) {
+  #new {
+    scroll-snap-align: end;
+  }
+
+  #highlights {
+    scroll-snap-align: start;
+  }
+
+  Footer {
+    scroll-snap-align: end;
+  }
+}
+
 .bgWrapper {
   background-color: #0e0b25;
   position: relative;
@@ -59,7 +81,6 @@ body {
   background-color: #0e0b25;
   position: relative;
   min-height: 100dvh;
-  scroll-snap-align: end;
   overflow: clip;
   width: 100%;
 }
@@ -436,7 +457,6 @@ body {
   min-height: 100dvh;
   overflow: clip;
   position: relative;
-  scroll-snap-align: start;
 
   display: flex;
   flex-direction: column;
@@ -1061,10 +1081,6 @@ body {
   100% {
     transform: translateY(0);
   }
-}
-
-Footer {
-  scroll-snap-align: end;
 }
 
 /* Removido o bloco @supports (animation-timeline: view()) que animava
