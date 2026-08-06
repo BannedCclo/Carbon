@@ -94,7 +94,7 @@ const Home = () => {
 
     const fetchCarros = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/carros`, {
+        const response = await fetch(`${API_BASE_URL}/carros/destaques`, {
           signal: controller.signal,
         });
         const data = await response.json();
