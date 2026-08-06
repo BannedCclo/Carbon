@@ -406,6 +406,16 @@ const Home = () => {
                         ? () => setHeroImageLoaded(true)
                         : undefined
                     }
+                    onError={
+                      // Sem isso, uma foto que falha ao carregar (rede
+                      // instável, foto corrompida) nunca dispara onLoad e a
+                      // tela de loading fica travada para sempre - melhor
+                      // liberar a tela mesmo que a foto não apareça do que
+                      // bloquear o hero inteiro indefinidamente.
+                      index === 0
+                        ? () => setHeroImageLoaded(true)
+                        : undefined
+                    }
                   />
                 ))}
                 {heroImages.length > 1 && (
@@ -443,7 +453,7 @@ const Home = () => {
             </button>
             <img src={textLogoBigWhite} alt="" />
           </header>
-          <div id={styles.newTitle} className={styles.scrollOuter}>
+          <div id={styles.newTitle}>
             <h1>{heroTitulo}</h1>
             <button onClick={test}>
               Conheça
@@ -461,8 +471,8 @@ const Home = () => {
           </div>
         </section>
         <section id={styles.seeTypes}>
-          <h1 className={styles.scrollInner}>Conheça as nossas categorias:</h1>
-          <div id={styles.animatedCar} className={styles.scrollInner}>
+          <h1>Conheça as nossas categorias:</h1>
+          <div id={styles.animatedCar}>
             <img src={carSvg} alt="" />
             <div id={styles.roadsContainer}>
               <div className={styles.road}></div>
@@ -470,7 +480,7 @@ const Home = () => {
             </div>
           </div>
 
-          <div id={styles.buttons} className={styles.scrollInner}>
+          <div id={styles.buttons}>
             <button onClick={() => navigate("/shop?categoria=sedan")}>
               Sedan
             </button>

@@ -1029,30 +1029,6 @@ body {
   }
 }
 
-@keyframes scrollOut {
-  0% {
-    opacity: 1;
-  }
-
-  100% {
-    opacity: 0;
-    transform: translateY(-100px);
-  }
-}
-
-@keyframes scrollIn {
-  0% {
-    opacity: 0;
-    transform: translateY(100px);
-    scale: 0.5;
-  }
-
-  100% {
-    opacity: 1;
-    scale: 1;
-  }
-}
-
 @keyframes borderAnimation {
   0% {
     --percentage: 0%;
@@ -1087,33 +1063,20 @@ body {
   }
 }
 
-@keyframes blackout {
-  from {
-    filter: brightness(0.8);
-  }
-
-  to {
-    filter: brightness(0.3);
-  }
-}
-
 Footer {
   scroll-snap-align: end;
 }
 
-@supports (animation-timeline: view()) {
-  #new video.heroMedia {
-    animation: blackout;
-    animation-timeline: view(0% 100%);
-  }
-
-  .scrollInner {
-    animation: scrollIn;
-    animation-timeline: view(70% 0);
-  }
-
-  .scrollOuter {
-    animation: scrollOut forwards;
-    animation-timeline: view(20% 30%);
-  }
-}
+/* Removido o bloco @supports (animation-timeline: view()) que animava
+   .heroMedia, .scrollInner e .scrollOuter (título "Ferrari 812 Superfast"
+   + botão "Conheça" na hero, e os itens de #seeTypes). O mesmo problema já
+   descrito acima para #highlights - suporte inconsistente da view-timeline
+   em navegadores mobile - também afetava estes três: em Chrome Android real
+   a timeline não inicializa antes do primeiro scroll e o navegador renderiza
+   direto o keyframe final (scrollOut termina em opacity:0, scrollIn começa
+   em opacity:0), deixando título/botão permanentemente invisíveis mesmo
+   sem nunca ter havido scroll - só reproduzia fora do modo responsivo do
+   DevTools (que roda o mesmo Chromium do desktop, sem o bug). .scrollInner
+   e .scrollOuter não têm nenhuma regra fora deste @supports, então removê-lo
+   deixa os elementos estáticos e visíveis em qualquer navegador, sem
+   necessidade de fallback. */
