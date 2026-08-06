@@ -153,11 +153,20 @@ const Home = () => {
   // próprio vídeo - exibi-lo mais cedo (só porque é local e carrega rápido)
   // reproduziria exatamente o "frame travado" que essa loading screen existe
   // para evitar.
-  const [heroImageLoaded, setHeroImageLoaded] = useState(false);
+  //
+  // heroImageLoaded é derivado (comparando com o src que de fato terminou
+  // de carregar) em vez de um boolean resetado via useEffect: quando os
+  // dados da API chegam, o render já troca heroImages[0] do poster estático
+  // pra foto real - com um boolean solto, esse mesmo render ainda mostrava
+  // "loaded" (herdado do poster) por um frame antes do efeito rodar e
+  // resetar, piscando a foto nova por uma fração de segundo antes do
+  // loading voltar. Derivando o valor, os dois ficam sempre sincronizados
+  // dentro do mesmo render.
+  const [loadedHeroSrc, setLoadedHeroSrc] = useState<string | null>(null);
+  const heroImageLoaded = loadedHeroSrc === heroImages[0];
 
   useEffect(() => {
     setHeroImageIndex(0);
-    setHeroImageLoaded(false);
   }, [heroCarro?.id]);
 
   useEffect(() => {
@@ -417,9 +426,7 @@ const Home = () => {
                     loading={index === 0 ? "eager" : "lazy"}
                     fetchPriority={index === 0 ? "high" : "auto"}
                     onLoad={
-                      index === 0
-                        ? () => setHeroImageLoaded(true)
-                        : undefined
+                      index === 0 ? () => setLoadedHeroSrc(src) : undefined
                     }
                     onError={
                       // Sem isso, uma foto que falha ao carregar (rede
@@ -427,9 +434,7 @@ const Home = () => {
                       // tela de loading fica travada para sempre - melhor
                       // liberar a tela mesmo que a foto não apareça do que
                       // bloquear o hero inteiro indefinidamente.
-                      index === 0
-                        ? () => setHeroImageLoaded(true)
-                        : undefined
+                      index === 0 ? () => setLoadedHeroSrc(src) : undefined
                     }
                   />
                 ))}
