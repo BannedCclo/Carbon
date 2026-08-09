@@ -85,18 +85,33 @@ const Home = () => {
   const [carrosLoaded, setCarrosLoaded] = useState(false);
 
   useEffect(() => {
+    // Sem timeout, uma porta filtrada (ex: firewall bloqueando conexão de
+    // outro aparelho na rede) faz o fetch ficar pendurado indefinidamente -
+    // nem resolve nem rejeita, então o `finally` nunca roda e carrosLoaded
+    // fica false para sempre, travando a tela de loading do hero.
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 6000);
+
     const fetchCarros = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/carros`);
+        const response = await fetch(`${API_BASE_URL}/carros/destaques`, {
+          signal: controller.signal,
+        });
         const data = await response.json();
         setCarros(data);
       } catch (error) {
         console.error("Erro ao buscar carros em destaque:", error);
       } finally {
+        clearTimeout(timeoutId);
         setCarrosLoaded(true);
       }
     };
     fetchCarros();
+
+    return () => {
+      clearTimeout(timeoutId);
+      controller.abort();
+    };
   }, []);
 
   const heroCarro = carros.find((c) => c.hero) || null;
@@ -138,11 +153,20 @@ const Home = () => {
   // próprio vídeo - exibi-lo mais cedo (só porque é local e carrega rápido)
   // reproduziria exatamente o "frame travado" que essa loading screen existe
   // para evitar.
-  const [heroImageLoaded, setHeroImageLoaded] = useState(false);
+  //
+  // heroImageLoaded é derivado (comparando com o src que de fato terminou
+  // de carregar) em vez de um boolean resetado via useEffect: quando os
+  // dados da API chegam, o render já troca heroImages[0] do poster estático
+  // pra foto real - com um boolean solto, esse mesmo render ainda mostrava
+  // "loaded" (herdado do poster) por um frame antes do efeito rodar e
+  // resetar, piscando a foto nova por uma fração de segundo antes do
+  // loading voltar. Derivando o valor, os dois ficam sempre sincronizados
+  // dentro do mesmo render.
+  const [loadedHeroSrc, setLoadedHeroSrc] = useState<string | null>(null);
+  const heroImageLoaded = loadedHeroSrc === heroImages[0];
 
   useEffect(() => {
     setHeroImageIndex(0);
-    setHeroImageLoaded(false);
   }, [heroCarro?.id]);
 
   useEffect(() => {
@@ -402,9 +426,15 @@ const Home = () => {
                     loading={index === 0 ? "eager" : "lazy"}
                     fetchPriority={index === 0 ? "high" : "auto"}
                     onLoad={
-                      index === 0
-                        ? () => setHeroImageLoaded(true)
-                        : undefined
+                      index === 0 ? () => setLoadedHeroSrc(src) : undefined
+                    }
+                    onError={
+                      // Sem isso, uma foto que falha ao carregar (rede
+                      // instável, foto corrompida) nunca dispara onLoad e a
+                      // tela de loading fica travada para sempre - melhor
+                      // liberar a tela mesmo que a foto não apareça do que
+                      // bloquear o hero inteiro indefinidamente.
+                      index === 0 ? () => setLoadedHeroSrc(src) : undefined
                     }
                   />
                 ))}
@@ -443,7 +473,7 @@ const Home = () => {
             </button>
             <img src={textLogoBigWhite} alt="" />
           </header>
-          <div id={styles.newTitle} className={styles.scrollOuter}>
+          <div id={styles.newTitle}>
             <h1>{heroTitulo}</h1>
             <button onClick={test}>
               Conheça
@@ -461,8 +491,8 @@ const Home = () => {
           </div>
         </section>
         <section id={styles.seeTypes}>
-          <h1 className={styles.scrollInner}>Conheça as nossas categorias:</h1>
-          <div id={styles.animatedCar} className={styles.scrollInner}>
+          <h1>Conheça as nossas categorias:</h1>
+          <div id={styles.animatedCar}>
             <img src={carSvg} alt="" />
             <div id={styles.roadsContainer}>
               <div className={styles.road}></div>
@@ -470,7 +500,7 @@ const Home = () => {
             </div>
           </div>
 
-          <div id={styles.buttons} className={styles.scrollInner}>
+          <div id={styles.buttons}>
             <button onClick={() => navigate("/shop?categoria=sedan")}>
               Sedan
             </button>

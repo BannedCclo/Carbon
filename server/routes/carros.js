@@ -12,6 +12,21 @@ router.get('/', async (req, res) => {
   res.json(carros);
 });
 
+// A home só precisa do carro em hero e dos carros em destaque, mas GET /
+// devolve o estoque inteiro com todas as fotos em base64 de cada carro -
+// em produção isso passa de 6MB de JSON, o que em rede móvel real (ao
+// contrário de wifi/rede local) demora dezenas de segundos ou mais pra
+// baixar e fazer parse, e é a causa raiz do "loading infinito" da hero
+// no celular. Esta rota busca só os carros que a home realmente usa.
+router.get('/destaques', async (req, res) => {
+  const carros = await Carro.findAll({
+    where: { [Op.or]: [{ hero: true }, { destaque: true }] },
+    include: [{ model: CarroImagem, as: 'imagens' }],
+    order: [[{ model: CarroImagem, as: 'imagens' }, 'id', 'ASC']]
+  });
+  res.json(carros);
+});
+
 router.get('/:id', async (req, res) => {
   const carro = await Carro.findByPk(req.params.id, {
     include: [{ model: CarroImagem, as: 'imagens' }],
