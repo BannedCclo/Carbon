@@ -207,7 +207,11 @@ router.post("/", async (req, res) => {
       codigoVerificacao: codigo,
     });
 
-    await enviarEmailVerificacao(email, codigo);
+    try {
+      await enviarEmailVerificacao(email, codigo);
+    } catch (emailErr) {
+      console.error("Usuário criado, mas falha ao enviar e-mail de verificação:", emailErr);
+    }
 
     res.status(201).json({
       mensagem: "Usuário criado. Verifique seu e-mail.",
