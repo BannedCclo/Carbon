@@ -10,69 +10,37 @@ const transporter = nodemailer.createTransport({
 
 async function enviarEmailVerificacao(destinatario, codigo) {
   const mailOptions = {
-    from: "carbonmotorsluxury@gmail.com",
+    from: "Carbon Motors <carbonmotorsluxury@gmail.com>",
     to: destinatario,
-    subject: "Verificação de Cadastro - Carbon",
+    subject: "Confirme seu cadastro na Carbon Motors",
+    text: `Olá!\n\nObrigado por se cadastrar na Carbon Motors. Use o código abaixo para confirmar seu e-mail:\n\n${codigo}\n\nSe você não solicitou este cadastro, ignore esta mensagem.`,
     html: `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #0f172a; color: #f8fafc; border-radius: 12px; overflow: hidden; border: 1px solid #334155;">
-        <div style="background: linear-gradient(135deg, #0284c7, #2563eb); padding: 30px; text-align: center;">
-          <h1 style="color: white; margin: 0; font-size: 28px; font-weight: 700;">Carbon Motors</h1>
-          <p style="color: #e0e7ff; margin: 5px 0 0 0; font-size: 16px;">Venda de Carros de Luxo</p>
-        </div>
-        <div style="padding: 40px 30px; background-color: #0e0b25;">
-          <h2 style="color: #f8fafc; margin-top: 0; font-size: 22px;">Olá!</h2>
-          <p style="color: #cbd5e1; font-size: 16px; line-height: 1.6;">Obrigado por se cadastrar na Carbon Motors. Para continuar, por favor, confirme seu endereço de e-mail usando o código abaixo:</p>
-          
-          <div style="background-color: #1e293b; border: 1px dashed #475569; border-radius: 8px; padding: 20px; text-align: center; margin: 30px 0;">
-            <h1 style="color: #38bdf8; margin: 0; font-size: 36px; letter-spacing: 5px;">${codigo}</h1>
-          </div>
-          
-          <p style="color: #cbd5e1; font-size: 14px; margin-bottom: 0;">Se você não solicitou este código, por favor, ignore este e-mail.</p>
-        </div>
-        <div style="background-color: #0B0E14; padding: 20px; text-align: center; border-top: 1px solid #1e293b;">
-          <p style="color: #64748b; font-size: 12px; margin: 0;">&copy; ${new Date().getFullYear()} Carbon Motors. Todos os direitos reservados.</p>
-        </div>
+      <div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto; color: #1f2937;">
+        <p style="font-size: 16px; margin-top: 0;">Olá!</p>
+        <p style="font-size: 15px; line-height: 1.6;">Obrigado por se cadastrar na Carbon Motors. Use o código abaixo para confirmar seu e-mail:</p>
+        <p style="font-size: 24px; font-weight: 600; letter-spacing: 3px; margin: 24px 0;">${codigo}</p>
+        <p style="font-size: 13px; color: #6b7280;">Se você não solicitou este cadastro, ignore esta mensagem.</p>
+        <p style="font-size: 12px; color: #9ca3af; margin-top: 32px;">Carbon Motors</p>
       </div>
     `,
   };
 
-  const info = await transporter.sendMail(mailOptions);
-  console.log("[DIAG] enviarEmailVerificacao resultado:", JSON.stringify({
-    to: destinatario,
-    accepted: info.accepted,
-    rejected: info.rejected,
-    response: info.response,
-    messageId: info.messageId,
-  }));
+  await transporter.sendMail(mailOptions);
 }
 
 async function enviarEmailResetSenha(destinatario, link) {
   const mailOptions = {
-    from: "carbonmotorsluxury@gmail.com",
+    from: "Carbon Motors <carbonmotorsluxury@gmail.com>",
     to: destinatario,
-    subject: "Redefinição de Senha - Carbon",
+    subject: "Redefinição de senha - Carbon Motors",
+    text: `Olá!\n\nRecebemos uma solicitação para redefinir a senha da sua conta na Carbon Motors. Se foi você, acesse o link abaixo para criar uma nova senha:\n\n${link}\n\nSe você não solicitou a redefinição de senha, ignore esta mensagem.`,
     html: `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #0f172a; color: #f8fafc; border-radius: 12px; overflow: hidden; border: 1px solid #334155;">
-        <div style="background: linear-gradient(135deg, #0284c7, #2563eb); padding: 30px; text-align: center;">
-          <h1 style="color: white; margin: 0; font-size: 28px; font-weight: 700;">Carbon Motors</h1>
-          <p style="color: #e0e7ff; margin: 5px 0 0 0; font-size: 16px;">Venda de Carros de Luxo</p>
-        </div>
-        <div style="padding: 40px 30px; background-color: #0e0b25;">
-          <h2 style="color: #f8fafc; margin-top: 0; font-size: 22px;">Olá!</h2>
-          <p style="color: #cbd5e1; font-size: 16px; line-height: 1.6;">Recebemos uma solicitação para redefinir a senha da sua conta na Carbon Motors. Se foi você, clique no botão abaixo para criar uma nova senha:</p>
-          
-          <div style="text-align: center; margin: 30px 0;">
-            <a href="${link}" style="display: inline-block; background-color: #3b82f6; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600;">Redefinir Minha Senha</a>
-          </div>
-          
-          <p style="color: #cbd5e1; font-size: 14px; margin-bottom: 0;">Se o botão não funcionar, você também pode copiar e colar o seguinte link no seu navegador:</p>
-          <p style="color: #94a3b8; font-size: 12px; word-break: break-all;">${link}</p>
-          
-          <p style="color: #cbd5e1; font-size: 14px; margin-bottom: 0; margin-top: 20px;">Se você não solicitou a redefinição de senha, por favor, ignore este e-mail. Sua senha permanecerá a mesma.</p>
-        </div>
-        <div style="background-color: #0B0E14; padding: 20px; text-align: center; border-top: 1px solid #1e293b;">
-          <p style="color: #64748b; font-size: 12px; margin: 0;">&copy; ${new Date().getFullYear()} Carbon Motors. Todos os direitos reservados.</p>
-        </div>
+      <div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto; color: #1f2937;">
+        <p style="font-size: 16px; margin-top: 0;">Olá!</p>
+        <p style="font-size: 15px; line-height: 1.6;">Recebemos uma solicitação para redefinir a senha da sua conta na Carbon Motors. Se foi você, acesse o link abaixo para criar uma nova senha:</p>
+        <p style="margin: 24px 0;"><a href="${link}" style="color: #2563eb;">${link}</a></p>
+        <p style="font-size: 13px; color: #6b7280;">Se você não solicitou a redefinição de senha, ignore esta mensagem.</p>
+        <p style="font-size: 12px; color: #9ca3af; margin-top: 32px;">Carbon Motors</p>
       </div>
     `,
   };
