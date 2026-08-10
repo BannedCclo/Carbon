@@ -36,7 +36,14 @@ async function enviarEmailVerificacao(destinatario, codigo) {
     `,
   };
 
-  await transporter.sendMail(mailOptions);
+  const info = await transporter.sendMail(mailOptions);
+  console.log("[DIAG] enviarEmailVerificacao resultado:", JSON.stringify({
+    to: destinatario,
+    accepted: info.accepted,
+    rejected: info.rejected,
+    response: info.response,
+    messageId: info.messageId,
+  }));
 }
 
 async function enviarEmailResetSenha(destinatario, link) {
