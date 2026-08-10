@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useSearchParams, useNavigate, Link } from "react-router-dom";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import api from "../../services/api";
 import styles from "./resetPassword.module.css";
 
@@ -112,7 +112,6 @@ const ResetPassword = () => {
           </div>
         )}
       </div>
-      <Toaster toastOptions={{ style: { borderRadius: 0 } }} />
     </div>
   );
 };

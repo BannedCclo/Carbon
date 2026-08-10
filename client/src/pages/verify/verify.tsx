@@ -1,5 +1,5 @@
 import { useSearchParams, useNavigate } from "react-router-dom";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import styles from "./verify.module.css";
 import { useState } from "react";
 import textLogoSmallBlack from "../../assets/img/textLogoSmallBlack.png";
@@ -90,7 +90,6 @@ const Verify = () => {
           )}
         </form>
       </div>
-      <Toaster toastOptions={{ style: { borderRadius: 0 } }} />
     </>
   );
 };

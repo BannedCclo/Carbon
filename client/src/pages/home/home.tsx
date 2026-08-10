@@ -1,6 +1,5 @@
 import styles from "./home.module.css";
 import { useState, useEffect, useRef } from "react";
-import { Toaster } from "react-hot-toast";
 import textLogoBigWhite from "../../assets/img/textLogoBigWhite.png";
 import FerrariLogo from "../../assets/svg/ferrarilogo.svg";
 import sennaCard from "../../assets/img/sennaCard.png";
@@ -590,7 +589,6 @@ const Home = () => {
         <Footer logo={<img src={textLogoBigWhite} alt="" />} backgroundColor="#0e0b25">
           <ShopCta />
         </Footer>
-        <Toaster toastOptions={{ style: { borderRadius: 0 } }} />
       </div>
     </>
   );
