@@ -12,6 +12,7 @@ const Shop = lazy(() => import("../pages/shop/shop"));
 const CarDetails = lazy(() => import("../pages/carDetails/CarDetails"));
 const ResetPassword = lazy(() => import("../pages/resetPassword/resetPassword"));
 const EmailNaoVerificado = lazy(() => import("../pages/emailNaoVerificado/emailNaoVerificado"));
+const ForgotPassword = lazy(() => import("../pages/forgotPassword/forgotPassword"));
 
 const RouteFallback = () => (
   <div style={{ minHeight: "100dvh", backgroundColor: "#0e0b25" }} />
@@ -33,6 +34,7 @@ const AppRouter = () => {
           <Route path="/admin" element={<Admin />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/email-nao-verificado" element={<EmailNaoVerificado />} />
+          <Route path="/esqueci-senha" element={<ForgotPassword />} />
         </Routes>
       </Suspense>
     </BrowserRouter>

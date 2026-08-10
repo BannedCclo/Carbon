@@ -2,6 +2,7 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import textLogoSmallBlack from "../../assets/img/textLogoSmallBlack.png";
+import wallpaper from "../../assets/img/wallpaper2.webp";
 import styles from "./signup.module.css";
 import api from "../../services/api";
 
@@ -157,6 +158,7 @@ const Signup = () => {
   return (
     <>
       <div className={styles.bgWrapper}>
+        <img src={wallpaper} alt="" fetchPriority="high" />
         <div id={styles.container}>
           <form action="" id={styles.signupForm}>
             <img src={textLogoSmallBlack} alt="" />

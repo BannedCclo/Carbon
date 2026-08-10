@@ -8,6 +8,7 @@ const { enviarEmailVerificacao, enviarEmailResetSenha } = require("../utils/envi
 require("dotenv").config();
 
 const jwtPass = process.env.JWT_SECRET;
+const clientUrl = process.env.CLIENT_URL || "http://localhost:5173";
 
 router.post("/login", async (req, res) => {
   const { email, senha } = req.body;
@@ -324,13 +325,37 @@ router.post("/request-password-change", async (req, res) => {
     user.codigoVerificacao = codigo;
     await user.save();
 
-    const resetLink = `http://localhost:5173/reset-password?token=${codigo}&id=${user.id}`;
+    const resetLink = `${clientUrl}/reset-password?token=${codigo}&id=${user.id}`;
     await enviarEmailResetSenha(user.email, resetLink);
 
     res.json({ mensagem: "Link de redefinição enviado para o seu e-mail" });
   } catch (err) {
     console.error(err);
     res.status(500).json({ erro: "Erro ao solicitar mudança de senha", detalhes: err });
+  }
+});
+
+router.post("/forgot-password", async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const user = await User.findOne({ where: { email } });
+
+    if (!user) {
+      return res.status(404).json({ erro: "Usuário não encontrado" });
+    }
+
+    const codigo = crypto.randomBytes(32).toString("hex");
+    user.codigoVerificacao = codigo;
+    await user.save();
+
+    const resetLink = `${clientUrl}/reset-password?token=${codigo}&id=${user.id}`;
+    await enviarEmailResetSenha(user.email, resetLink);
+
+    res.json({ mensagem: "Link de redefinição enviado para o seu e-mail" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ erro: "Erro ao solicitar redefinição de senha", detalhes: err });
   }
 });
 

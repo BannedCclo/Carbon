@@ -82,6 +82,15 @@ const Login = () => {
                 }}
               ></i>
             </div>
+            <p>
+              <a
+                onClick={() => {
+                  navigate("/esqueci-senha");
+                }}
+              >
+                Esqueci minha senha
+              </a>
+            </p>
             <button
               onClick={(e) => {
                 e.preventDefault();
