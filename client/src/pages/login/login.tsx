@@ -31,7 +31,11 @@ const Login = () => {
         })
         .catch((error) => {
           console.error("Error logging in:", error);
-          toast.error("Email ou senha inválidos");
+          if (error.response?.data?.emailNaoVerificado) {
+            navigate(`/email-nao-verificado?email=${encodeURIComponent(email)}`);
+          } else {
+            toast.error("Email ou senha inválidos");
+          }
         });
     } else {
       toast.error("Preencha todos os campos");

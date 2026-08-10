@@ -24,6 +24,10 @@ router.post("/login", async (req, res) => {
       return res.status(401).json({ erro: "Credenciais inválidas" });
     }
 
+    if (!user.verificado) {
+      return res.status(403).json({ erro: "Email não verificado", emailNaoVerificado: true });
+    }
+
     const token = jwt.sign(
       { id: user.id, tipo: user.tipo, nome: user.nome || "user" },
       jwtPass,

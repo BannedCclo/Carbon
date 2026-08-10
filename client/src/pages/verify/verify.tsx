@@ -11,6 +11,7 @@ const Verify = () => {
   const email = searchParams.get("email");
   const [code, setCode] = useState("");
   const [invalid, setInvalid] = useState(false);
+  const [verificado, setVerificado] = useState(false);
 
   const formatarCodigo = (valor: string) => {
     const numeros = valor.replace(/\D/g, "").slice(0, 6);
@@ -43,23 +44,7 @@ const Verify = () => {
         console.log(email, code);
         const response = await api.post("/users/verify", { email, code });
         console.log(response.data);
-        toast.success(
-          (t) => (
-            <span>
-              Email verificado com sucesso
-              <button
-                onClick={() => {
-                  toast.dismiss(t.id);
-                  navigate("/login");
-                }}
-                id="alertButton"
-              >
-                Fazer login
-              </button>
-            </span>
-          ),
-          { duration: Infinity }
-        );
+        setVerificado(true);
       } else {
         toast.error("Erro ao carregar email");
       }
@@ -75,22 +60,34 @@ const Verify = () => {
       <div id={styles.bgWrapper}>
         <form action="" id={styles.verifyForm}>
           <img src={textLogoSmallBlack} alt="" />
-          <h1>Verifique o seu Email</h1>
-          <p>Digite o código enviado para:</p>
-          <strong>{email}</strong>
-          <input
-            type="text"
-            placeholder="Código"
-            value={formatarCodigo(code)}
-            onChange={(e) => {
-              const apenasNumeros = e.target.value.replace(/\D/g, "");
-              setCode(apenasNumeros);
-            }}
-            className={invalid ? styles.invalido : ""}
-          />
-          <button type="submit" onClick={handleSubmit}>
-            Verificar
-          </button>
+          {verificado ? (
+            <>
+              <h1>Código aprovado!</h1>
+              <p>Seu email foi verificado com sucesso.</p>
+              <button type="button" onClick={() => navigate("/login")}>
+                Fazer login
+              </button>
+            </>
+          ) : (
+            <>
+              <h1>Verifique o seu Email</h1>
+              <p>Digite o código enviado para:</p>
+              <strong>{email}</strong>
+              <input
+                type="text"
+                placeholder="Código"
+                value={formatarCodigo(code)}
+                onChange={(e) => {
+                  const apenasNumeros = e.target.value.replace(/\D/g, "");
+                  setCode(apenasNumeros);
+                }}
+                className={invalid ? styles.invalido : ""}
+              />
+              <button type="submit" onClick={handleSubmit}>
+                Verificar
+              </button>
+            </>
+          )}
         </form>
       </div>
       <Toaster toastOptions={{ style: { borderRadius: 0 } }} />
