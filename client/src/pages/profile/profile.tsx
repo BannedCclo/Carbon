@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import styles from "./profile.module.css";
 import api from "../../services/api";
 import { MobileNav } from "../../components/nav/MobileNav";
@@ -228,6 +228,7 @@ const Profile = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    toast.success("Você saiu da sua conta");
     navigate("/");
   };
 
@@ -698,7 +699,6 @@ const Profile = () => {
           </div>
         </div>
       )}
-      <Toaster toastOptions={{ style: { borderRadius: 0 } }} />
     </div>
   );
 };

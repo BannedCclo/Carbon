@@ -15,6 +15,7 @@ export const AsideLink = ({ to, iconClass, text, isLogout }: AsideLinkProps) => 
                 className={`${styles.asideLink} ${styles.logoutBtn}`}
                 onClick={() => {
                     localStorage.removeItem("token");
+                    sessionStorage.setItem("logoutToast", "1");
                     window.location.reload();
                 }}
             >

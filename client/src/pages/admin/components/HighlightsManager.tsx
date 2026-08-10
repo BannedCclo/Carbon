@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import gridStyles from "./EstoqueList.module.css";
 import styles from "./HomeCuration.module.css";
 import { API_BASE_URL } from "../../../services/api";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 type Carro = {
   id: number;
@@ -162,7 +162,6 @@ const HighlightsManager: React.FC = () => {
           )}
         </div>
       )}
-      <Toaster toastOptions={{ style: { borderRadius: 0 } }} />
     </div>
   );
 };

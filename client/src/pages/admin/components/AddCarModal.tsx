@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styles from "./AddCarModal.module.css";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { API_BASE_URL } from "../../../services/api";
 
 type AddCarModalProps = {
@@ -291,7 +291,6 @@ const AddCarModal: React.FC<AddCarModalProps> = ({ onClose, onAdd }) => {
           </button>
         </div>
       </div>
-      <Toaster toastOptions={{ style: { borderRadius: 0 } }} />
     </div>
   );
 };

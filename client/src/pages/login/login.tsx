@@ -4,7 +4,7 @@ import { useState } from "react";
 import onlyTextWhite from "../../assets/img/onlyTextWhite.png";
 import wallpaper from "../../assets/img/wallpaper2.webp";
 import api from "../../services/api";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -113,7 +113,6 @@ const Login = () => {
             </p>
           </form>
         </div>
-        <Toaster toastOptions={{ style: { borderRadius: 0 } }} />
       </div>
     </>
   );

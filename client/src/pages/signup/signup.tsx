@@ -1,4 +1,4 @@
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import textLogoSmallBlack from "../../assets/img/textLogoSmallBlack.png";
@@ -369,7 +369,6 @@ const Signup = () => {
             </p>
           </form>
         </div>
-        <Toaster toastOptions={{ style: { borderRadius: 0 } }} />
       </div>
     </>
   );
